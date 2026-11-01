@@ -129,7 +129,7 @@ import { FORMATS, FORMAT_NAMES, items as ruleItems, inline as ruleInline, remote
     row.querySelector('[data-c="doh"]').innerHTML = cellOf(doh);
     for (const k of ["udp", "dot"]) {
       const c = row.querySelector(`[data-c="${k}"]`);
-      if (!r.est[k]) { c.innerHTML = `<span class="m" data-why="${esc(t(r[k] ? "tip_noest" : "tip_none"))}">${r[k] ? "?" : "·"}</span>`; continue; }
+      if (!r.est[k]) { c.innerHTML = `<span class="m" data-why="${esc(t(r[k] ? "tip_noest" : "tip_none"))}">–</span>`; continue; }
       c.innerHTML = cellOf(estOf(r, k), true);
     }
     // uncached: the DoH target's, marked when the resolver answers a missing name with an address
@@ -147,11 +147,11 @@ import { FORMATS, FORMAT_NAMES, items as ruleItems, inline as ruleInline, remote
   }
 
   function resetHero() {
-    $("#winName").innerHTML = '<i class="skl"></i>';
+    $("#winName").innerHTML = '<i class="skl"></i>'; $("#winIc").removeAttribute("style");
     $("#winSub").innerHTML = "&nbsp;";
     $$(".win-m li").forEach(li => { li.querySelector("b").className = ""; li.querySelector("b").textContent = "–"; });
     $$("#use li").forEach(li => { li.querySelector("span").textContent = ""; li.querySelector("code").textContent = ""; li.classList.remove("none"); li.classList.add("sk"); });
-    $(".win-k").textContent = t("lead_k");
+    $("#winK").textContent = t("lead_k");
     $("#alt").innerHTML = "&nbsp;";
   }
 
@@ -198,16 +198,17 @@ import { FORMATS, FORMAT_NAMES, items as ruleItems, inline as ruleInline, remote
   function hero(final) {
     const val = final ? x => score(x) : soFar, ms = final ? x => x && x.up ? median(x.cached) : null : msSoFar;
     const rs = RESOLVERS.map(r => ({ r, s: val(tgt(r.id, "doh")) })).filter(x => x.s != null).sort((a, b) => a.s - b.s);
-    $(".win-k").textContent = t(final ? "best_k" : "lead_k");
+    $("#winK").textContent = t(final ? "best_k" : "lead_k");
     if (!rs.length) { if (final) $("#winName").textContent = t("none_up"); return rs; }
     const win = rs[0].r, doh = tgt(win.id, "doh");
-    if ($("#winName").textContent !== win.name) $("#winName").textContent = win.name;
+    if ($("#winName").textContent !== win.name) { $("#winName").textContent = win.name; $("#winIc").style.backgroundImage = `url(/icons/${win.id}.png)`; }
     $("#winSub").textContent = !final ? t("lead_sub", { n: rs.length, of: RESOLVERS.length })
       : rs[1] ? t("win_sub", { n: rs.length, d: fmt(ms(tgt(rs[1].r.id, "doh")) - ms(doh)), second: rs[1].r.name }) : "";
     const w = { doh: doh, udp: estOf(win, "udp"), dot: estOf(win, "dot") };
     for (const k in w) {
       const b = $(`.win-m [data-w="${k}"] b`), m = ms(w[k]);
-      b.className = "n " + tier(m); b.textContent = m == null ? (k === "doh" || win[k] ? "–" : "·") : (k === "doh" ? "" : "≈ ") + fmt(m) + " ms";
+      if (m == null) { b.className = "na"; b.textContent = "–"; b.dataset.why = t(k === "doh" ? "e_fail" : win[k] ? "tip_noest" : "tip_none"); continue; }
+      b.className = "n " + tier(m); delete b.dataset.why; b.textContent = (k === "doh" ? "" : "≈ ") + fmt(m) + " ms";
     }
     // what to enter, by what the device likely supports first
     const use = [win.udp && [t("use_udp"), win.udp.join("  ")], win.dot && [t("use_dot"), win.dot], [t("use_doh"), win.doh]].filter(Boolean).slice(0, 3);

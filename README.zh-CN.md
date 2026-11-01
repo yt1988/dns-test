@@ -11,7 +11,7 @@
 | 列 | 怎么测 |
 |---|---|
 | **DoH** | 实测。浏览器在已建立的连接上，向每家的 DoH 地址发 DNS over HTTPS 查询。 |
-| **UDP ≈、DoT ≈** | 估算。浏览器发不了 UDP 和 DoT 查询（任何网站都做不到），所以页面向负责 UDP 和 DoT 的同一台服务器发 DoH（`https://1.1.1.1/dns-query`、`https://223.5.5.5/dns-query`……）。在已建立的连接上，耗时是到同一个 anycast 节点的一个往返加同一个解析器的处理，UDP 和 DoT 查询花的正是这些。那台服务器不支持 HTTPS 时显示 `?`。 |
+| **UDP ≈、DoT ≈** | 估算。浏览器发不了 UDP 和 DoT 查询（任何网站都做不到），所以页面向负责 UDP 和 DoT 的同一台服务器发 DoH（`https://1.1.1.1/dns-query`、`https://223.5.5.5/dns-query`……）。在已建立的连接上，耗时是到同一个 anycast 节点的一个往返加同一个解析器的处理，UDP 和 DoT 查询花的正是这些。那台服务器不支持 HTTPS 时显示 `–`。 |
 | **未缓存** | 一个根本不存在的随机域名，DNS 必须去问该区域的权威服务器。只显示不排名：快慢取决于每个网站自己的 DNS 服务器在哪。 |
 | **DNSSEC** | 验证 DNSSEC：`dnssec-failed.org` 返回 SERVFAIL，签名域名带 AD 标志（由 `scripts/verify.mjs` 核实）。 |
 

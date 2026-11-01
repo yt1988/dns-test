@@ -11,7 +11,7 @@ Which public DNS resolver is fastest from your network? [DNS Test](https://dns.1
 | Column | How |
 |---|---|
 | **DoH** | Measured. DNS over HTTPS queries from your browser to each resolver's DoH address, on an open connection. |
-| **UDP ≈, DoT ≈** | Estimated. Browsers can't send UDP or DoT queries (no website can), so the page sends DoH to the very server that answers UDP and DoT (`https://1.1.1.1/dns-query`, `https://223.5.5.5/dns-query`…). On an open connection that is one round trip to the same anycast node plus the same resolver, which is what a UDP or DoT query costs. `?` where that server has no HTTPS. |
+| **UDP ≈, DoT ≈** | Estimated. Browsers can't send UDP or DoT queries (no website can), so the page sends DoH to the very server that answers UDP and DoT (`https://1.1.1.1/dns-query`, `https://223.5.5.5/dns-query`…). On an open connection that is one round trip to the same anycast node plus the same resolver, which is what a UDP or DoT query costs. `–` where that server has no HTTPS. |
 | **Uncached** | A random name that exists nowhere, so the resolver has to ask the zone's authoritative servers. Shown, not ranked: it depends on where each site's own DNS servers are. |
 | **DNSSEC** | Validates DNSSEC: `dnssec-failed.org` gets SERVFAIL and a signed name gets the AD bit (checked by `scripts/verify.mjs`). |
 

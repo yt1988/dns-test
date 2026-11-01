@@ -16,25 +16,33 @@ code.copied { background: var(--ink-soft); color: var(--ink); }
 .hero { padding: 20px 22px 0; display: flex; flex-direction: column; gap: 16px; }
 .hero-h { display: flex; align-items: center; justify-content: space-between; gap: 12px 24px; flex-wrap: wrap; }
 .hero h1 { font-size: clamp(20px, 2.6vw, 26px); line-height: 1.25; letter-spacing: -.015em; font-weight: 700; }
-.win { display: flex; align-items: flex-end; justify-content: space-between; gap: 16px 28px; flex-wrap: wrap; }
-.win-l { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+/* the answer, read top to bottom: on the left who and how fast, on the right what to enter. Both keep their height
+   from the first paint, so a new leader only changes text. */
+.win { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 20px 32px; align-items: stretch; }
+.win-l, .win-r { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
 .win-k { font-size: 11.5px; font-weight: 600; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); }
-.win-n { font-size: clamp(28px, 4vw, 40px); line-height: 1.15; font-weight: 750; letter-spacing: -.02em; min-height: 46px; display: flex; align-items: center; }
+.win-n { display: flex; align-items: center; gap: 12px; min-height: 48px; }
+.win-n b { font-size: clamp(28px, 3.6vw, 38px); line-height: 1.15; font-weight: 750; letter-spacing: -.02em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.win-ic { width: 36px; height: 36px; flex: none; border-radius: 8px; background: var(--soft) center / 100% no-repeat; }
+.win-ic:not([style]) { visibility: hidden; }
 .win-s { color: var(--muted); font-size: 13px; min-height: 1.5em; }
-.win-m { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(3, minmax(96px, auto)); gap: 8px; }
-.win-m li { display: flex; flex-direction: column; gap: 2px; padding: 8px 12px; border: 1px solid var(--line); border-radius: 10px; }
-.win-m span { font-size: 11.5px; color: var(--muted); font-weight: 600; }
-.win-m b { font: 600 18px/26px var(--f-num); font-variant-numeric: tabular-nums; min-width: 8ch; white-space: nowrap; }
-.win-m i { font-style: normal; font-size: 11px; color: var(--muted); }
-.use { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 6px; min-height: 92px; }
-.use li { display: grid; grid-template-columns: 150px minmax(0, 1fr); gap: 10px; align-items: baseline; font-size: 13px; min-height: 26px; }
-.use li span { color: var(--muted); font-size: 12.5px; }
-.use li.sk code { display: none; }
-.use li.sk span { display: inline-block; width: 110px; height: 12px; border-radius: 5px; background: var(--soft); animation: blink 1.4s ease-in-out infinite; }
-.use li.none { visibility: hidden; }
-.use li code { font-size: 13px; justify-self: start; }
-.alt { font-size: 13px; color: var(--muted); min-height: 1.6em; line-height: 1.6; }
+.win-m { list-style: none; margin: 8px 0 0; padding: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.win-m li { display: flex; flex-direction: column; gap: 2px; padding: 0 14px; border-left: 1px solid var(--line); min-width: 0; }
+.win-m li:first-child { padding-left: 0; border-left: 0; }
+.win-m li > span { font-size: 12px; color: var(--muted); font-weight: 600; white-space: nowrap; }
+.win-m li > span i { font-style: normal; font-weight: 400; }
+.win-m b { font: 600 22px/30px var(--f-num); font-variant-numeric: tabular-nums; white-space: nowrap; }
+.win-m b.na { color: var(--muted); font-weight: 400; cursor: help; }
+.alt { font-size: 13px; color: var(--muted); min-height: 1.6em; line-height: 1.6; margin-top: 6px; }
 .alt b { color: var(--fg); font-weight: 600; }
+.win-r { background: var(--soft); border-radius: 12px; padding: 14px 16px; }
+.use { list-style: none; margin: 4px 0 0; padding: 0; display: flex; flex-direction: column; gap: 10px; }
+.use li { display: flex; flex-direction: column; gap: 3px; min-height: 46px; }
+.use li span { color: var(--muted); font-size: 12px; }
+.use li code { font-size: 13.5px; align-self: flex-start; background: var(--panel); padding: 3px 8px; }
+.use li.sk code { display: none; }
+.use li.sk span { display: inline-block; width: 110px; height: 12px; border-radius: 5px; background: var(--line); animation: blink 1.4s ease-in-out infinite; }
+.use li.none { visibility: hidden; }
 .bar { position: relative; display: flex; align-items: center; gap: 12px; margin: 0 -22px; padding: 11px 22px 13px; border-top: 1px solid var(--line); }
 .prog { position: absolute; left: 0; right: 0; top: -1px; height: 2px; overflow: hidden; }
 .prog i { display: block; height: 100%; background: var(--ink); transform: scaleX(0); transform-origin: left; transition: transform .25s, opacity .4s .3s; }
@@ -78,8 +86,6 @@ code.copied { background: var(--ink-soft); color: var(--ink); }
 .td dd { margin: 0; display: flex; flex-wrap: wrap; gap: 4px; }
 .td a { color: var(--ink); text-decoration: none; white-space: nowrap; }
 .td a:hover { text-decoration: underline; }
-.noweb { font-size: 12.5px; color: var(--muted); padding-top: 6px; border-top: 1px solid var(--line); }
-.noweb b { color: var(--fg); font-weight: 500; cursor: help; }
 .tip { position: fixed; z-index: 50; white-space: pre-line; max-width: min(340px, calc(100vw - 16px)); background: var(--fg); color: var(--bg); font: 500 12.5px/1.45 var(--f-ui); padding: 6px 10px; border-radius: 7px; pointer-events: none; opacity: 0; transition: opacity .12s; }
 .tip.on { opacity: 1; }
 
@@ -132,10 +138,9 @@ details.rblk > summary { cursor: pointer; font-size: 13px; color: var(--ink); }
   .hero { padding: 16px 16px 0; gap: 14px; }
   .bar { margin: 0 -16px; padding: 11px 16px 13px; }
   .res { padding: 16px 16px 12px; }
-  .win-m { width: 100%; grid-template-columns: repeat(3, minmax(0, 1fr)); }
-  .win-m b { font-size: 16px; min-width: 0; }
-  .use li { grid-template-columns: minmax(0, 1fr); gap: 2px; }
-  .use { min-height: 132px; }
+  .win { grid-template-columns: minmax(0, 1fr); }
+  .win-m li { padding: 0 10px; }
+  .win-m b { font-size: 18px; }
   /* phones: rank, name, DoH, UDP ≈; the rest is in the row's details and the hero */
   .th, .tr { grid-template-columns: 20px minmax(0, 1fr) 62px 62px; }
   .th > :nth-child(n+5), .tr > :nth-child(n+5) { display: none; }

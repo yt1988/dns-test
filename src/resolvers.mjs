@@ -69,12 +69,8 @@ export const RESOLVERS = [
     dot: "public.dns.iij.jp", doh: "https://public.dns.iij.jp/dns-query", cors: true, est: { udp: null, dot: "doh" }, dnssec: true },
 ];
 
-// Well-known resolvers a browser can't reach at all: plain DNS only, no HTTPS on their servers. Named under the table.
-export const NOWEB = [
-  { id: "114dns", name: "114DNS", udp: ["114.114.114.114", "114.114.115.115"] },
-  { id: "baidu", name: "Baidu DNS", udp: ["180.76.76.76"] },
-  { id: "cnnic", name: "CNNIC SDNS", udp: ["1.2.4.8", "210.2.4.8"] },
-];
+// Not in the list: 114DNS (114.114.114.114), Baidu DNS (180.76.76.76) and CNNIC SDNS (1.2.4.8) offer plain DNS only and
+// answer no HTTPS at all, so a browser can't reach them; the help says so.
 
 // Popular names, cached at any busy resolver. The page picks three per run, the same for every resolver.
 export const NAMES = ["www.apple.com", "www.microsoft.com", "www.amazon.com", "www.bing.com", "www.cloudflare.com", "www.icloud.com", "www.baidu.com", "www.qq.com"];
