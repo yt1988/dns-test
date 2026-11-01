@@ -47,9 +47,6 @@ export default {
   v_join: ", ",
   d_dot: "DoT / Privates DNS", d_blocks: "Blockiert", blocks_ads: "Werbung und Tracker", blocks_malware: "Malware- und Phishing-Domains", blocks_phishing: "Phishing-Domains", d_site: "Website",
 
-  tools_h: "Weitere 1ms.dog-Tools",
-  tool_home: "Ihre Ausgangs-IPs und die Latenz zu 40 Diensten", tool_egress: "Welche IP jede Website sieht: Split-Routing, Proxys, WebRTC- und IPv6-Lecks",
-  tool_ipqs: "Wie sauber Ihre IP ist, laut einem Dutzend Quellen", tool_m2c: "Latenz zu über 360 Cloud-Regionen", tool_v2c: "Latenz von Ihrem Server zu den Clouds", tool_ls: "AWS Lightsail Transfer-Rechner",
 
   docs: [
     ["Wie funktioniert der Test?", "Ihr Browser fragt jeden Resolver direkt; nichts läuft über diese Website. Zuerst öffnet er zu jedem eine Verbindung und fragt drei populäre Namen je einmal ab, die damit im Cache des Resolvers liegen; das zählt nicht. Dann folgen 10 Runden: In jeder wird jeder Resolver noch einmal gefragt, in neuer zufälliger Reihenfolge, einige gleichzeitig, sodass eine kurze Störung in Ihrem Netz alle gleich trifft. Jede zweite Runde fragt zusätzlich einen zufälligen Namen ab, den es nirgends gibt.\nDie Zahlen sind Mediane: Eine einzelne langsame Abfrage verschiebt sie nicht. Die Zeiten stammen aus der Netzwerkmessung, die der Browser für jede Anfrage selbst aufzeichnet und die die Skripte der Seite nicht verzögern können. Jede URL ist neu und wird am Cache vorbei abgerufen, daher kann nur der Resolver selbst antworten."],

@@ -18,6 +18,10 @@ test("every language page keeps the shell contract", async () => {
     assert.ok(!/\{\{[\w:]+\}\}/.test(h), lang + ": unfilled placeholder");
     assert.ok(h.length < 70000, lang + ": page is " + h.length + " bytes");
     assert.equal((h.match(/<script>/g) || []).length, 1, lang + ": the only inline script is the pre-paint one");
+    // the list of the other tools is the shell's: one marker for it, before the dialogs, and no list of our own
+    assert.equal((h.match(/<div data-ms-more><\/div>/g) || []).length, 1, lang + ": one place for the shell's tool list");
+    assert.ok(h.indexOf("data-ms-more") < h.indexOf('class="scrim"'), lang + ": tool list before the dialogs");
+    assert.ok(!/class="tool"/.test(h), lang + ": no tool list of its own");
     // header buttons in the site's order: language, help, GitHub, theme
     const order = ["id=\"lang\"", "id=\"helpBtn\"", "class=\"icon-btn gh\"", "id=\"theme\""].map(s => h.indexOf(s));
     assert.deepEqual([...order].sort((a, b) => a - b), order, lang + ": header button order");

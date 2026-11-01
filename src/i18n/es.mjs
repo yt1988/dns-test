@@ -47,9 +47,6 @@ export default {
   v_join: ", ",
   d_dot: "DoT / DNS privado", d_blocks: "Bloquea", blocks_ads: "anuncios y rastreadores", blocks_malware: "dominios de malware y phishing", blocks_phishing: "dominios de phishing", d_site: "Sitio web",
 
-  tools_h: "Más herramientas de 1ms.dog",
-  tool_home: "Tus IP de salida y la latencia a 40 servicios", tool_egress: "Qué IP ve cada sitio: rutas divididas, proxies, fugas de WebRTC e IPv6",
-  tool_ipqs: "Lo limpia que está tu IP, según una docena de fuentes", tool_m2c: "Latencia a más de 360 regiones de nube", tool_v2c: "Latencia de tu servidor a las nubes", tool_ls: "Calculadora de transferencia de AWS Lightsail",
 
   docs: [
     ["¿Cómo funciona el test?", "Tu navegador consulta directamente a cada resolver; nada pasa por este sitio. Primero abre una conexión con cada uno y consulta una vez tres nombres populares, que quedan en su caché; eso no cuenta. Luego vienen 10 rondas: en cada una se consulta a todos una vez más, en un orden aleatorio nuevo, unos pocos a la vez, para que un tropiezo de tu red afecte a todos por igual. Una ronda sí y otra no también se consulta un nombre aleatorio que no existe.\nLas cifras son medianas: una consulta lenta suelta no las mueve. Los tiempos vienen de la medición de red que el navegador registra para cada petición, que los scripts de la página no pueden retrasar. Cada URL es nueva y se pide sin caché, así que solo el resolver puede responder."],

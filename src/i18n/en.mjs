@@ -48,9 +48,6 @@ export default {
   v_join: ", ",
   d_dot: "DoT / Private DNS", d_blocks: "Blocks", blocks_ads: "ads and trackers", blocks_malware: "malware and phishing domains", blocks_phishing: "phishing domains", d_site: "Website",
 
-  tools_h: "More 1ms.dog tools",
-  tool_home: "Your exit IPs and latency to 40 services", tool_egress: "Which IP each site sees: split routing, proxies, WebRTC and IPv6 leaks",
-  tool_ipqs: "How clean your IP is, from a dozen sources", tool_m2c: "Latency to 360+ cloud regions", tool_v2c: "Latency from your server to the clouds", tool_ls: "AWS Lightsail transfer calculator",
 
   docs: [
     ["How does the test work?", "Your browser asks every resolver directly; nothing goes through this site. First it opens a connection to each and asks three popular names once, which puts them in the resolver's cache; none of that counts. Then come 10 rounds: in each, every resolver is asked once more, in a new random order, a few at a time, so a burst of trouble on your network hits all of them alike. Every other round also asks a random name that doesn't exist anywhere.\nThe numbers are medians, so a single slow query doesn't move them. Times come from the browser's own network timing for each request where it has it, which this page's scripts can't delay. Every URL is new and fetched past any cache, so only the resolver itself can answer."],

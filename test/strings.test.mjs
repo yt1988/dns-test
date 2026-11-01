@@ -14,7 +14,7 @@ test("every key the page uses exists in every language", async () => {
     ...all(app, /\bt\("(\w+)"/g), ...all(build, /\bT\("(\w+)"/g),
     ...all(page, /data-i="(\w+)"/g), ...all(page, /\{\{a:(\w+)\}\}/g), ...all(page, /\{\{(c_\w+)\}\}/g),
     ...["system", "light", "dark"].map(x => "th_" + x), "e_timeout", "e_fail", "best_k", "lead_k",
-    ...["home", "egress", "ipqs", "m2c", "v2c", "ls"].map(x => "tool_" + x), "blocks_ads", "blocks_malware", "blocks_phishing",
+    "blocks_ads", "blocks_malware", "blocks_phishing",
   ].filter(k => !k.endsWith("_")));
   assert.ok(keys.size > 50, "found " + keys.size + " keys");
   for (const [lang] of LANGS) {

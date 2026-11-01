@@ -10,10 +10,3 @@
 - Direct rules for proxy tools (so the test measures your own network): https://dns.1ms.dog/rules/clash.yaml, surge.list, loon.list, quanx.list, singbox.json
 - Source code and the resolver list: https://github.com/yt1988/dns-test
 
-## Other 1ms.dog tools
-- 1ms.dog: https://1ms.dog/ (Your exit IPs and latency to 40 services)
-- EgressLens: https://egress.1ms.dog/ (Which IP each site sees: split routing, proxies, WebRTC and IPv6 leaks)
-- IP Quality Test: https://ipqs.1ms.dog/ (How clean your IP is, from a dozen sources)
-- Me2Cloud: https://m2c.1ms.dog/ (Latency to 360+ cloud regions)
-- VPS2Cloud: https://v2c.1ms.dog/ (Latency from your server to the clouds)
-- Lightsail Cost Saver: https://ls.1ms.dog/ (AWS Lightsail transfer calculator)

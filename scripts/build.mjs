@@ -21,23 +21,6 @@ const pub = new URL("../public/", import.meta.url), src = new URL("../src/", imp
 // language, URL folder, og:locale; the first is the root
 export const LANGS = [["en", "", "en_US"], ["zh-CN", "zh-cn", "zh_CN"], ["zh-TW", "zh-tw", "zh_TW"], ["ja", "ja", "ja_JP"], ["ko", "ko", "ko_KR"],
   ["es", "es", "es_ES"], ["fr", "fr", "fr_FR"], ["de", "de", "de_DE"], ["pt", "pt", "pt_BR"], ["ru", "ru", "ru_RU"]];
-// the other 1ms.dog tools (names, icons and tints as the site's top bar shows them)
-const TOOLS = [
-  { id: "home", host: "1ms.dog", name: "1ms.dog", tint: "#ffb63f", icon: '<circle cx="8" cy="8" r="6.5"/><path d="M1.5 8h13M8 1.5c2 2 2.8 4 2.8 6.5S10 12.5 8 14.5C6 12.5 5.2 10.5 5.2 8S6 3.5 8 1.5z"/>' },
-  { id: "egress", host: "egress.1ms.dog", name: { en: "EgressLens", "zh-CN": "出口照妖镜", "zh-TW": "出口照妖鏡", ja: "出口照魔鏡", ko: "출구 IP 돋보기", es: "Lupa IP", fr: "Loupe IP", de: "IP-Lupe", pt: "Lupa de IP", ru: "IP-лупа" }, tint: "#06b6d4", icon: '<circle cx="7" cy="7" r="5"/><path d="M10.6 10.6 14.5 14.5M7 4.5v5M4.5 7h5"/>' },
-  { id: "ipqs", host: "ipqs.1ms.dog", name: { en: "IP Quality Test", "zh-CN": "IP 质量测试", "zh-TW": "IP 品質測試", ja: "IP 品質テスト", ko: "IP 품질 테스트", es: "Test de calidad IP", fr: "Test qualité IP", de: "IP-Qualitätstest", pt: "Teste de qualidade IP", ru: "Тест качества IP" }, tint: "#8b5cf6", icon: '<path d="M8 1.5 2.5 3.5v4c0 3.2 2.3 5.8 5.5 7 3.2-1.2 5.5-3.8 5.5-7v-4z"/><path d="M5.5 8l1.8 1.8 3.2-3.3"/>' },
-  { id: "m2c", host: "m2c.1ms.dog", name: "Me2Cloud", tint: "#3b82f6", icon: '<path d="M1.5 8.5h2.8l1.6-4.5 3.2 8 1.6-3.5h3.8"/>' },
-  { id: "v2c", host: "v2c.1ms.dog", name: "VPS2Cloud", tint: "#10b981", icon: '<rect x="1.5" y="2.5" width="13" height="11" rx="2"/><path d="M4.5 6.5l2 1.5-2 1.5M8.5 10h3"/>' },
-  { id: "ls", host: "ls.1ms.dog", name: { en: "Lightsail Cost Saver", "zh-CN": "Lightsail 省钱计算器", "zh-TW": "Lightsail 省錢計算器", ja: "Lightsail 節約計算機", ko: "Lightsail 절약 계산기", es: "Calculadora de ahorro Lightsail", fr: "Calculateur d’économies Lightsail", de: "Lightsail Sparrechner", pt: "Calculadora de economia Lightsail", ru: "Калькулятор экономии Lightsail" }, tint: "#f59e0b", icon: '<rect x="3" y="1.5" width="10" height="13" rx="2"/><path d="M5.5 4.5h5M5.5 8h0M8 8h0M10.5 8h0M5.5 11h0M8 11h0M10.5 11h0"/>' },
-];
-const toolHome = (lang, slug) => slug ? "/" + slug + "/" : "/";
-// a tool's name in a language: one brand string for every language, or one per language; a gap fails the build
-// instead of showing English
-const toolName = (x, lang) => {
-  const n = typeof x.name === "string" ? x.name : x.name[lang];
-  if (!n) throw new Error(`no ${lang} name for tool ${x.id}`);
-  return n;
-};
 
 // Runs before first paint: apply the saved theme. On the English root, send visitors to their language's page
 // (a saved choice first, then the browser languages); crawlers and English readers stay.
@@ -55,7 +38,7 @@ async function loadI18n() {
 }
 
 // Strings only the build uses (the page already shows them); everything else goes to the browser
-const BUILD_ONLY = new Set(["name", "seo_title", "seo_desc", "seo_kw", "og_sub", "h1", "app_name", "docs", "tools_h", "lang_label", "faq_h", "h_all"]);
+const BUILD_ONLY = new Set(["name", "seo_title", "seo_desc", "seo_kw", "og_sub", "h1", "app_name", "docs", "lang_label", "faq_h", "h_all"]);
 
 // every origin the page asks: the resolvers' DoH hosts and the addresses used for the estimates
 export const ORIGINS = [...new Set(RESOLVERS.flatMap(r => [r.doh, r.ip].filter(Boolean).map(u => new URL(u).origin)))];
@@ -145,7 +128,6 @@ export async function build({ check = false } = {}) {
       `<script type="application/ld+json">${JSON.stringify({ "@context": "https://schema.org", "@graph": graph }).replace(/</g, "\\u003c")}</script>`,
     ].join("\n");
 
-    const tools = TOOLS.map(x => `<a class="tool" href="https://${x.host}${toolHome(lang, slug)}" style="--tint:${x.tint}"><b><svg viewBox="0 0 16 16" aria-hidden="true">${x.icon}</svg>${esc(toolName(x, lang))}</b><span>${esc(T("tool_" + x.id))}</span></a>`).join("");
     const helpNav = docs.map(([q], i) => `<button type="button" role="tab" data-hq="${i}" aria-selected="${i === 0}">${esc(q)}</button>`).join("");
     const helpC = docs.map(([q, a], i) => `<article data-hqb="${i}"${i ? " hidden" : ""}><h3>${esc(q)}</h3>${a.split(/\n+/).map(p => `<p>${esc(p)}</p>`).join("")}</article>`).join("");
     const langOpts = langs.map(([l]) => `<option value="${l}"${l === lang ? " selected" : ""}>${esc(I[l].name)}</option>`).join("");
@@ -158,7 +140,7 @@ export async function build({ check = false } = {}) {
       .replace("{{lang}}", lang).replace("{{pathsAttr}}", esc(JSON.stringify(paths))).replace("{{rootAttr}}", slug ? "" : " data-root")
       .replace("{{prepaint}}", PREPAINT).replace("{{head}}", head).replace("{{css}}", cssName).replace("{{js}}", jsName).replace("{{strings}}", sName)
       .split("{{homeHref}}").join(path(slug)).replace("{{langOpts}}", langOpts).replace("{{h1}}", esc(T("h1")))
-      .replace("{{rows}}", rowsHTML(T)).replace("{{cliCmd}}", esc(`curl -fsSL ${SITE}/i | sh`)).replace("{{tools}}", tools)
+      .replace("{{rows}}", rowsHTML(T)).replace("{{cliCmd}}", esc(`curl -fsSL ${SITE}/i | sh`))
       .replace("{{helpNav}}", helpNav).replace("{{helpC}}", helpC).replace("{{data}}", JSON.stringify({ lang, paths }).replace(/</g, "\\u003c"));
     if (/\{\{[\w:]+\}\}/.test(html)) throw new Error("unfilled placeholder in " + path(slug) + ": " + /\{\{[\w:]+\}\}/.exec(html)[0]);
     files[(slug ? slug + "/" : "") + "index.html"] = html;
@@ -182,8 +164,6 @@ export async function build({ check = false } = {}) {
 - Direct rules for proxy tools (so the test measures your own network): ${SITE}/rules/clash.yaml, surge.list, loon.list, quanx.list, singbox.json
 - Source code and the resolver list: https://github.com/yt1988/dns-test
 
-## Other 1ms.dog tools
-${TOOLS.map(x => `- ${typeof x.name === "string" ? x.name : x.name.en}: https://${x.host}/ (${en["tool_" + x.id]})`).join("\n")}
 `;
   // The only inline script is the pre-paint snippet, identical on every page: one hash covers the site.
   const csp = ["default-src 'self'", `script-src 'self' 'sha256-${sha(PREPAINT)}'`, "style-src 'self' 'unsafe-inline'", "font-src 'self'", "img-src 'self' data:",

@@ -106,15 +106,6 @@ code.copied { background: var(--ink-soft); color: var(--ink); }
 .cli-gh { font-size: 12.5px; color: var(--muted); text-decoration: none; white-space: nowrap; }
 .cli-gh:hover { color: var(--ink); }
 
-/* the other 1ms.dog tools */
-.tools-sec h2 { margin: 0 0 10px 2px; }
-.tools { display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 10px; }
-.tool { display: flex; flex-direction: column; gap: 4px; padding: 12px 14px; text-decoration: none; border-radius: 12px; border: 1px solid var(--line); background: var(--panel); transition: border-color .15s, transform .15s; }
-.tool:hover { border-color: var(--tint); transform: translateY(-1px); }
-.tool b { display: flex; align-items: center; gap: 8px; font-size: 14px; }
-.tool b svg { width: 16px; height: 16px; color: var(--tint); }
-.tool span { color: var(--muted); font-size: 12.5px; }
-
 /* dialogs (as in the other 1ms.dog tools) */
 .scrim { position: fixed; inset: 0; z-index: 40; background: #0006; display: flex; align-items: center; justify-content: center; padding: 16px; }
 .dialog { background: var(--panel); border: 1px solid var(--line); border-radius: var(--r); max-width: 100%; max-height: calc(100vh - 32px); display: flex; flex-direction: column; box-shadow: 0 24px 64px var(--shadow); }
@@ -146,7 +137,7 @@ details.rblk > summary { cursor: pointer; font-size: 13px; color: var(--ink); }
 .codebox .btn { position: absolute; top: 6px; right: 6px; height: 28px; padding: 0 10px; font-size: 12px; }
 .help-pick .icon-btn:disabled { opacity: .35; cursor: default; }
 
-@media (prefers-reduced-motion: reduce) { .skl, .tool, .v .dots { animation: none !important; transition: none !important; } }
+@media (prefers-reduced-motion: reduce) { .skl, .v .dots { animation: none !important; transition: none !important; } }
 @media (max-width: 860px) {
   .th, .tr { grid-template-columns: 22px minmax(0, 1fr) 64px 64px 64px 56px 52px; gap: 6px; }
   .pp { display: none; }

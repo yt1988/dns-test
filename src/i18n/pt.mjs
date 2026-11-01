@@ -47,9 +47,6 @@ export default {
   v_join: ", ",
   d_dot: "DoT / DNS privado", d_blocks: "Bloqueia", blocks_ads: "anúncios e rastreadores", blocks_malware: "domínios de malware e phishing", blocks_phishing: "domínios de phishing", d_site: "Site",
 
-  tools_h: "Mais ferramentas 1ms.dog",
-  tool_home: "Seus IPs de saída e a latência para 40 serviços", tool_egress: "Qual IP cada site vê: rotas divididas, proxies, vazamentos de WebRTC e IPv6",
-  tool_ipqs: "O quão limpo é seu IP, segundo uma dúzia de fontes", tool_m2c: "Latência para mais de 360 regiões de nuvem", tool_v2c: "Latência do seu servidor para as nuvens", tool_ls: "Calculadora de transferência do AWS Lightsail",
 
   docs: [
     ["Como o teste funciona?", "Seu navegador consulta cada resolvedor diretamente; nada passa por este site. Primeiro ele abre uma conexão com cada um e consulta uma vez três nomes populares, que entram no cache do resolvedor; nada disso conta. Depois vêm 10 rodadas: em cada uma, todos são consultados mais uma vez, numa nova ordem aleatória, alguns ao mesmo tempo, para que um soluço da sua rede afete todos igualmente. Rodada sim, rodada não, também é consultado um nome aleatório que não existe em lugar nenhum.\nOs números são medianas: uma consulta lenta isolada não os altera. Os tempos vêm da medição de rede que o próprio navegador registra para cada requisição, que os scripts da página não conseguem atrasar. Cada URL é nova e buscada sem cache, então só o resolvedor pode responder."],
