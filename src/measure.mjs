@@ -15,6 +15,8 @@
 //     names, NXDOMAIN for the random one (an address there means the resolver rewrites missing names). Elsewhere the
 //     page can only time the answer, which scripts/verify.mjs checks is a DNS answer.
 //   - No answer within the timeout, or a failed request, is a loss.
+//   - first: targets tested on their own before the rest (a resolver's own page tests that resolver first): its
+//     warm-up and all its rounds, then the others', with the same names.
 import { dohURL, parse, mixCase, randLabel, RCODE } from "./dns.mjs";
 
 export const ROUNDS = 10;
@@ -86,11 +88,20 @@ async function pool(items, n, f, signal) {
   }));
 }
 
-// run the whole test; onStep(target) after every query that changes what a row shows
-export async function run(ts, { names, nxzone, rounds = ROUNDS, signal, onStep = () => {} }) {
+// run the whole test; onStep(target) after every query that changes what a row shows, onPhase(i) when a
+// group of targets starts (0: first, if any; then the rest)
+export async function run(ts, { names, nxzone, rounds = ROUNDS, signal, first = [], onStep = () => {}, onPhase = () => {} }) {
   watch();
   const pickNames = shuffle([...names]).slice(0, 3);
+  const groups = first.length ? [first, ts.filter(t => !first.includes(t))] : [ts];
+  for (let i = 0; i < groups.length && !(signal && signal.aborted); i++) {
+    onPhase(i);
+    await runGroup(groups[i], pickNames, { nxzone, rounds, signal, onStep });
+  }
+  return { names: pickNames };
+}
 
+async function runGroup(ts, pickNames, { nxzone, rounds, signal, onStep }) {
   // warm-up: open the connection (finding out whether answers can be read), then cache the names
   await pool(ts, CONC, async t => {
     try {
@@ -131,7 +142,6 @@ export async function run(ts, { names, nxzone, rounds = ROUNDS, signal, onStep =
       onStep(t);
     }, signal);
   }
-  return { names: pickNames };
 }
 
 /* ---------- statistics ---------- */

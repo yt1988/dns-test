@@ -85,6 +85,7 @@ export default {
   f_run: "測定中",
   f_done: "あなたの測定結果",
   f_wait: "応答を待っています…",
+  f_self: "まずこの DNS を測り、次にほかの {n} 件と比べます",
   f_sub_run: "{n} / {of} 件が応答 · 現在 {rank} 位",
   f_first: "{n} 件中であなたに最速、{second} より {d} ms 速い",
   f_rank: "{n} 件中 {rank} 位 · 最速は {best}（{d} ms 速い）",

@@ -85,6 +85,7 @@ export default {
   f_run: "측정 중",
   f_done: "내 측정 결과",
   f_wait: "응답을 기다리는 중…",
+  f_self: "먼저 이 DNS를 측정한 뒤 다른 {n}곳과 비교합니다",
   f_sub_run: "{n} / {of}곳 응답 · 현재 {rank}위",
   f_first: "{n}곳 중 나에게 가장 빠름, {second}보다 {d}ms 빠름",
   f_rank: "{n}곳 중 {rank}위 · 가장 빠른 곳: {best}, {d}ms 더 빠름",

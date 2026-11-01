@@ -86,6 +86,7 @@ export default {
   f_run: "Testing",
   f_done: "Your result",
   f_wait: "Waiting for its answers…",
+  f_self: "Testing it first, then the other {n} to compare",
   f_sub_run: "{n} / {of} answered so far · #{rank} for now",
   f_first: "Fastest of {n} for you, {d} ms ahead of {second}",
   f_rank: "#{rank} of {n} for you · fastest: {best}, {d} ms faster",

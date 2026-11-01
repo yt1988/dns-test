@@ -85,6 +85,7 @@ export default {
   f_run: "Midiendo",
   f_done: "Tu resultado",
   f_wait: "Esperando sus respuestas…",
+  f_self: "Primero lo medimos a él; después, a los otros {n} para comparar",
   f_sub_run: "{n} / {of} han respondido · puesto {rank} por ahora",
   f_first: "El más rápido de {n} para ti, {d} ms por delante de {second}",
   f_rank: "Puesto {rank} de {n} para ti · el más rápido: {best}, {d} ms más rápido",

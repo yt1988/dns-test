@@ -135,7 +135,7 @@ import { encode as encodeShare, decode as decodeShare, sharePath } from "./share
   const num = (ms, extra = "") => `<b class="n ${tier(ms)}">${fmt(ms)}</b>${extra}`;
 
   /* ---------- the test ---------- */
-  let TS = [], RUN = null;
+  let TS = [], RUN = null, PHASE = 1;
   const byR = id => TS.filter(x => x.r.id === id);
   const tgt = (id, kind) => TS.find(x => x.r.id === id && x.kind === kind);
 
@@ -235,8 +235,9 @@ import { encode as encodeShare, decode as decodeShare, sharePath } from "./share
     if ($("#winName").textContent !== win.name) { $("#winName").textContent = win.name; $("#winIc").style.backgroundImage = `url(/icons/${win.id}.png)`; }
     if (FOCUS) {
       // its rank so far, then where it ended and who beat it (that one's page a click away)
-      const i = rs.findIndex(x => x.r === FOCUS), gap = j => fmt(ms(tgt(rs[j].r.id, "doh")) - ms(tgt(rs[0].r.id, "doh")));
-      $("#winSub").innerHTML = i < 0 ? esc(t(doh && doh.up === false ? "f_down" : "f_wait"))
+      const i = rs.findIndex(x => x.r === FOCUS), self = !final && PHASE === 0, gap = j => fmt(ms(tgt(rs[j].r.id, "doh")) - ms(tgt(rs[0].r.id, "doh")));
+      $("#winSub").innerHTML = self ? esc(t(doh && doh.up === false ? "f_down" : "f_self", { n: RESOLVERS.length - 1 }))
+        : i < 0 ? esc(t(doh && doh.up === false ? "f_down" : "f_wait"))
         : !final ? esc(t("f_sub_run", { n: rs.length, of: RESOLVERS.length, rank: i + 1 }))
         : i === 0 ? (rs[1] ? esc(t("f_first", { n: rs.length, d: gap(1), second: rs[1].r.name })) : "&nbsp;")
         : esc(t("f_rank", { rank: i + 1, n: rs.length, d: gap(i), best: "@@best@@" })).replace("@@best@@", `<a href="${D.home + rs[0].r.id}/">${esc(rs[0].r.name)}</a>`);
@@ -443,7 +444,10 @@ import { encode as encodeShare, decode as decodeShare, sharePath } from "./share
     resetHero();
     $("#prog").classList.remove("end"); $("#rerun").disabled = true;
     total = TS.length * (1 + 10); done = 0; t0 = performance.now(); progress();
-    const res = await run(TS, { names: NAMES, nxzone: NXZONE, signal: ctl.signal, onStep: x => {
+    // a resolver's page tests it first, then the others to compare
+    PHASE = 0;
+    const res = await run(TS, { names: NAMES, nxzone: NXZONE, signal: ctl.signal, first: FOCUS ? TS.filter(x => x.r === FOCUS) : [],
+      onPhase: i => { PHASE = FOCUS ? i : 1; heroSoon(); }, onStep: x => {
       done = Math.min(total, done + 1); progress(); fillRow(x.r.id); heroSoon(); sortLive();
       // a target that didn't answer the warm-up skips the rounds
       if (x.up === false) { done += 10; progress(); }

@@ -85,6 +85,7 @@ export default {
   f_run: "測試中",
   f_done: "你的測試結果",
   f_wait: "等它回應…",
+  f_self: "先測它自己，再和其他 {n} 家比較",
   f_sub_run: "已有 {n} / {of} 家回應，暫排第 {rank}",
   f_first: "{n} 家裡對你最快，比 {second} 快 {d} 毫秒",
   f_rank: "{n} 家裡排第 {rank}；對你最快的是 {best}，快 {d} 毫秒",
