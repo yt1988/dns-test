@@ -48,6 +48,9 @@ const BUILD_ONLY_SET = new Set(["name", "seo_title", "seo_desc", "seo_kw", "og_s
 const BUILD_ONLY = k => BUILD_ONLY_SET.has(k) || k.startsWith("rp_");
 
 // a page's path: the language's folder, then the resolver's (none: the test of them all)
+// the end of every link that leaves this tool (GitHub, a resolver's site, another 1ms.dog tool): the site's
+// external-link icon (1ms-shell docs/tool-contract.md, section 4); a next step inside the tool keeps its →
+const EXT = '<svg class="ext" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 2.5h4.5V7M13.5 2.5 7.5 8.5M12 10v3.5H2.5V4H6"/></svg>';
 const pathOf = (slug, id) => "/" + (slug ? slug + "/" : "") + (id ? id + "/" : "");
 const fill = (s, v) => s.replace(/\{(\w+)\}/g, (m, k) => k in v ? v[k] : m);
 
@@ -82,7 +85,7 @@ function cliDlg(T) {
     sec("cli_opts", line("dnstest -p udp,dot,doq", T("cli_o_proto")) + line("dnstest -r cloudflare,google,alidns", T("cli_o_res")) +
       line("dnstest -6", T("cli_o_v6")) + line("dnstest --json > dns.json", T("cli_o_json"))),
     sec("cli_win", line(`irm ${SITE}/i.ps1 | iex`, T("cli_win_s")) + `<a class="dl" href="${esc(win)}">dnstest-windows-amd64.exe ↓</a>`),
-    `<a class="cli-gh" href="https://github.com/yt1988/dns-test-cli" target="_blank" rel="noopener noreferrer"><svg class="gh-ic" viewBox="0 0 16 16" aria-hidden="true"><path d="M8 .2a8 8 0 0 0-2.5 15.6c.4 0 .5-.2.5-.4v-1.5c-2.2.5-2.7-1-2.7-1-.4-.9-.9-1.2-.9-1.2-.7-.5.1-.5.1-.5.8.1 1.2.8 1.2.8.7 1.3 1.9.9 2.4.7 0-.5.3-.9.5-1.1-1.8-.2-3.6-.9-3.6-4 0-.9.3-1.6.8-2.1-.1-.2-.4-1 .1-2.1 0 0 .7-.2 2.2.8a7.4 7.4 0 0 1 4 0c1.5-1 2.2-.8 2.2-.8.4 1.1.2 1.9.1 2.1.5.6.8 1.3.8 2.1 0 3.1-1.9 3.7-3.6 3.9.3.3.6.8.6 1.5v2.2c0 .2.1.5.6.4A8 8 0 0 0 8 .2z"/></svg>${esc(T("cli_src"))} ↗</a>`,
+    `<a class="cli-gh" href="https://github.com/yt1988/dns-test-cli" target="_blank" rel="noopener noreferrer"><svg class="gh-ic" viewBox="0 0 16 16" aria-hidden="true"><path d="M8 .2a8 8 0 0 0-2.5 15.6c.4 0 .5-.2.5-.4v-1.5c-2.2.5-2.7-1-2.7-1-.4-.9-.9-1.2-.9-1.2-.7-.5.1-.5.1-.5.8.1 1.2.8 1.2.8.7 1.3 1.9.9 2.4.7 0-.5.3-.9.5-1.1-1.8-.2-3.6-.9-3.6-4 0-.9.3-1.6.8-2.1-.1-.2-.4-1 .1-2.1 0 0 .7-.2 2.2.8a7.4 7.4 0 0 1 4 0c1.5-1 2.2-.8 2.2-.8.4 1.1.2 1.9.1 2.1.5.6.8 1.3.8 2.1 0 3.1-1.9 3.7-3.6 3.9.3.3.6.8.6 1.5v2.2c0 .2.1.5.6.4A8 8 0 0 0 8 .2z"/></svg>${esc(T("cli_src"))}${EXT}</a>`,
   ].join("");
 }
 
@@ -110,7 +113,7 @@ function rowsHTML(T, lang, slug, focus) {
     return `<div class="tr wait${r.id === focus ? " me" : ""}" data-r="${r.id}" role="button" tabindex="0" aria-expanded="false"><span class="rk"></span>` +
       `<span class="nm"><img class="ic" src="/icons/${r.id}.png" width="18" height="18" alt=""><b>${esc(r.name)}</b><span class="pp">${proto(r)}</span></span>` +
       cell("doh") + cell("udp") + cell("dot") + cell("unc") + `<span class="v sec">${r.dnssec ? '<b class="ok">✓</b>' : '<span class="m">–</span>'}</span></div>` +
-      `<div class="td" data-d="${r.id}" hidden><dl>${d}</dl><span class="td-l">${page}<a href="${esc(r.site)}" target="_blank" rel="noopener noreferrer">${esc(T("d_site"))} ↗</a></span></div>`;
+      `<div class="td" data-d="${r.id}" hidden><dl>${d}</dl><span class="td-l">${page}<a class="xl" href="${esc(r.site)}" target="_blank" rel="noopener noreferrer">${esc(T("d_site"))}${EXT}</a></span></div>`;
   }).join("\n");
 }
 
@@ -185,10 +188,10 @@ function addrCard(r, T, lang) {
     [T("d_blocks"), r.blocks ? T("blocks_" + r.blocks) : T("rp_none")],
   ].filter(Boolean).map(([k, v, html]) => `<li><span>${esc(k)}</span>${html ? v : esc(v)}</li>`).join("");
   return `<section class="addr card">
-      <div class="addr-h"><h2>${esc(fillL(lang, T("rp_addr_h"), { name }))}</h2><span class="addr-acts"><button class="btn sm" type="button" data-help="${SETUP_DOC}">${esc(T("rp_setup_btn"))}</button><a class="btn sm" href="${esc(r.site)}" target="_blank" rel="noopener noreferrer">${esc(T("d_site"))} ↗</a></span></div>
+      <div class="addr-h"><h2>${esc(fillL(lang, T("rp_addr_h"), { name }))}</h2><span class="addr-acts"><button class="btn sm" type="button" data-help="${SETUP_DOC}">${esc(T("rp_setup_btn"))}</button><a class="btn sm xl" href="${esc(r.site)}" target="_blank" rel="noopener noreferrer">${esc(T("d_site"))}${EXT}</a></span></div>
       <dl class="addr-l">${addrRows(r, T)}</dl>
       <ul class="facts">${facts}</ul>
-      <a class="next xl" id="leakLink" hidden target="_blank" rel="noopener">${esc(T("rp_leak"))}<svg class="ext" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 2.5h4.5V7M13.5 2.5 7.5 8.5M12 10v3.5H2.5V4H6"/></svg></a>
+      <a class="next xl" id="leakLink" hidden target="_blank" rel="noopener">${esc(T("rp_leak"))}${EXT}</a>
     </section>
 `;
 }
