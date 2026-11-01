@@ -10,6 +10,8 @@ Which public DNS resolver is fastest from your network? [DNS Test](https://dns.1
 
 **Live:** https://dns.1ms.dog
 
+Each resolver also has its own page in every language (https://dns.1ms.dog/cloudflare/, https://dns.1ms.dog/zh-cn/alidns/ …): the same test with that resolver in front, its addresses, who runs it, and how to set it up on Windows, macOS, iPhone, Android, routers, browsers and Linux.
+
 ## What it measures
 
 | Column | How |
@@ -35,7 +37,8 @@ Not in the list: 114DNS, Baidu DNS and CNNIC (plain DNS only, no HTTPS on their 
 ## Files
 
 ```
-src/resolvers.mjs   the list: addresses, what the estimates use, DNSSEC; the one place to add a resolver
+src/resolvers.mjs   the list: addresses, what the estimates use, DNSSEC
+src/about.mjs       what each resolver's own page says about it: operator, country, the one it is compared with
 src/measure.mjs     the test in the browser: warm-up, rounds, timing, statistics
 src/dns.mjs         DNS messages for DoH GET (build, encode, parse)
 src/rules.mjs       direct rules for proxy tools
@@ -50,7 +53,7 @@ scripts/icons.mjs   fetches each resolver's site icon once into public/icons/
 
 1. Find its DoH address and check it answers `GET ?dns=` with 200 (`curl --http2 'https://…/dns-query?dns=AAABAAABAAAAAAAAB2V4YW1wbGUDY29tAAABAAE' -H 'accept: application/dns-message'`) from more than one continent.
 2. Find out which server answers its UDP and DoT: if the DoH host resolves to the same addresses, `est` is `"doh"`; if the plain DNS address serves DoH with a valid certificate, put it in `ip` and use `"ip"`; otherwise `null`.
-3. Add it to `src/resolvers.mjs`, run `node scripts/verify.mjs <id>` and `node scripts/icons.mjs <id>`, then `npm run build` and `npm test`.
+3. Add it to `src/resolvers.mjs` and `src/about.mjs`, run `node scripts/verify.mjs <id>` and `node scripts/icons.mjs <id>`, then `npm run build` and `npm test`.
 
 ## Run and deploy
 

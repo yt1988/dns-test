@@ -1,6 +1,8 @@
 #!/usr/bin/env node
 // Builds the static site in public/ from src/:
 //   index.html, <lang>/index.html              the page per language, every resolver's row drawn in it
+//   <id>/index.html, <lang>/<id>/index.html    a page per resolver and language: the same test, that resolver in the
+//                                              hero, its addresses, facts and setup (src/about.mjs)
 //   assets/app.<hash>.js, assets/app.<hash>.css the page's code (with the resolver list) and styles, shared by every language
 //   assets/l.<lang>.<hash>.js                    the strings the browser code needs, per language
 //   assets/qr.<hash>.js                          QR encoder for the share card, loaded only when someone shares
@@ -17,6 +19,7 @@ import { fileURLToPath } from "node:url";
 import { build as bundle, transform } from "esbuild";
 import { RESOLVERS, NAMES, NXZONE, CHECKS } from "../src/resolvers.mjs";
 import { ruleSets } from "../src/rules.mjs";
+import { ABOUT, local, titleOf } from "../src/about.mjs";
 
 const SITE = (process.env.SITE_URL || "https://dns.1ms.dog").replace(/\/+$/, "");
 const pub = new URL("../public/", import.meta.url), src = new URL("../src/", import.meta.url);
@@ -39,8 +42,30 @@ async function loadI18n() {
   return out;
 }
 
-// Strings only the build uses (the page already shows them); everything else goes to the browser
-const BUILD_ONLY = new Set(["name", "seo_title", "seo_desc", "seo_kw", "og_sub", "h1", "docs", "lang_label", "faq_h", "h_all"]);
+// Strings only the build uses (the page already shows them); everything else goes to the browser. rp_: a resolver's
+// own page and its help, all drawn here.
+const BUILD_ONLY_SET = new Set(["name", "seo_title", "seo_desc", "seo_kw", "og_sub", "h1", "docs", "lang_label", "faq_h", "h_all"]);
+const BUILD_ONLY = k => BUILD_ONLY_SET.has(k) || k.startsWith("rp_");
+
+// a page's path: the language's folder, then the resolver's (none: the test of them all)
+const pathOf = (slug, id) => "/" + (slug ? slug + "/" : "") + (id ? id + "/" : "");
+const fill = (s, v) => s.replace(/\{(\w+)\}/g, (m, k) => k in v ? v[k] : m);
+
+// Names in a language's sentences. Korean: a particle right after a name goes by how the name ends when read aloud
+// (은/이/을/과 after a final consonant, 는/가/를/와 after a vowel); Hangul shows it, and the Latin names read with a final
+// consonant are in KO_FIN (Google 구글, CZ.NIC ODVR …알). Chinese and Japanese: no space between a name in Chinese
+// characters and the text around it (Latin names keep theirs).
+const JOSA = [["은", "는"], ["이", "가"], ["을", "를"], ["과", "와"]];
+const KO_FIN = new Set(["Google", "Quad9 Foundation", "Mullvad VPN", "Hurricane Electric", "Wikimedia Foundation", "CleanBrowsing",
+  "Qihoo 360", "CZ.NIC", "CZ.NIC ODVR", "Applied Privacy Foundation", "DNS4ALL", "Tiarap", "DNS4EU (Whalebone)"]);
+const josa = (s, v) => s.replace(/\{(\w+)\}(.)(?!\()/g, (m, k, ch) => {
+  const p = JOSA.find(x => x.includes(ch));
+  if (!p || typeof v[k] !== "string") return m;
+  const c = v[k].charCodeAt(v[k].length - 1), fin = c >= 0xac00 && c <= 0xd7a3 ? (c - 0xac00) % 28 > 0 : KO_FIN.has(v[k]);
+  return `{${k}}` + p[fin ? 0 : 1];
+});
+const tidy = (s, lang) => /^(zh|ja)/.test(lang) ? s.replace(/([　-鿿＀-￯]) (?=[㐀-鿿])|([㐀-鿿]) (?=[　-〿＀-￯])/g, "$1$2") : s;
+const fillL = (lang, s, v) => tidy(fill(lang === "ko" ? josa(s, v) : s, v), lang);
 
 // every origin the page asks: the resolvers' DoH hosts and the addresses used for the estimates
 export const ORIGINS = [...new Set(RESOLVERS.flatMap(r => [r.doh, r.ip].filter(Boolean).map(u => new URL(u).origin)))];
@@ -61,26 +86,109 @@ function cliDlg(T) {
   ].join("");
 }
 
-// one row per resolver, drawn before any answer; the details under it say what to enter to use it
-function rowsHTML(T) {
-  const proto = r => [r.udp && "UDP", r.dot && "DoT", "DoH", r.doq && "DoQ"].filter(Boolean).map(p => `<i>${p}</i>`).join("");
+// what to enter to use a resolver, as <dt>/<dd> pairs: under its row, and on its own page
+function addrRows(r, T) {
   const kv = (k, v) => `<dt>${esc(k)}</dt><dd>${v}</dd>`;
   const code = a => a.map(x => `<code>${esc(x)}</code>`).join(" ");
+  return [
+    r.udp && kv("DNS (IPv4)", code(r.udp)),
+    r.udp6 && kv("DNS (IPv6)", code(r.udp6)),
+    r.dot && kv(T("d_dot"), code([r.dot])),
+    kv("DoH", code([r.doh])),
+    r.doq && kv("DoQ", code(["quic://" + r.doq])),
+  ].filter(Boolean).join("");
+}
+
+// one row per resolver, drawn before any answer; the details under it say what to enter to use it, and link to its page.
+// On a resolver's own page its row is marked.
+function rowsHTML(T, lang, slug, focus) {
+  const proto = r => [r.udp && "UDP", r.dot && "DoT", "DoH", r.doq && "DoQ"].filter(Boolean).map(p => `<i>${p}</i>`).join("");
   return RESOLVERS.map(r => {
-    const d = [
-      r.udp && kv("DNS (IPv4)", code(r.udp)),
-      r.udp6 && kv("DNS (IPv6)", code(r.udp6)),
-      r.dot && kv(T("d_dot"), code([r.dot])),
-      kv("DoH", code([r.doh])),
-      r.doq && kv("DoQ", code(["quic://" + r.doq])),
-      r.blocks && kv(T("d_blocks"), esc(T("blocks_" + r.blocks))),
-    ].filter(Boolean).join("");
+    const d = addrRows(r, T) + (r.blocks ? `<dt>${esc(T("d_blocks"))}</dt><dd>${esc(T("blocks_" + r.blocks))}</dd>` : "");
     const cell = c => `<span class="v" data-c="${c}"></span>`;
-    return `<div class="tr wait" data-r="${r.id}" role="button" tabindex="0" aria-expanded="false"><span class="rk"></span>` +
+    const page = r.id === focus ? "" : `<a href="${pathOf(slug, r.id)}">${esc(fillL(lang, T("rp_page"), { name: titleOf(r, lang) }))} →</a>`;
+    return `<div class="tr wait${r.id === focus ? " me" : ""}" data-r="${r.id}" role="button" tabindex="0" aria-expanded="false"><span class="rk"></span>` +
       `<span class="nm"><img class="ic" src="/icons/${r.id}.png" width="18" height="18" alt=""><b>${esc(r.name)}</b><span class="pp">${proto(r)}</span></span>` +
       cell("doh") + cell("udp") + cell("dot") + cell("unc") + `<span class="v sec">${r.dnssec ? '<b class="ok">✓</b>' : '<span class="m">–</span>'}</span></div>` +
-      `<div class="td" data-d="${r.id}" hidden><dl>${d}</dl><a href="${esc(r.site)}" target="_blank" rel="noopener noreferrer">${esc(T("d_site"))} ↗</a></div>`;
+      `<div class="td" data-d="${r.id}" hidden><dl>${d}</dl><span class="td-l">${page}<a href="${esc(r.site)}" target="_blank" rel="noopener noreferrer">${esc(T("d_site"))} ↗</a></span></div>`;
   }).join("\n");
+}
+
+// Every resolver's page, linked from every page under the list: how search engines (and people) find them
+function resNav(T, lang, slug, focus) {
+  return `<nav class="rs-nav" aria-labelledby="rsNavH"><h3 id="rsNavH">${esc(T("rp_all_h"))}</h3><ul>` + RESOLVERS.map(r =>
+    `<li><a href="${pathOf(slug, r.id)}"${r.id === focus ? ' aria-current="page"' : ""}><img src="/icons/${r.id}.png" width="14" height="14" alt="" loading="lazy">${esc(titleOf(r, lang))}</a></li>`).join("") + "</ul></nav>";
+}
+
+// A resolver's own help entries, in front of the general ones: what it is, its addresses, how to set it up on each
+// system, mainland China, the one it is compared with, and why it may be slow. Each is HTML for the page and plain
+// text for the FAQ data. A value given as a list is drawn as <code>s, joined the language's way.
+function resolverDocs(r, T, lang, slug) {
+  const a = ABOUT[r.id], name = titleOf(r, lang), J = T("v_join"), sp = /^(zh|ja)/.test(lang) ? "" : " ";
+  const country = cc => cc ? new Intl.DisplayNames([lang], { type: "region" }).of(cc) : "";
+  const V = v => v && v.h != null ? v : Array.isArray(v) ? { h: v.map(x => `<code>${esc(x)}</code>`).join(esc(J)), t: v.join(J) } : { h: esc(v), t: v };
+  const P = (k, vars = {}) => {
+    const s = lang === "ko" ? josa(T(k), vars) : T(k), sub = (str, f) => tidy(str.replace(/\{(\w+)\}/g, (m, n) => n in vars ? V(vars[n])[f] : m), lang);
+    return { h: sub(esc(s), "h"), t: sub(s, "t") };
+  };
+  const join = ps => ({ h: ps.map(p => p.h).join(sp), t: ps.map(p => p.t).join(sp) });
+  const hq = a.hq || r.cc, enc = [r.dot && "DoT", "DoH", r.doq && "DoQ"].filter(Boolean).join(J), doh = [r.doh], ips = r.udp || [];
+
+  const what = [
+    join([
+      P(hq ? "rp_a_run_cc" : "rp_a_run", { name, org: local(a.org, lang), country: country(hq) }),
+      r.udp ? P("rp_a_udp", { ips, v6: r.udp6 ? P("rp_a_v6", { ips: r.udp6 }) : "", enc }) : P("rp_a_noudp", { enc }),
+      P(r.group === "global" ? "rp_a_global" : r.group === "cn" ? "rp_a_cnsite" : "rp_a_region", { region: country(r.cc) }),
+    ]),
+    join([
+      P(r.dnssec ? "rp_a_sec1" : "rp_a_sec0"),
+      r.blocks ? P("rp_a_blocks", { what: T("blocks_" + r.blocks) }) : P("rp_a_open"),
+      ...(a.tags || []).map(x => P("rp_a_" + x)),
+    ]),
+  ];
+  const addr = [P("rp_a_addr", { name }), ...[
+    r.udp && ["DNS (IPv4)", r.udp], r.udp6 && ["DNS (IPv6)", r.udp6], r.dot && [T("d_dot"), [r.dot]], ["DoH", doh], r.doq && ["DoQ", ["quic://" + r.doq]],
+  ].filter(Boolean).map(([k, v]) => ({ h: `<b>${esc(k)}</b> ${V(v).h}`, t: `${k}: ${V(v).t}` }))];
+  const setup = [
+    ["rp_h_win", r.udp ? P("rp_s_win", { ips, doh }) : P("rp_s_win0", { name })],
+    ["rp_h_mac", r.udp ? P("rp_s_mac", { ips, doh }) : P("rp_s_mac0", { doh })],
+    ["rp_h_ios", r.udp ? P("rp_s_ios", { ips, doh }) : P("rp_s_ios0", { doh })],
+    ["rp_h_and", r.dot ? P("rp_s_and", { dot: [r.dot] }) : r.udp ? P("rp_s_and_ip", { name, ips }) : P("rp_s_and_none", { name })],
+    ["rp_h_router", r.udp ? P("rp_s_router", { ips }) : P("rp_s_router0", { name, doh })],
+    ["rp_h_browser", P("rp_s_browser", { doh })],
+    r.udp && ["rp_h_linux", join([P("rp_s_linux", { ips: [r.udp.join(" ")] }), ...(r.dot ? [P("rp_s_linux_dot", { ex: [`${r.udp[0]}#${r.dot}`] })] : [])])],
+  ].filter(Boolean).map(([k, p]) => ({ h: `<h4>${esc(T(k))}</h4><p>${p.h}</p>`, t: `${T(k)}: ${p.t}`, block: true }));
+  const other = RESOLVERS.find(x => x.id === a.vs), otherName = titleOf(other, lang);
+  const vs = [P("rp_a_vs", { name }), { h: `<a href="${pathOf(slug, other.id)}">${esc(fillL(lang, T("rp_page"), { name: otherName }))} →</a>`, t: "" }];
+
+  const doc = (q, ps) => ({ q, h: ps.map(p => p.block ? p.h : `<p>${p.h}</p>`).join(""), t: ps.map(p => p.t).filter(Boolean).join(sp) });
+  return [
+    doc(fillL(lang, T("rp_q_what"), { name }), what),
+    doc(fillL(lang, T("rp_q_addr"), { name }), addr),
+    doc(fillL(lang, T("rp_q_setup"), { name }), setup),
+    doc(fillL(lang, T("rp_q_cn"), { name }), [P(r.group === "cn" ? "rp_a_cn_in" : "rp_a_cn_out")]),
+    doc(fillL(lang, T("rp_q_vs"), { name, other: otherName }), vs),
+    doc(fillL(lang, T("rp_q_slow"), { name }), [P("rp_a_slow")]),
+  ];
+}
+// the help entry with the setup steps, which the page's "How to set it up" button opens
+const SETUP_DOC = 2;
+
+// on a resolver's page, under the hero: its addresses and the facts about it
+function addrCard(r, T, lang) {
+  const a = ABOUT[r.id], hq = a.hq || r.cc, name = titleOf(r, lang);
+  const facts = [
+    [T("rp_k_org"), local(a.org, lang)],
+    hq && [T("rp_k_hq"), new Intl.DisplayNames([lang], { type: "region" }).of(hq)],
+    ["DNSSEC", r.dnssec ? "✓" : "–"],
+    [T("d_blocks"), r.blocks ? T("blocks_" + r.blocks) : T("rp_none")],
+  ].filter(Boolean).map(([k, v]) => `<li><span>${esc(k)}</span>${esc(v)}</li>`).join("");
+  return `<section class="addr card">
+      <div class="addr-h"><h2>${esc(fillL(lang, T("rp_addr_h"), { name }))}</h2><span class="addr-acts"><button class="btn sm" type="button" data-help="${SETUP_DOC}">${esc(T("rp_setup_btn"))}</button><a class="btn sm" href="${esc(r.site)}" target="_blank" rel="noopener noreferrer">${esc(T("d_site"))} ↗</a></span></div>
+      <dl class="addr-l">${addrRows(r, T)}</dl>
+      <ul class="facts">${facts}</ul>
+    </section>
+`;
 }
 
 // The list as the command-line tool reads it: every way to reach each resolver, which the tool measures for real
@@ -113,27 +221,40 @@ export async function build({ check = false } = {}) {
   const jsName = `app.${hash(js)}.js`, cssName = `app.${hash(css)}.css`;
   const files = { ["assets/" + jsName]: js, ["assets/" + cssName]: css, ["assets/" + qrName]: qr };
 
-  const path = slug => "/" + (slug ? slug + "/" : "");
+  // the pages: per language, the test of them all and one page per resolver (pathOf)
+  const PAGES = [null, ...RESOLVERS.map(r => r.id)];
   for (const [lang, slug, locale] of langs) {
     // {n} in the two descriptions is the number of resolvers, filled here so it never goes stale
     const d = I[lang], T = k => { if (!(k in d)) throw new Error(`i18n/${lang}.mjs has no "${k}"`); return k === "seo_desc" || k === "og_sub" ? d[k].split("{n}").join(RESOLVERS.length) : d[k]; };
-    const strings = Object.fromEntries(Object.keys(en).filter(k => !BUILD_ONLY.has(k)).map(k => [k, T(k)]));
+    const strings = Object.fromEntries(Object.keys(en).filter(k => !BUILD_ONLY(k)).map(k => [k, T(k)]));
     const sjs = `window.L1MS=${JSON.stringify(strings).replace(/</g, "\\u003c")};\n`;
     const sName = `l.${lang.toLowerCase()}.${hash(sjs)}.js`;
     files["assets/" + sName] = sjs;
+    const general = T("docs").map(([q, a]) => ({ q, h: a.split(/\n+/).map(p => `<p>${esc(p)}</p>`).join(""), t: a.replace(/\n+/g, " ") }));
 
-    const url = SITE + path(slug), docs = T("docs");
-    const alts = langs.map(([l, sl]) => `<link rel="alternate" hreflang="${l}" href="${SITE + path(sl)}">`).join("\n") + `\n<link rel="alternate" hreflang="x-default" href="${SITE}/">`;
+    for (const focus of PAGES) {
+    const r = focus && RESOLVERS.find(x => x.id === focus), name = r && titleOf(r, lang);
+    const url = SITE + pathOf(slug, focus);
+    // a resolver's page asks its own questions first; the FAQ data has only those, the test page all the general ones
+    const own = r ? resolverDocs(r, T, lang, slug) : [], docs = [...own, ...general];
+    const title = r ? fillL(lang, T("rp_title"), { name, ip: r.udp ? fillL(lang, T("rp_ip"), { ip: r.udp[0] }) : "", protos: ["DoH", r.dot && "DoT"].filter(Boolean).join("/") }) : T("seo_title");
+    const desc = r ? fillL(lang, T("rp_desc"), { name, n: RESOLVERS.length }) : T("seo_desc");
+    const kw = r ? [fillL(lang, T("rp_kw"), { name }), ...(r.udp || []), r.dot, name !== r.name && r.name].filter(Boolean).join(", ") : T("seo_kw");
+    const h1 = r ? fillL(lang, T("rp_h1"), { name }) : T("h1");
+    const alts = langs.map(([l, sl]) => `<link rel="alternate" hreflang="${l}" href="${SITE + pathOf(sl, focus)}">`).join("\n") + `\n<link rel="alternate" hreflang="x-default" href="${SITE + pathOf("", focus)}">`;
     const graph = [
-      { "@type": "WebApplication", name: T("app_name") + " · 1ms.dog", url, applicationCategory: "UtilitiesApplication", operatingSystem: "Any",
-        browserRequirements: "Requires JavaScript", description: T("seo_desc"), inLanguage: lang, isAccessibleForFree: true,
+      { "@type": "WebApplication", name: (r ? h1 : T("app_name")) + " · 1ms.dog", url, applicationCategory: "UtilitiesApplication", operatingSystem: "Any",
+        browserRequirements: "Requires JavaScript", description: desc, inLanguage: lang, isAccessibleForFree: true,
         offers: { "@type": "Offer", price: "0", priceCurrency: "USD" } },
-      { "@type": "FAQPage", mainEntity: docs.map(([q, a]) => ({ "@type": "Question", name: q, acceptedAnswer: { "@type": "Answer", text: a.replace(/\n+/g, " ") } })) },
+      { "@type": "FAQPage", mainEntity: (r ? own : general).map(x => ({ "@type": "Question", name: x.q, acceptedAnswer: { "@type": "Answer", text: x.t } })) },
+      ...(r ? [{ "@type": "BreadcrumbList", itemListElement: [
+        { "@type": "ListItem", position: 1, name: T("app_name"), item: SITE + pathOf(slug) },
+        { "@type": "ListItem", position: 2, name: h1, item: url }] }] : []),
     ];
     const head = [
-      `<title>${esc(T("seo_title"))}</title>`,
-      `<meta name="description" content="${esc(T("seo_desc"))}">`,
-      `<meta name="keywords" content="${esc(T("seo_kw"))}">`,
+      `<title>${esc(title)}</title>`,
+      `<meta name="description" content="${esc(desc)}">`,
+      `<meta name="keywords" content="${esc(kw)}">`,
       ...(lang === "zh-CN" ? [`<meta http-equiv="Cache-Control" content="no-transform">`, `<meta http-equiv="Cache-Control" content="no-siteapp">`, `<meta name="applicable-device" content="pc,mobile">`] : []),
       `<meta name="robots" content="index, follow, max-image-preview:large">`,
       `<meta name="application-name" content="${esc(T("app_name"))}">`,
@@ -144,19 +265,21 @@ export async function build({ check = false } = {}) {
       // the resolvers' connections start while the page loads
       ...ORIGINS.slice(0, 6).map(o => `<link rel="preconnect" href="${o}" crossorigin>`),
       `<meta property="og:type" content="website">`, `<meta property="og:site_name" content="1ms.dog">`,
-      `<meta property="og:title" content="${esc(T("seo_title"))}">`, `<meta property="og:description" content="${esc(T("og_sub"))}">`, `<meta property="og:url" content="${url}">`,
+      `<meta property="og:title" content="${esc(title)}">`, `<meta property="og:description" content="${esc(r ? desc : T("og_sub"))}">`, `<meta property="og:url" content="${url}">`,
       `<meta property="og:locale" content="${locale}">`,
       `<meta property="og:image" content="${SITE}/og/${lang.toLowerCase()}.png">`, `<meta property="og:image:width" content="1200">`, `<meta property="og:image:height" content="630">`,
-      `<meta property="og:image:alt" content="${esc(T("seo_title"))}">`,
+      `<meta property="og:image:alt" content="${esc(title)}">`,
       `<meta name="twitter:card" content="summary_large_image">`, `<meta name="twitter:image" content="${SITE}/og/${lang.toLowerCase()}.png">`,
-      `<meta name="twitter:title" content="${esc(T("seo_title"))}">`, `<meta name="twitter:description" content="${esc(T("og_sub"))}">`,
+      `<meta name="twitter:title" content="${esc(title)}">`, `<meta name="twitter:description" content="${esc(r ? desc : T("og_sub"))}">`,
       `<script type="application/ld+json">${JSON.stringify({ "@context": "https://schema.org", "@graph": graph }).replace(/</g, "\\u003c")}</script>`,
     ].join("\n");
 
-    const helpNav = docs.map(([q], i) => `<button type="button" role="tab" data-hq="${i}" aria-selected="${i === 0}">${esc(q)}</button>`).join("");
-    const helpC = docs.map(([q, a], i) => `<article data-hqb="${i}"${i ? " hidden" : ""}><h3>${esc(q)}</h3>${a.split(/\n+/).map(p => `<p>${esc(p)}</p>`).join("")}</article>`).join("");
+    const helpNav = docs.map((x, i) => `<button type="button" role="tab" data-hq="${i}" aria-selected="${i === 0}">${esc(x.q)}</button>`).join("");
+    const helpC = docs.map((x, i) => `<article data-hqb="${i}"${i ? " hidden" : ""}><h3>${esc(x.q)}</h3>${x.h}</article>`).join("");
     const langOpts = langs.map(([l]) => `<option value="${l}"${l === lang ? " selected" : ""}>${esc(I[l].name)}</option>`).join("");
-    const paths = Object.fromEntries(langs.map(([l, sl]) => [l, path(sl)]));
+    const paths = Object.fromEntries(langs.map(([l, sl]) => [l, pathOf(sl, focus)]));
+    // the install line: on a resolver's page, run once against it and the one it is compared with
+    const cliCmd = `curl -fsSL ${SITE}/i | sh` + (r ? ` -s -- run -r ${r.id},${ABOUT[r.id].vs}` : "");
 
     const html = tpl
       .replace(/(<(\w+)\b[^>]*\sdata-i="(\w+)"[^>]*>)([^<]*)(<\/\2>)/g, (m, open, tag, k, inner, close) => open + esc(T(k)) + close)
@@ -164,16 +287,23 @@ export async function build({ check = false } = {}) {
       .replace(/\{\{(c_\w+)\}\}/g, (m, k) => esc(T(k)))   // column heads that carry a tooltip
       .replace("{{lang}}", lang).replace("{{pathsAttr}}", esc(JSON.stringify(paths))).replace("{{rootAttr}}", slug ? "" : " data-root")
       .replace("{{prepaint}}", PREPAINT).replace("{{head}}", head).replace("{{css}}", cssName).replace("{{js}}", jsName).replace("{{strings}}", sName)
-      .split("{{homeHref}}").join(path(slug)).replace("{{langOpts}}", langOpts).replace("{{h1}}", esc(T("h1")))
-      .replace("{{rows}}", rowsHTML(T)).replace("{{cliCmd}}", esc(`curl -fsSL ${SITE}/i | sh`)).replace("{{cliDlg}}", cliDlg(T))
-      .replace("{{helpNav}}", helpNav).replace("{{helpC}}", helpC).replace("{{data}}", JSON.stringify({ lang, paths }).replace(/</g, "\\u003c"));
-    if (/\{\{[\w:]+\}\}/.test(html)) throw new Error("unfilled placeholder in " + path(slug) + ": " + /\{\{[\w:]+\}\}/.exec(html)[0]);
-    files[(slug ? slug + "/" : "") + "index.html"] = html;
+      .split("{{homeHref}}").join(pathOf(slug)).replace("{{langOpts}}", langOpts).replace("{{h1}}", esc(h1))
+      // a resolver's page names it in the hero from the start
+      .replace("{{winK}}", esc(T(r ? "f_run" : "best_k"))).replace("{{winIcAttr}}", r ? ` style="background-image:url(/icons/${r.id}.png)"` : "")
+      .replace("{{winName}}", r ? esc(r.name) : '<i class="skl"></i>').replace("{{addrCard}}", r ? addrCard(r, T, lang) : "")
+      .replace("{{rows}}", rowsHTML(T, lang, slug, focus)).replace("{{resNav}}", resNav(T, lang, slug, focus))
+      .replace("{{cliCmd}}", esc(cliCmd)).replace("{{cliDlg}}", cliDlg(T))
+      .replace("{{helpNav}}", helpNav).replace("{{helpC}}", helpC)
+      .replace("{{data}}", JSON.stringify({ lang, paths, home: pathOf(slug), focus }).replace(/</g, "\\u003c"));
+    if (/\{\{[\w:]+\}\}/.test(html)) throw new Error("unfilled placeholder in " + pathOf(slug, focus) + ": " + /\{\{[\w:]+\}\}/.exec(html)[0]);
+    files[pathOf(slug, focus).slice(1) + "index.html"] = html;
+    }
   }
 
   files["sitemap.xml"] = `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">\n` +
-    langs.map(([, s]) => `  <url>\n    <loc>${SITE + path(s)}</loc>\n` + langs.map(([l, s2]) => `    <xhtml:link rel="alternate" hreflang="${l}" href="${SITE + path(s2)}"/>`).join("\n") +
-      `\n    <xhtml:link rel="alternate" hreflang="x-default" href="${SITE}/"/>\n  </url>`).join("\n") + "\n</urlset>\n";
+    PAGES.flatMap(id => langs.map(([, s]) => `  <url>\n    <loc>${SITE + pathOf(s, id)}</loc>\n` +
+      langs.map(([l, s2]) => `    <xhtml:link rel="alternate" hreflang="${l}" href="${SITE + pathOf(s2, id)}"/>`).join("\n") +
+      `\n    <xhtml:link rel="alternate" hreflang="x-default" href="${SITE + pathOf("", id)}"/>\n  </url>`)).join("\n") + "\n</urlset>\n";
   for (const [name, text] of Object.entries(ruleSets(SITE))) files["rules/" + name] = text;
   files["resolvers.json"] = resolversJSON();
   files["robots.txt"] = `User-agent: *\nAllow: /\n\nSitemap: ${SITE}/sitemap.xml\n`;
@@ -186,6 +316,7 @@ export async function build({ check = false } = {}) {
 > browser to each resolver.
 
 - Page: ${SITE}/ (also ${langs.slice(1).map(([, s]) => "/" + s + "/").join(", ")})
+- One page per resolver (its addresses, facts, how to set it up, and the same test with it in front): ${RESOLVERS.map(r => SITE + pathOf("", r.id)).join(", ")}; in other languages under the language's folder (/zh-cn/cloudflare/)
 - Direct rules for proxy tools (so the test measures your own network): ${SITE}/rules/clash.yaml, surge.list, loon.list, quanx.list, singbox.json
 - Source code and the resolver list: https://github.com/yt1988/dns-test
 

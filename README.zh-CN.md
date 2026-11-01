@@ -10,6 +10,8 @@
 
 **在线使用：** https://dns.1ms.dog/zh-cn/
 
+每家 DNS 还有自己的页面，10 种语言各一份（https://dns.1ms.dog/zh-cn/alidns/、https://dns.1ms.dog/cloudflare/ 等）：同样的测试，但以这家为主角，附它的地址、运营方，以及在 Windows、macOS、iPhone、安卓、路由器、浏览器和 Linux 上怎么设置。
+
 ## 测什么
 
 | 列 | 怎么测 |
@@ -35,7 +37,8 @@
 ## 文件
 
 ```
-src/resolvers.mjs   清单：地址、估算用哪个地址、DNSSEC；新增 DNS 只改这里
+src/resolvers.mjs   清单：地址、估算用哪个地址、DNSSEC
+src/about.mjs       每家专页上关于它的说明：运营方、所在地、最常拿来对比的那家
 src/measure.mjs     浏览器里的测试：预热、多轮、计时、统计
 src/dns.mjs         DoH GET 用的 DNS 报文（构造、编码、解析）
 src/rules.mjs       代理工具的直连规则
@@ -50,7 +53,7 @@ scripts/icons.mjs   把每家的站点图标下载一次到 public/icons/
 
 1. 找到它的 DoH 地址，在多个大洲确认 `GET ?dns=` 返回 200（`curl --http2 'https://…/dns-query?dns=AAABAAABAAAAAAAAB2V4YW1wbGUDY29tAAABAAE' -H 'accept: application/dns-message'`）。
 2. 弄清楚是哪台服务器负责它的 UDP 和 DoT：DoH 主机名解析到同样的地址，`est` 就填 `"doh"`；普通 DNS 的地址本身支持带有效证书的 DoH，就填进 `ip` 并用 `"ip"`；都不是就填 `null`。
-3. 加进 `src/resolvers.mjs`，运行 `node scripts/verify.mjs <id>` 和 `node scripts/icons.mjs <id>`，再 `npm run build`、`npm test`。
+3. 加进 `src/resolvers.mjs` 和 `src/about.mjs`，运行 `node scripts/verify.mjs <id>` 和 `node scripts/icons.mjs <id>`，再 `npm run build`、`npm test`。
 
 ## 运行和部署
 

@@ -101,13 +101,40 @@ code.copied { background: var(--ink-soft); color: var(--ink); }
 .tip.on { opacity: 1; }
 
 /* the command-line tool: UDP, DoT and DoQ measured for real on a server */
-.cli { padding: 16px 22px; display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 10px 14px; align-items: center; }
+/* the command line: what it is on the left, the command on the right (copy beside it, more and the source under it) */
+.cli { padding: 16px 22px; display: grid; grid-template-columns: auto minmax(0, 1fr) minmax(0, 1.25fr); gap: 10px 14px; align-items: center; }
 .cli-ic { width: 28px; height: 28px; color: var(--ink); }
 .cli-t h2 { font-size: 15px; }
 .cli-t p { color: var(--muted); font-size: 13px; margin-top: 2px; }
-.cli-cmd { grid-column: 2; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
-.cli-cmd code { font-size: 13px; padding: 6px 10px; white-space: nowrap; }
-.cli-cmd .btn.sm { height: 30px; padding: 0 12px; font-size: 12.5px; }
+.cli-cmd { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+.cli-cmd .cmdline code { white-space: normal; }
+.cli-links { display: flex; justify-content: flex-end; align-items: center; gap: 16px; padding-right: 2px; }
+.lnk { border: 0; background: none; padding: 0; font: inherit; font-size: 12.5px; color: var(--muted); cursor: pointer; }
+.lnk:hover, .lnk:focus-visible { color: var(--ink); }
+/* a resolver's own page: its row marked in the list, its addresses and facts under the hero */
+.tr.me { box-shadow: inset 3px 0 0 var(--ink); background: color-mix(in srgb, var(--ink-soft) 70%, transparent); }
+.tr.me .nm b { color: var(--ink); }
+.addr { padding: 18px 22px; display: flex; flex-direction: column; gap: 12px; }
+.addr-h { display: flex; align-items: center; justify-content: space-between; gap: 8px 16px; flex-wrap: wrap; }
+.addr-h h2 { font-size: 16px; letter-spacing: -.01em; }
+.addr-acts { display: flex; gap: 8px; }
+.addr-acts .btn.sm { height: 30px; padding: 0 12px; font-size: 12.5px; text-decoration: none; }
+.addr-l { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 8px 16px; margin: 0; font-size: 13px; align-items: baseline; }
+.addr-l dt { color: var(--muted); white-space: nowrap; }
+.addr-l dd { margin: 0; display: flex; flex-wrap: wrap; gap: 6px; }
+.addr-l code { font-size: 13px; padding: 2px 8px; }
+.facts { list-style: none; margin: 0; padding: 10px 0 0; border-top: 1px solid var(--line); display: flex; flex-wrap: wrap; gap: 6px 22px; font-size: 13px; }
+.facts span { color: var(--muted); margin-right: 6px; }
+/* under the list: every resolver's page */
+.rs-nav { margin-top: 14px; padding-top: 14px; border-top: 1px solid var(--line); }
+.rs-nav h3 { font-size: 13px; font-weight: 600; color: var(--muted); margin-bottom: 8px; }
+.rs-nav ul { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 4px 6px; }
+.rs-nav a { display: inline-flex; align-items: center; gap: 6px; padding: 3px 9px 3px 7px; border-radius: 7px; font-size: 12.5px; color: var(--fg); text-decoration: none; border: 1px solid transparent; }
+.rs-nav a:hover { background: var(--soft); }
+.rs-nav a[aria-current] { background: var(--ink-soft); color: var(--ink); }
+.rs-nav img { border-radius: 3px; }
+.td-l { display: flex; flex-direction: column; align-items: flex-end; gap: 4px; }
+.help-c h4 { font-size: 13.5px; margin: 14px 0 4px; }
 .cli-gh { font-size: 12.5px; color: var(--muted); text-decoration: none; white-space: nowrap; }
 .cli-gh:hover { color: var(--ink); }
 /* the GitHub mark is a filled shape, unlike the stroked icons */
@@ -188,8 +215,9 @@ details.rblk > summary { cursor: pointer; font-size: 13px; color: var(--ink); }
   .win-m b { font-size: 18px; }
   /* phones: rank, name, DoH, UDP ≈; the rest is in the row's details and the hero */
   .cli { padding: 14px 16px; }
+  .cli { grid-template-columns: auto minmax(0, 1fr); }
   .cli-cmd { grid-column: 1 / -1; }
-  .cli-cmd code { white-space: normal; }
+  .cli-cmd .cmdline code { white-space: pre-wrap; }
   .th, .tr { grid-template-columns: 20px minmax(0, 1fr) 62px 62px; }
   .th > :nth-child(n+5), .tr > :nth-child(n+5) { display: none; }
   .td { padding-left: 12px; }

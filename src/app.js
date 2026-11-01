@@ -1,6 +1,7 @@
 // DNS Test page. Every resolver's row is in the HTML from the start; the test (src/measure.mjs) fills them as answers
 // come in. The rows stay sorted by the time so far and the hero names the leader, both as the answers come in; at the
-// end, by the final medians. Strings: window.L1MS.
+// end, by the final medians. On a resolver's own page (D.focus) the hero follows that resolver instead: its times and
+// its rank. Strings: window.L1MS.
 import { RESOLVERS, NAMES, NXZONE } from "./resolvers.mjs";
 import { targets, run, median, loss, score } from "./measure.mjs";
 import { FORMATS, FORMAT_NAMES, items as ruleItems, inline as ruleInline, remote as ruleRemote } from "./rules.mjs";
@@ -10,6 +11,7 @@ import { encode as encodeShare, decode as decodeShare, sharePath } from "./share
   "use strict";
   const $ = s => document.querySelector(s), $$ = s => [...document.querySelectorAll(s)];
   const D = JSON.parse($("#data").textContent);
+  const FOCUS = D.focus ? RESOLVERS.find(r => r.id === D.focus) : null;
   const L = window.L1MS || {};
   const t = (k, v) => { let s = L[k] ?? k; if (v) for (const x in v) s = s.split("{" + x + "}").join(v[x]); return s; };
   const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]);
@@ -45,6 +47,8 @@ import { encode as encodeShare, decode as decodeShare, sharePath } from "./share
     $("#helpC").scrollTop = 0;
   }
   $("#helpBtn").onclick = () => { showHelp(helpIdx); openDlg("help"); };
+  // a button that opens one answer (a resolver's page: how to set it up)
+  $$("[data-help]").forEach(b => { b.onclick = () => { showHelp(+b.dataset.help); openDlg("help"); }; });
   $$("#helpNav [data-hq]").forEach(b => { b.onclick = () => showHelp(+b.dataset.hq); });
   $("#helpSel").onchange = e => showHelp(+e.target.value);
   $$("[data-hstep]").forEach(b => { b.onclick = () => showHelp(helpIdx + +b.dataset.hstep); });
@@ -80,7 +84,7 @@ import { encode as encodeShare, decode as decodeShare, sharePath } from "./share
 
   /* ---------- Who Are You: which resolver this device really uses, and DNS leaks (on 1ms.dog only) ---------- */
   const WHO = document.querySelector('meta[name="who"]');
-  if (WHO) { $("#whoLink").href = WHO.content.replace(/\/+$/, "") + D.paths[D.lang]; $("#whoLink").hidden = false; }
+  if (WHO) { $("#whoLink").href = WHO.content.replace(/\/+$/, "") + D.home; $("#whoLink").hidden = false; }
 
   /* ---------- the command-line tool's install line ---------- */
   // any copy button copies the command next to it
@@ -169,11 +173,11 @@ import { encode as encodeShare, decode as decodeShare, sharePath } from "./share
   }
 
   function resetHero() {
-    $("#winName").innerHTML = '<i class="skl"></i>'; $("#winIc").removeAttribute("style");
-    $("#winSub").innerHTML = "&nbsp;";
+    if (!FOCUS) { $("#winName").innerHTML = '<i class="skl"></i>'; $("#winIc").removeAttribute("style"); }
+    $("#winSub").innerHTML = FOCUS ? esc(t("f_wait")) : "&nbsp;";
     $$(".win-m li").forEach(li => { li.querySelector("b").className = ""; li.querySelector("b").textContent = "–"; });
     useOpen(false); $(".use-w").classList.remove("on");
-    $("#winK").textContent = t("lead_k");
+    $("#winK").textContent = t(FOCUS ? "f_run" : "lead_k");
     $("#alt").innerHTML = "&nbsp;";
   }
 
@@ -225,16 +229,24 @@ import { encode as encodeShare, decode as decodeShare, sharePath } from "./share
   function hero(final) {
     const val = final ? x => score(x) : soFar, ms = final ? x => x && x.up ? median(x.cached) : null : msSoFar;
     const rs = RESOLVERS.map(r => ({ r, s: val(tgt(r.id, "doh")) })).filter(x => x.s != null).sort((a, b) => a.s - b.s);
-    $("#winK").textContent = t(final ? "best_k" : "lead_k");
-    if (!rs.length) { if (final) $("#winName").textContent = t("none_up"); return rs; }
-    const win = rs[0].r, doh = tgt(win.id, "doh");
+    $("#winK").textContent = t(FOCUS ? (final ? "f_done" : "f_run") : final ? "best_k" : "lead_k");
+    if (!rs.length && !FOCUS) { if (final) $("#winName").textContent = t("none_up"); return rs; }
+    const win = FOCUS || rs[0].r, doh = tgt(win.id, "doh");
     if ($("#winName").textContent !== win.name) { $("#winName").textContent = win.name; $("#winIc").style.backgroundImage = `url(/icons/${win.id}.png)`; }
-    $("#winSub").textContent = !final ? t("lead_sub", { n: rs.length, of: RESOLVERS.length })
+    if (FOCUS) {
+      // its rank so far, then where it ended and who beat it (that one's page a click away)
+      const i = rs.findIndex(x => x.r === FOCUS), gap = j => fmt(ms(tgt(rs[j].r.id, "doh")) - ms(tgt(rs[0].r.id, "doh")));
+      $("#winSub").innerHTML = i < 0 ? esc(t(doh && doh.up === false ? "f_down" : "f_wait"))
+        : !final ? esc(t("f_sub_run", { n: rs.length, of: RESOLVERS.length, rank: i + 1 }))
+        : i === 0 ? (rs[1] ? esc(t("f_first", { n: rs.length, d: gap(1), second: rs[1].r.name })) : "&nbsp;")
+        : esc(t("f_rank", { rank: i + 1, n: rs.length, d: gap(i), best: "@@best@@" })).replace("@@best@@", `<a href="${D.home + rs[0].r.id}/">${esc(rs[0].r.name)}</a>`);
+    } else $("#winSub").textContent = !final ? t("lead_sub", { n: rs.length, of: RESOLVERS.length })
       : rs[1] ? t("win_sub", { n: rs.length, d: fmt(ms(tgt(rs[1].r.id, "doh")) - ms(doh)), second: rs[1].r.name }) : "";
     const w = { doh: doh, udp: estOf(win, "udp"), dot: estOf(win, "dot") };
     for (const k in w) {
       const b = $(`.win-m [data-w="${k}"] b`), m = ms(w[k]);
-      if (m == null) { b.className = "na"; b.textContent = "–"; b.dataset.why = t(k === "doh" ? "e_fail" : win[k] ? "tip_noest" : "tip_none"); continue; }
+      // not measured (yet): why, once it is known that there won't be a number
+      if (m == null) { b.className = "na"; b.textContent = "–"; if (final || !w[k] || w[k].up === false) b.dataset.why = t(k === "doh" ? "e_fail" : win[k] ? "tip_noest" : "tip_none"); else delete b.dataset.why; continue; }
       b.className = "n " + tier(m); delete b.dataset.why; b.textContent = (k === "doh" ? "" : "≈ ") + fmt(m) + " ms";
     }
     // what to enter, by what the device likely supports first
@@ -284,7 +296,7 @@ import { encode as encodeShare, decode as decodeShare, sharePath } from "./share
       return { id: r.id, doh: m(d), udp: m(estOf(r, "udp")), dot: m(estOf(r, "dot")), unc: d && d.up ? median(d.uncached) : null, loss: d && d.up ? loss(d) : 0 };
     }) };
   }
-  const shareLink = () => location.origin + D.paths[D.lang] + "r/" + encodeShare({ ...LAST, cc: $("#shareCc").checked ? LAST.cc : "" });
+  const shareLink = () => location.origin + D.home + "r/" + encodeShare({ ...LAST, cc: $("#shareCc").checked ? LAST.cc : "" });
   let shortFor = null;
   async function shortLink(long) {
     const meta = document.querySelector('meta[name="shortener"]');          // present on 1ms.dog; absent when self-hosted
@@ -305,7 +317,7 @@ import { encode as encodeShare, decode as decodeShare, sharePath } from "./share
     if (run !== shareRun) return;
     $("#shareUrl").value = url;
     // the QR code carries the short link; a long one would be too dense to scan, so then it points at the page
-    const c = await drawCard(url.length <= 300 ? url : location.origin + D.paths[D.lang]).catch(() => null);
+    const c = await drawCard(url.length <= 300 ? url : location.origin + D.home).catch(() => null);
     if (!c || run !== shareRun) return;
     $("#shareImg").src = c.toDataURL("image/png"); c.toBlob(b => { shareBlob = b; }, "image/png");
   }
