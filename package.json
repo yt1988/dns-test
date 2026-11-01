@@ -1,0 +1,22 @@
+{
+  "name": "dns-test",
+  "private": true,
+  "type": "module",
+  "description": "DNS Test: which public DNS resolver answers fastest from your network, measured in your browser over DNS over HTTPS, with UDP and DoT estimated from the same servers, plus DNSSEC and client-subnet checks",
+  "scripts": {
+    "build": "node scripts/build.mjs",
+    "test": "node scripts/build.mjs --check && node --test \"test/*.test.mjs\"",
+    "verify": "node scripts/verify.mjs",
+    "dev": "wrangler dev --port 8793",
+    "deploy": "wrangler deploy"
+  },
+  "devDependencies": {
+    "esbuild": "0.25.10"
+  },
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/yt1988/dns-test"
+  },
+  "homepage": "https://dns.1ms.dog"
+}

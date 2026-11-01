@@ -1,0 +1,33 @@
+{
+  "version": 2,
+  "rules": [
+    {
+      "domain": [
+        "cloudflare-dns.com",
+        "dns.google",
+        "dns.quad9.net",
+        "doh.opendns.com",
+        "unfiltered.adguard-dns.com",
+        "dns.nextdns.io",
+        "freedns.controld.com",
+        "dns.mullvad.net",
+        "doh.dns.sb",
+        "ordns.he.net",
+        "wikimedia-dns.org",
+        "dns.alidns.com",
+        "doh.pub",
+        "doh.360.cn",
+        "common.dot.dns.yandex.net",
+        "unfiltered.joindns4.eu",
+        "private.canadianshield.cira.ca",
+        "public.dns.iij.jp"
+      ],
+      "ip_cidr": [
+        "1.1.1.1/32",
+        "208.67.222.222/32",
+        "185.222.222.222/32",
+        "101.226.4.6/32"
+      ]
+    }
+  ]
+}

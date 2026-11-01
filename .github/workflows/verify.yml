@@ -1,0 +1,17 @@
+# Every Monday (and by hand): check every resolver from GitHub's US data centers, a second continent besides the
+# maintainer's own checks. A failure means an address stopped answering, CORS changed, or DNSSEC/NXDOMAIN behavior
+# changed: the list in src/resolvers.mjs needs a look.
+name: verify
+on:
+  schedule:
+    - cron: "17 4 * * 1"
+  workflow_dispatch:
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: node scripts/verify.mjs

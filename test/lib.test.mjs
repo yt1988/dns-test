@@ -1,0 +1,61 @@
+// DNS messages, statistics and the direct rules.
+import { test } from "node:test";
+import assert from "node:assert/strict";
+import { query, parse, b64url, mixCase, dohURL } from "../src/dns.mjs";
+import { quantile, score } from "../src/measure.mjs";
+import { items, ruleSets, inline, FORMATS } from "../src/rules.mjs";
+
+test("a query is a well-formed DNS message", () => {
+  const q = query("www.example.com", "TXT");
+  assert.equal(q[0] << 8 | q[1], 0, "ID 0 for GET");
+  assert.equal(q[2], 0x01, "RD");
+  assert.equal(q[3], 0x20, "AD asked");
+  assert.deepEqual([...q.slice(4, 12)], [0, 1, 0, 0, 0, 0, 0, 1]);
+  assert.deepEqual([...q.slice(12, 17)], [3, 119, 119, 119, 7]);
+  assert.equal(q.length, 12 + 17 + 4 + 11);
+  assert.match(b64url(q), /^[A-Za-z0-9_-]+$/);
+  assert.ok(dohURL("https://x/dns-query", "a.b").startsWith("https://x/dns-query?dns="));
+  assert.ok(dohURL("https://x/q?x=1", "a.b").includes("?x=1&dns="));
+});
+
+test("mixCase keeps the name, changes only letter case", () => {
+  let i = 0;
+  const s = mixCase("www.apple-1.com", () => (i++ % 2 ? 0 : 1));
+  assert.equal(s.toLowerCase(), "www.apple-1.com");
+  assert.notEqual(s, "www.apple-1.com");
+});
+
+test("parse reads rcode, AD, addresses and TXT", () => {
+  // answer to example.com A: 93.184.215.14, with a compressed name pointer; then a TXT record
+  const m = new Uint8Array([0, 0, 0x81, 0xa0, 0, 1, 0, 2, 0, 0, 0, 0,
+    7, ...Buffer.from("example"), 3, ...Buffer.from("com"), 0, 0, 1, 0, 1,
+    0xc0, 12, 0, 1, 0, 1, 0, 0, 0, 60, 0, 4, 93, 184, 215, 14,
+    0xc0, 12, 0, 16, 0, 1, 0, 0, 0, 60, 0, 6, 5, ...Buffer.from("hello")]);
+  const p = parse(m.buffer);
+  assert.equal(p.rcode, 0);
+  assert.equal(p.ad, true);
+  assert.deepEqual(p.addrs, ["93.184.215.14"]);
+  assert.deepEqual(p.txt, ["hello"]);
+  assert.equal(parse(new Uint8Array([0, 0, 1, 0]).buffer), null, "not a response");
+});
+
+test("score ranks by median and punishes loss", () => {
+  assert.equal(quantile([3, 1, 2], .5), 2);
+  const t = (cached, lost = 0) => ({ up: true, cached, sent: cached.length + lost, lost });
+  assert.equal(score(t([10, 10, 50])), 10);
+  assert.ok(Math.abs(score(t([10, 10, 10, 10, 10, 10, 10, 10, 10], 1)) - 13) < 1e-9);
+  assert.equal(score(t([10], 2)), null, "half lost: not ranked");
+  assert.equal(score({ up: false, cached: [], sent: 0, lost: 0 }), null);
+});
+
+test("direct rules name only exact hosts and single addresses", () => {
+  const it = items();
+  assert.ok(it.length > 15);
+  for (const i of it) assert.ok(i.d ? /^[a-z0-9.-]+$/.test(i.d) : /\/(32|128)$/.test(i.ip), JSON.stringify(i));
+  const sets = ruleSets("https://dns.1ms.dog");
+  assert.ok(sets["clash.yaml"].includes("  - IP-CIDR,1.1.1.1/32,no-resolve"));
+  assert.ok(sets["surge.list"].includes("DOMAIN,dns.google\n"));
+  assert.ok(!/DOMAIN-SUFFIX|DOMAIN-KEYWORD/.test(Object.values(sets).join("")));
+  assert.deepEqual(JSON.parse(sets["singbox.json"]).rules[0].ip_cidr.slice(0, 1), ["1.1.1.1/32"]);
+  for (const f of FORMATS) assert.ok(inline(f, { top: "t", fakeip: "f" }).length > 100, f);
+});

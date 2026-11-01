@@ -1,0 +1,42 @@
+# DNS Test: the addresses the DNS speed test asks, to be sent DIRECT. 22 exact hosts and addresses.
+# https://dns.1ms.dog/ · https://github.com/yt1988/dns-test
+# Cloudflare
+host, cloudflare-dns.com, direct
+ip-cidr, 1.1.1.1/32, direct
+# Google
+host, dns.google, direct
+# Quad9
+host, dns.quad9.net, direct
+# OpenDNS
+host, doh.opendns.com, direct
+ip-cidr, 208.67.222.222/32, direct
+# AdGuard DNS
+host, unfiltered.adguard-dns.com, direct
+# NextDNS
+host, dns.nextdns.io, direct
+# Control D
+host, freedns.controld.com, direct
+# Mullvad
+host, dns.mullvad.net, direct
+# DNS.SB
+host, doh.dns.sb, direct
+ip-cidr, 185.222.222.222/32, direct
+# Hurricane Electric
+host, ordns.he.net, direct
+# Wikimedia DNS
+host, wikimedia-dns.org, direct
+# AliDNS
+host, dns.alidns.com, direct
+# DNSPod
+host, doh.pub, direct
+# 360 DNS
+host, doh.360.cn, direct
+ip-cidr, 101.226.4.6/32, direct
+# Yandex DNS
+host, common.dot.dns.yandex.net, direct
+# DNS4EU
+host, unfiltered.joindns4.eu, direct
+# CIRA Canadian Shield
+host, private.canadianshield.cira.ca, direct
+# IIJ Public DNS
+host, public.dns.iij.jp, direct

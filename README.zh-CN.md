@@ -1,0 +1,66 @@
+# DNS 测试
+
+[English](README.md) · **简体中文**
+
+哪家公共 DNS 在你的网络上最快？[DNS 测试](https://dns.1ms.dog/zh-cn/)直接在浏览器里测 18 家：Cloudflare、Google、Quad9、OpenDNS、AdGuard、NextDNS、Control D、Mullvad、DNS.SB、Hurricane Electric、Wikimedia、阿里 DNS（AliDNS）、DNSPod、360、Yandex、DNS4EU、CIRA 和 IIJ。
+
+**在线使用：** https://dns.1ms.dog/zh-cn/
+
+## 测什么
+
+| 列 | 怎么测 |
+|---|---|
+| **DoH** | 实测。浏览器在已建立的连接上，向每家的 DoH 地址发 DNS over HTTPS 查询。 |
+| **UDP ≈、DoT ≈** | 估算。浏览器发不了 UDP 和 DoT 查询（任何网站都做不到），所以页面向负责 UDP 和 DoT 的同一台服务器发 DoH（`https://1.1.1.1/dns-query`、`https://223.5.5.5/dns-query`……）。在已建立的连接上，耗时是到同一个 anycast 节点的一个往返加同一个解析器的处理，UDP 和 DoT 查询花的正是这些。那台服务器不支持 HTTPS 时显示 `?`。 |
+| **未缓存** | 一个根本不存在的随机域名，DNS 必须去问该区域的权威服务器。只显示不排名：快慢取决于每个网站自己的 DNS 服务器在哪。 |
+| **DNSSEC** | 验证 DNSSEC：`dnssec-failed.org` 返回 SERVFAIL，签名域名带 AD 标志（由 `scripts/verify.mjs` 核实）。 |
+
+首屏一有应答就显示当前最快的那家，测完给出结论，并列出要填的内容（DNS 服务器、私人 DNS / DoT 主机名、DoH 地址）。
+
+### 怎么保证数字可靠
+
+- **只测热连接。** 第一次查询用来建立连接，再把三个热门域名各查一次放进缓存，这些都不计入。
+- **10 轮交错测试。** 每轮把每家各问一次，顺序重新打乱，几家同时进行，网络偶尔卡一下影响的是所有 DNS。取中位数，个别慢的一次不影响结果。每隔一轮再查一个随机域名（未缓存）。
+- **任何缓存都替代不了 DNS 本身。** 每个请求的地址都是新的（域名大小写随机，即 DNS 0x20，加上随机域名），并且用 `cache: "no-store"`。
+- **用浏览器自己的计时。** 每次查询的时间取自 Resource Timing，页面脚本拖不慢它。
+- **只算真应答。** 返回 CORS 头的几家，逐条读取应答，只统计真正的应答（热门域名必须是 NOERROR；不存在的域名如果返回了地址，就标记为篡改 NXDOMAIN）。其他几家只能计时，由 `scripts/verify.mjs` 核实它们对这种查询返回的确实是 DNS 应答。
+- **开着代理？** 「直连规则」按钮给出 Clash/Mihomo、Surge、Shadowrocket、Quantumult X、Loon、sing-box、Xray 的规则，只把测试用到的主机名和 IP 设成直连，测到的就是你自己的网络而不是代理。远程规则集：`/rules/clash.yaml`、`surge.list`、`loon.list`、`quanx.list`、`singbox.json`。
+
+没有收录：114DNS、百度 DNS、CNNIC（只有普通 DNS，服务器不支持 HTTPS，浏览器连不到），Quad101（它的 DoH 在境外连不上）。
+
+## 文件
+
+```
+src/resolvers.mjs   清单：地址、估算用哪个地址、DNSSEC；新增 DNS 只改这里
+src/measure.mjs     浏览器里的测试：预热、多轮、计时、统计
+src/dns.mjs         DoH GET 用的 DNS 报文（构造、编码、解析）
+src/rules.mjs       代理工具的直连规则
+src/app.js          页面脚本
+src/i18n/*.mjs      10 种语言
+scripts/build.mjs   生成 public/（页面、资源、规则集、CSP）
+scripts/verify.mjs  用 HTTP/2 逐家核实：应答、CORS、DNSSEC、NXDOMAIN
+scripts/icons.mjs   把每家的站点图标下载一次到 public/icons/
+```
+
+## 新增一家 DNS
+
+1. 找到它的 DoH 地址，在多个大洲确认 `GET ?dns=` 返回 200（`curl --http2 'https://…/dns-query?dns=AAABAAABAAAAAAAAB2V4YW1wbGUDY29tAAABAAE' -H 'accept: application/dns-message'`）。
+2. 弄清楚是哪台服务器负责它的 UDP 和 DoT：DoH 主机名解析到同样的地址，`est` 就填 `"doh"`；普通 DNS 的地址本身支持带有效证书的 DoH，就填进 `ip` 并用 `"ip"`；都不是就填 `null`。
+3. 加进 `src/resolvers.mjs`，运行 `node scripts/verify.mjs <id>` 和 `node scripts/icons.mjs <id>`，再 `npm run build`、`npm test`。
+
+## 运行和部署
+
+```bash
+npm install
+npm run build      # 生成 public/
+npm test           # public/ 是否最新、约定、文案、单元测试
+npm run verify     # 从当前网络核实每家 DNS
+npm run dev        # http://localhost:8793
+npx wrangler deploy
+```
+
+整站是 Cloudflare Worker 上的静态文件（没有 Worker 脚本，请求不计费）。`wrangler.toml` 不绑定域名：在 1ms.dog 上由公共外壳把 `dns.1ms.dog` 路由过来。自己部署时，在 Cloudflare 控制台给 Worker 绑定你的域名，并用 `SITE_URL=https://你的域名 npm run build` 构建。未缓存查询用的随机域名在 `src/resolvers.mjs` 的 `NXZONE` 下（`nx.dns.1ms.dog`），换成任何没有泛解析记录的区域都可以。
+
+## 许可
+
+MIT
