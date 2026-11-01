@@ -2,9 +2,9 @@ export default {
   name: "한국어",
   app_name: "DNS 테스트",
   seo_title: "DNS 속도 테스트: 내 네트워크에서 가장 빠른 DNS 서버 찾기 (DoH, UDP, DoT) · DNS 테스트",
-  seo_desc: "브라우저에서 내 네트워크로 공개 DNS 18곳을 측정합니다: Cloudflare 1.1.1.1, Google 8.8.8.8, Quad9, AdGuard, NextDNS 등. DoH는 실측, UDP와 DoT는 같은 서버로 추정하고, 캐시 없는 조회와 DNSSEC도 확인합니다. 무료.",
+  seo_desc: "브라우저에서 내 네트워크로 공개 DNS {n}곳을 측정합니다: Cloudflare 1.1.1.1, Google 8.8.8.8, Quad9, AdGuard, NextDNS 등. DoH는 실측, UDP와 DoT는 같은 서버로 추정하고, 캐시 없는 조회와 DNSSEC도 확인합니다. 무료.",
   seo_kw: "DNS 속도 테스트, DNS 벤치마크, 가장 빠른 DNS, DNS 추천, 공용 DNS 비교, DoH 테스트, DoT, 1.1.1.1 8.8.8.8 비교",
-  og_sub: "공개 DNS 18곳, 내 네트워크에서 실측",
+  og_sub: "공개 DNS {n}곳, 내 네트워크에서 실측",
   h1: "나에게 가장 빠른 DNS는?",
 
   lang_label: "언어", faq_h: "도움말", a_logo: "1ms.dog", a_theme: "테마", a_close: "닫기", a_prev: "이전", a_next: "다음",
@@ -43,7 +43,7 @@ export default {
   copy: "복사",
   h_all: "전체 DNS",
   v_join: ", ",
-  d_dot: "DoT / 개인 DNS", d_blocks: "차단", blocks_malware: "악성코드·피싱 도메인", blocks_phishing: "피싱 도메인", d_site: "웹사이트",
+  d_dot: "DoT / 개인 DNS", d_blocks: "차단", blocks_ads: "광고와 추적기", blocks_malware: "악성코드·피싱 도메인", blocks_phishing: "피싱 도메인", d_site: "웹사이트",
 
   tools_h: "1ms.dog의 다른 도구",
   tool_home: "출구 IP와 40개 서비스 지연 시간", tool_egress: "사이트마다 보이는 출구 IP: 분할 라우팅, 프록시, WebRTC·IPv6 누출",

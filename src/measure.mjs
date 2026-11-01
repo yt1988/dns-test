@@ -18,7 +18,7 @@
 import { dohURL, parse, mixCase, randLabel, RCODE } from "./dns.mjs";
 
 export const ROUNDS = 10;
-const CONC = 6, TIMEOUT = 3000;
+const CONC = 8, TIMEOUT = 3000;
 
 // Resource Timing entries by URL, as the browser records them
 const seen = new Map();

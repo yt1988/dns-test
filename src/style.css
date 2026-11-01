@@ -4,6 +4,7 @@ h2 { font-size: 15px; font-weight: 700; }
 .btn { display: inline-flex; align-items: center; justify-content: center; gap: 6px; height: 36px; padding: 0 14px; border-radius: 10px; border: 1px solid var(--line); background: var(--panel); cursor: pointer; font-weight: 500; white-space: nowrap; }
 .btn svg { width: 15px; height: 15px; }
 .btn.pri { background: var(--ink); color: var(--ink-fg); border-color: transparent; font-weight: 600; }
+.bar .btn.pri { height: 30px; padding: 0 12px; font-size: 12.5px; }
 .btn:disabled { opacity: .5; cursor: default; }
 .skl { display: inline-block; width: 160px; max-width: 60%; height: 18px; border-radius: 6px; background: var(--soft); vertical-align: middle; animation: blink 1.4s ease-in-out infinite; }
 @keyframes blink { 50% { opacity: .45; } }
@@ -14,20 +15,19 @@ code.copied { background: var(--ink-soft); color: var(--ink); }
 
 /* hero */
 .hero { padding: 20px 22px 0; display: flex; flex-direction: column; gap: 16px; }
-.hero-h { display: flex; align-items: center; justify-content: space-between; gap: 12px 24px; flex-wrap: wrap; }
-.hero h1 { font-size: clamp(20px, 2.6vw, 26px); line-height: 1.25; letter-spacing: -.015em; font-weight: 700; }
+.hero h1 { text-align: center; font-size: clamp(20px, 2.6vw, 26px); line-height: 1.25; letter-spacing: -.015em; font-weight: 700; }
 /* the answer, read top to bottom: who, how fast, the fastest plain DNS. What to enter opens from the button next to
    the name. It keeps its height from the first paint, so a new leader only changes text. */
-.win-l { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+.win-l { display: flex; flex-direction: column; align-items: center; gap: 6px; min-width: 0; text-align: center; }
 .win-k { font-size: 11.5px; font-weight: 600; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); }
-.win-n { display: flex; align-items: center; gap: 12px; min-height: 48px; }
+.win-n { display: flex; align-items: center; justify-content: center; gap: 12px; min-height: 48px; max-width: 100%; }
 .win-n > b { min-width: 0; font-size: clamp(28px, 3.6vw, 38px); line-height: 1.15; font-weight: 750; letter-spacing: -.02em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .win-ic { width: 36px; height: 36px; flex: none; border-radius: 8px; background: var(--soft) center / 100% no-repeat; }
 .win-ic:not([style]) { visibility: hidden; }
 .win-s { color: var(--muted); font-size: 13px; min-height: 1.5em; }
-.win-m { list-style: none; margin: 8px 0 0; padding: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); max-width: 520px; }
-.win-m li { display: flex; flex-direction: column; gap: 2px; padding: 0 14px; border-left: 1px solid var(--line); min-width: 0; }
-.win-m li:first-child { padding-left: 0; border-left: 0; }
+.win-m { list-style: none; margin: 8px 0 0; padding: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); width: 100%; max-width: 540px; }
+.win-m li { display: flex; flex-direction: column; align-items: center; gap: 2px; padding: 0 10px; border-left: 1px solid var(--line); min-width: 0; }
+.win-m li:first-child { border-left: 0; }
 .win-m li > span { font-size: 12px; color: var(--muted); font-weight: 600; white-space: nowrap; }
 .win-m li > span i { font-style: normal; font-weight: 400; }
 .win-m b { font: 600 22px/30px var(--f-num); font-variant-numeric: tabular-nums; white-space: nowrap; }
@@ -37,7 +37,7 @@ code.copied { background: var(--ink-soft); color: var(--ink); }
 .use-w { position: relative; flex: none; margin-left: 4px; }
 .use-w .btn.sm { height: 30px; padding: 0 10px; font-size: 12.5px; }
 .use-w .btn.sm[aria-expanded="true"] { border-color: var(--ink); background: var(--ink-soft); }
-.use { position: absolute; z-index: 30; top: calc(100% + 6px); left: 0; width: max-content; max-width: min(420px, calc(100vw - 32px));
+.use { position: absolute; z-index: 30; top: calc(100% + 6px); left: 50%; transform: translateX(-50%); text-align: left; width: max-content; max-width: min(420px, calc(100vw - 32px));
   list-style: none; margin: 0; padding: 12px 14px; display: flex; flex-direction: column; gap: 10px;
   background: var(--panel); border: 1px solid var(--line); border-radius: 12px; box-shadow: 0 12px 32px var(--shadow); }
 .use li { display: flex; flex-direction: column; gap: 3px; }
@@ -48,6 +48,7 @@ code.copied { background: var(--ink-soft); color: var(--ink); }
 .prog { position: absolute; left: 0; right: 0; top: -1px; height: 2px; overflow: hidden; }
 .prog i { display: block; height: 100%; background: var(--ink); transform: scaleX(0); transform-origin: left; transition: transform .25s, opacity .4s .3s; }
 .prog.end i { opacity: 0; }
+.bar .btn { flex: none; }
 .bar .btn.sm { margin-left: auto; height: 30px; padding: 0 10px; font-size: 12.5px; color: var(--muted); flex: none; }
 .bar .btn.sm:hover { color: var(--fg); border-color: var(--ink); }
 .prog-t { font: 12.5px var(--f-num); color: var(--muted); font-variant-numeric: tabular-nums; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
@@ -139,7 +140,7 @@ details.rblk > summary { cursor: pointer; font-size: 13px; color: var(--ink); }
   .hero { padding: 16px 16px 0; gap: 14px; }
   .bar { margin: 0 -16px; padding: 11px 16px 13px; }
   .res { padding: 16px 16px 12px; }
-  .use { left: auto; right: 0; }
+  .use { left: auto; right: 0; transform: none; }
   .win-m li { padding: 0 10px; }
   .win-m b { font-size: 18px; }
   /* phones: rank, name, DoH, UDP ≈; the rest is in the row's details and the hero */

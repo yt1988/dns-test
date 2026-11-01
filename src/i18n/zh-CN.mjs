@@ -2,9 +2,9 @@ export default {
   name: "简体中文",
   app_name: "DNS 测试",
   seo_title: "DNS 测速：找出你的网络最快的 DNS 服务器（DoH、UDP、DoT）· DNS 测试",
-  seo_desc: "在浏览器里从你自己的网络测试 18 家公共 DNS：Cloudflare 1.1.1.1、Google 8.8.8.8、Quad9、AdGuard、NextDNS、阿里 DNS、DNSPod 等。DoH 实测，UDP 和 DoT 按同一台服务器估算，另有未缓存查询和 DNSSEC 检查。免费。",
+  seo_desc: "在浏览器里从你自己的网络测试 {n} 家公共 DNS：Cloudflare 1.1.1.1、Google 8.8.8.8、Quad9、AdGuard、NextDNS、阿里 DNS、DNSPod 等。DoH 实测，UDP 和 DoT 按同一台服务器估算，另有未缓存查询和 DNSSEC 检查。免费。",
   seo_kw: "DNS 测速, DNS 测试, 最快的 DNS, DNS 推荐, 公共 DNS 对比, DoH 测试, DoT, 1.1.1.1 和 8.8.8.8 哪个快, 阿里 DNS, 223.5.5.5",
-  og_sub: "18 家公共 DNS，从你的网络实测",
+  og_sub: "{n} 家公共 DNS，从你的网络实测",
   h1: "哪个 DNS 对你最快？",
 
   lang_label: "语言", faq_h: "帮助", a_logo: "1ms.dog", a_theme: "主题", a_close: "关闭", a_prev: "上一条", a_next: "下一条",
@@ -43,7 +43,7 @@ export default {
   copy: "复制",
   h_all: "全部 DNS",
   v_join: "、",
-  d_dot: "DoT / 私人 DNS", d_blocks: "拦截", blocks_malware: "恶意软件和钓鱼网站", blocks_phishing: "钓鱼网站", d_site: "官网",
+  d_dot: "DoT / 私人 DNS", d_blocks: "拦截", blocks_ads: "广告和跟踪器", blocks_malware: "恶意软件和钓鱼网站", blocks_phishing: "钓鱼网站", d_site: "官网",
 
   tools_h: "更多 1ms.dog 工具",
   tool_home: "出口 IP 与 40 个服务的延迟", tool_egress: "每个网站看到的出口 IP：分流、代理、WebRTC 和 IPv6 泄露",

@@ -2,9 +2,9 @@ export default {
   name: "日本語",
   app_name: "DNS テスト",
   seo_title: "DNS 速度テスト：あなたの回線で最速の DNS サーバーを探す（DoH・UDP・DoT）· DNS テスト",
-  seo_desc: "ブラウザーから、あなた自身の回線で 18 の公開 DNS を測定：Cloudflare 1.1.1.1、Google 8.8.8.8、Quad9、AdGuard、NextDNS、IIJ など。DoH は実測、UDP と DoT は同じサーバーから推定。キャッシュなしの問い合わせと DNSSEC も確認。無料。",
+  seo_desc: "ブラウザーから、あなた自身の回線で {n} の公開 DNS を測定：Cloudflare 1.1.1.1、Google 8.8.8.8、Quad9、AdGuard、NextDNS、IIJ など。DoH は実測、UDP と DoT は同じサーバーから推定。キャッシュなしの問い合わせと DNSSEC も確認。無料。",
   seo_kw: "DNS 速度テスト, DNS ベンチマーク, 最速 DNS, おすすめ DNS, パブリック DNS 比較, DoH テスト, DoT, 1.1.1.1 8.8.8.8 比較",
-  og_sub: "18 の公開 DNS をあなたの回線で実測",
+  og_sub: "{n} の公開 DNS をあなたの回線で実測",
   h1: "あなたに一番速い DNS は？",
 
   lang_label: "言語", faq_h: "ヘルプ", a_logo: "1ms.dog", a_theme: "テーマ", a_close: "閉じる", a_prev: "前へ", a_next: "次へ",
@@ -43,7 +43,7 @@ export default {
   copy: "コピー",
   h_all: "すべての DNS",
   v_join: "、",
-  d_dot: "DoT / プライベート DNS", d_blocks: "ブロック", blocks_malware: "マルウェアとフィッシングのドメイン", blocks_phishing: "フィッシングのドメイン", d_site: "公式サイト",
+  d_dot: "DoT / プライベート DNS", d_blocks: "ブロック", blocks_ads: "広告とトラッカー", blocks_malware: "マルウェアとフィッシングのドメイン", blocks_phishing: "フィッシングのドメイン", d_site: "公式サイト",
 
   tools_h: "1ms.dog のほかのツール",
   tool_home: "出口 IP と 40 サービスへの遅延", tool_egress: "各サイトに見える出口 IP：分流・プロキシ・WebRTC・IPv6 の漏れ",

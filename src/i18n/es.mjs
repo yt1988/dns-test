@@ -2,9 +2,9 @@ export default {
   name: "Español",
   app_name: "Test de DNS",
   seo_title: "Test de velocidad DNS: encuentra el servidor DNS más rápido para tu red (DoH, UDP, DoT) · Test de DNS",
-  seo_desc: "Prueba 18 resolvers DNS públicos desde tu propia red, en el navegador: Cloudflare 1.1.1.1, Google 8.8.8.8, Quad9, AdGuard, NextDNS y más. Tiempos reales de DNS over HTTPS, UDP y DoT estimados con los mismos servidores, consultas sin caché y DNSSEC. Gratis.",
+  seo_desc: "Prueba {n} resolvers DNS públicos desde tu propia red, en el navegador: Cloudflare 1.1.1.1, Google 8.8.8.8, Quad9, AdGuard, NextDNS y más. Tiempos reales de DNS over HTTPS, UDP y DoT estimados con los mismos servidores, consultas sin caché y DNSSEC. Gratis.",
   seo_kw: "test de velocidad DNS, benchmark DNS, DNS más rápido, mejor DNS, comparar DNS públicos, test DoH, DoT, 1.1.1.1 vs 8.8.8.8",
-  og_sub: "18 resolvers públicos, medidos desde tu red",
+  og_sub: "{n} resolvers públicos, medidos desde tu red",
   h1: "¿Qué DNS es el más rápido para ti?",
 
   lang_label: "Idioma", faq_h: "Ayuda", a_logo: "1ms.dog", a_theme: "Tema", a_close: "Cerrar", a_prev: "Anterior", a_next: "Siguiente",
@@ -43,7 +43,7 @@ export default {
   copy: "Copiar",
   h_all: "Todos los resolvers",
   v_join: ", ",
-  d_dot: "DoT / DNS privado", d_blocks: "Bloquea", blocks_malware: "dominios de malware y phishing", blocks_phishing: "dominios de phishing", d_site: "Sitio web",
+  d_dot: "DoT / DNS privado", d_blocks: "Bloquea", blocks_ads: "anuncios y rastreadores", blocks_malware: "dominios de malware y phishing", blocks_phishing: "dominios de phishing", d_site: "Sitio web",
 
   tools_h: "Más herramientas de 1ms.dog",
   tool_home: "Tus IP de salida y la latencia a 40 servicios", tool_egress: "Qué IP ve cada sitio: rutas divididas, proxies, fugas de WebRTC e IPv6",

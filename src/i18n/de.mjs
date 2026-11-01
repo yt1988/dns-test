@@ -2,9 +2,9 @@ export default {
   name: "Deutsch",
   app_name: "DNS-Test",
   seo_title: "DNS-Speedtest: den schnellsten DNS-Server für Ihr Netz finden (DoH, UDP, DoT) · DNS-Test",
-  seo_desc: "Testen Sie 18 öffentliche DNS-Resolver aus Ihrem eigenen Netz, direkt im Browser: Cloudflare 1.1.1.1, Google 8.8.8.8, Quad9, AdGuard, NextDNS, DNS4EU und mehr. Echte DNS-over-HTTPS-Zeiten, UDP und DoT anhand derselben Server geschätzt, Abfragen ohne Cache und DNSSEC. Kostenlos.",
+  seo_desc: "Testen Sie {n} öffentliche DNS-Resolver aus Ihrem eigenen Netz, direkt im Browser: Cloudflare 1.1.1.1, Google 8.8.8.8, Quad9, AdGuard, NextDNS, DNS4EU und mehr. Echte DNS-over-HTTPS-Zeiten, UDP und DoT anhand derselben Server geschätzt, Abfragen ohne Cache und DNSSEC. Kostenlos.",
   seo_kw: "DNS Speedtest, DNS Benchmark, schnellster DNS, bester DNS Server, öffentliche DNS vergleichen, DoH Test, DoT, 1.1.1.1 oder 8.8.8.8",
-  og_sub: "18 öffentliche Resolver, gemessen aus Ihrem Netz",
+  og_sub: "{n} öffentliche Resolver, gemessen aus Ihrem Netz",
   h1: "Welcher DNS ist für Sie am schnellsten?",
 
   lang_label: "Sprache", faq_h: "Hilfe", a_logo: "1ms.dog", a_theme: "Design", a_close: "Schließen", a_prev: "Zurück", a_next: "Weiter",
@@ -43,7 +43,7 @@ export default {
   copy: "Kopieren",
   h_all: "Alle Resolver",
   v_join: ", ",
-  d_dot: "DoT / Privates DNS", d_blocks: "Blockiert", blocks_malware: "Malware- und Phishing-Domains", blocks_phishing: "Phishing-Domains", d_site: "Website",
+  d_dot: "DoT / Privates DNS", d_blocks: "Blockiert", blocks_ads: "Werbung und Tracker", blocks_malware: "Malware- und Phishing-Domains", blocks_phishing: "Phishing-Domains", d_site: "Website",
 
   tools_h: "Weitere 1ms.dog-Tools",
   tool_home: "Ihre Ausgangs-IPs und die Latenz zu 40 Diensten", tool_egress: "Welche IP jede Website sieht: Split-Routing, Proxys, WebRTC- und IPv6-Lecks",

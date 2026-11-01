@@ -1,6 +1,6 @@
 # DNS Test · 1ms.dog
 
-> Free DNS speed test in the browser. Times 18 public DNS resolvers (Cloudflare, Google, Quad9, OpenDNS, AdGuard DNS, NextDNS, Control D, Mullvad, DNS.SB, Hurricane Electric, Wikimedia DNS, AliDNS, DNSPod, 360 DNS, Yandex DNS, DNS4EU, CIRA Canadian Shield, IIJ Public DNS)
+> Free DNS speed test in the browser. Times 33 public DNS resolvers (Cloudflare, Google, Quad9, OpenDNS, AdGuard DNS, AdGuard Unfiltered, NextDNS, Control D, Mullvad, DNS.SB, Hurricane Electric, Wikimedia DNS, CleanBrowsing, Rethink DNS, AliDNS, DNSPod, 360 DNS, Yandex DNS, DNS4EU, CIRA Canadian Shield, CZ.NIC ODVR, SWITCH, Digitale Gesellschaft, DNSForge, UncensoredDNS, Applied Privacy, Njalla, DNS4ALL, LibreDNS, Comss.one DNS, Xfinity, Tiarap, IIJ Public DNS)
 > from the visitor's own network: DNS over HTTPS measured for real on a warm connection (10 rounds, interleaved,
 > median), UDP and DoT estimated by timing the same servers' addresses, plus uncached lookups and DNSSEC validation.
 > Shows the fastest resolver and what to enter to use it. Nothing is sent to this site; queries go straight from the

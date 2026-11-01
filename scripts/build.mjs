@@ -97,7 +97,8 @@ export async function build({ check = false } = {}) {
 
   const path = slug => "/" + (slug ? slug + "/" : "");
   for (const [lang, slug, locale] of langs) {
-    const d = I[lang], T = k => { if (!(k in d)) throw new Error(`i18n/${lang}.mjs has no "${k}"`); return d[k]; };
+    // {n} in the two descriptions is the number of resolvers, filled here so it never goes stale
+    const d = I[lang], T = k => { if (!(k in d)) throw new Error(`i18n/${lang}.mjs has no "${k}"`); return k === "seo_desc" || k === "og_sub" ? d[k].split("{n}").join(RESOLVERS.length) : d[k]; };
     const strings = Object.fromEntries(Object.keys(en).filter(k => !BUILD_ONLY.has(k)).map(k => [k, T(k)]));
     const sjs = `window.L1MS=${JSON.stringify(strings).replace(/</g, "\\u003c")};\n`;
     const sName = `l.${lang.toLowerCase()}.${hash(sjs)}.js`;

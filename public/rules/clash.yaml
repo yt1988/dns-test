@@ -1,4 +1,4 @@
-# DNS Test: the addresses the DNS speed test asks, to be sent DIRECT. 22 exact hosts and addresses.
+# DNS Test: the addresses the DNS speed test asks, to be sent DIRECT. 37 exact hosts and addresses.
 # https://dns.1ms.dog/ · https://github.com/yt1988/dns-test
 payload:
   # Cloudflare
@@ -12,6 +12,8 @@ payload:
   - DOMAIN,doh.opendns.com
   - IP-CIDR,208.67.222.222/32,no-resolve
   # AdGuard DNS
+  - DOMAIN,dns.adguard-dns.com
+  # AdGuard Unfiltered
   - DOMAIN,unfiltered.adguard-dns.com
   # NextDNS
   - DOMAIN,dns.nextdns.io
@@ -26,6 +28,10 @@ payload:
   - DOMAIN,ordns.he.net
   # Wikimedia DNS
   - DOMAIN,wikimedia-dns.org
+  # CleanBrowsing
+  - DOMAIN,doh.cleanbrowsing.org
+  # Rethink DNS
+  - DOMAIN,sky.rethinkdns.com
   # AliDNS
   - DOMAIN,dns.alidns.com
   # DNSPod
@@ -39,5 +45,29 @@ payload:
   - DOMAIN,unfiltered.joindns4.eu
   # CIRA Canadian Shield
   - DOMAIN,private.canadianshield.cira.ca
+  # CZ.NIC ODVR
+  - DOMAIN,odvr.nic.cz
+  # SWITCH
+  - DOMAIN,dns.switch.ch
+  # Digitale Gesellschaft
+  - DOMAIN,dns.digitale-gesellschaft.ch
+  # DNSForge
+  - DOMAIN,dnsforge.de
+  # UncensoredDNS
+  - DOMAIN,anycast.uncensoreddns.org
+  # Applied Privacy
+  - DOMAIN,doh.applied-privacy.net
+  # Njalla
+  - DOMAIN,dns.njal.la
+  # DNS4ALL
+  - DOMAIN,doh.dns4all.eu
+  # LibreDNS
+  - DOMAIN,doh.libredns.gr
+  # Comss.one DNS
+  - DOMAIN,dns.comss.one
+  # Xfinity
+  - DOMAIN,doh.xfinity.com
+  # Tiarap
+  - DOMAIN,doh.tiar.app
   # IIJ Public DNS
   - DOMAIN,public.dns.iij.jp

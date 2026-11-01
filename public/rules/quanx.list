@@ -1,4 +1,4 @@
-# DNS Test: the addresses the DNS speed test asks, to be sent DIRECT. 22 exact hosts and addresses.
+# DNS Test: the addresses the DNS speed test asks, to be sent DIRECT. 37 exact hosts and addresses.
 # https://dns.1ms.dog/ · https://github.com/yt1988/dns-test
 # Cloudflare
 host, cloudflare-dns.com, direct
@@ -11,6 +11,8 @@ host, dns.quad9.net, direct
 host, doh.opendns.com, direct
 ip-cidr, 208.67.222.222/32, direct
 # AdGuard DNS
+host, dns.adguard-dns.com, direct
+# AdGuard Unfiltered
 host, unfiltered.adguard-dns.com, direct
 # NextDNS
 host, dns.nextdns.io, direct
@@ -25,6 +27,10 @@ ip-cidr, 185.222.222.222/32, direct
 host, ordns.he.net, direct
 # Wikimedia DNS
 host, wikimedia-dns.org, direct
+# CleanBrowsing
+host, doh.cleanbrowsing.org, direct
+# Rethink DNS
+host, sky.rethinkdns.com, direct
 # AliDNS
 host, dns.alidns.com, direct
 # DNSPod
@@ -38,5 +44,29 @@ host, common.dot.dns.yandex.net, direct
 host, unfiltered.joindns4.eu, direct
 # CIRA Canadian Shield
 host, private.canadianshield.cira.ca, direct
+# CZ.NIC ODVR
+host, odvr.nic.cz, direct
+# SWITCH
+host, dns.switch.ch, direct
+# Digitale Gesellschaft
+host, dns.digitale-gesellschaft.ch, direct
+# DNSForge
+host, dnsforge.de, direct
+# UncensoredDNS
+host, anycast.uncensoreddns.org, direct
+# Applied Privacy
+host, doh.applied-privacy.net, direct
+# Njalla
+host, dns.njal.la, direct
+# DNS4ALL
+host, doh.dns4all.eu, direct
+# LibreDNS
+host, doh.libredns.gr, direct
+# Comss.one DNS
+host, dns.comss.one, direct
+# Xfinity
+host, doh.xfinity.com, direct
+# Tiarap
+host, doh.tiar.app, direct
 # IIJ Public DNS
 host, public.dns.iij.jp, direct

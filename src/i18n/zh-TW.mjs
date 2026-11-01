@@ -2,9 +2,9 @@ export default {
   name: "繁體中文",
   app_name: "DNS 測試",
   seo_title: "DNS 測速：找出你的網路最快的 DNS 伺服器（DoH、UDP、DoT）· DNS 測試",
-  seo_desc: "在瀏覽器裡從你自己的網路測試 18 家公共 DNS：Cloudflare 1.1.1.1、Google 8.8.8.8、Quad9、AdGuard、NextDNS、阿里 DNS、DNSPod 等。DoH 實測，UDP 和 DoT 依同一台伺服器估算，另有未快取查詢和 DNSSEC 檢查。免費。",
+  seo_desc: "在瀏覽器裡從你自己的網路測試 {n} 家公共 DNS：Cloudflare 1.1.1.1、Google 8.8.8.8、Quad9、AdGuard、NextDNS、阿里 DNS、DNSPod 等。DoH 實測，UDP 和 DoT 依同一台伺服器估算，另有未快取查詢和 DNSSEC 檢查。免費。",
   seo_kw: "DNS 測速, DNS 測試, 最快的 DNS, DNS 推薦, 公共 DNS 比較, DoH 測試, DoT, 1.1.1.1 和 8.8.8.8 哪個快, Quad9",
-  og_sub: "18 家公共 DNS，從你的網路實測",
+  og_sub: "{n} 家公共 DNS，從你的網路實測",
   h1: "哪個 DNS 對你最快？",
 
   lang_label: "語言", faq_h: "說明", a_logo: "1ms.dog", a_theme: "主題", a_close: "關閉", a_prev: "上一則", a_next: "下一則",
@@ -43,7 +43,7 @@ export default {
   copy: "複製",
   h_all: "全部 DNS",
   v_join: "、",
-  d_dot: "DoT / 私人 DNS", d_blocks: "攔截", blocks_malware: "惡意軟體和釣魚網站", blocks_phishing: "釣魚網站", d_site: "官網",
+  d_dot: "DoT / 私人 DNS", d_blocks: "攔截", blocks_ads: "廣告和追蹤器", blocks_malware: "惡意軟體和釣魚網站", blocks_phishing: "釣魚網站", d_site: "官網",
 
   tools_h: "更多 1ms.dog 工具",
   tool_home: "出口 IP 與 40 個服務的延遲", tool_egress: "每個網站看到的出口 IP：分流、代理、WebRTC 和 IPv6 洩漏",

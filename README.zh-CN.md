@@ -2,7 +2,11 @@
 
 [English](README.md) · **简体中文**
 
-哪家公共 DNS 在你的网络上最快？[DNS 测试](https://dns.1ms.dog/zh-cn/)直接在浏览器里测 18 家：Cloudflare、Google、Quad9、OpenDNS、AdGuard、NextDNS、Control D、Mullvad、DNS.SB、Hurricane Electric、Wikimedia、阿里 DNS（AliDNS）、DNSPod、360、Yandex、DNS4EU、CIRA 和 IIJ。
+哪家公共 DNS 在你的网络上最快？[DNS 测试](https://dns.1ms.dog/zh-cn/)直接在浏览器里测 33 家：
+
+- **全球（anycast）：** Cloudflare、Google、Quad9、OpenDNS、AdGuard DNS、AdGuard 无过滤版、NextDNS、Control D、Mullvad、DNS.SB、Hurricane Electric、Wikimedia DNS、CleanBrowsing、Rethink DNS
+- **中国大陆：** 阿里 DNS（AliDNS）、DNSPod、360 DNS
+- **地区：** Xfinity（美国）、CIRA Canadian Shield（加拿大）、DNS4EU、CZ.NIC ODVR（捷克）、SWITCH 和 Digitale Gesellschaft（瑞士）、DNSForge（德国）、UncensoredDNS（丹麦）、Applied Privacy（奥地利）、Njalla（瑞典）、DNS4ALL（荷兰）、LibreDNS（希腊）、Yandex DNS 和 Comss.one（俄罗斯）、Tiarap（新加坡）、IIJ（日本）
 
 **在线使用：** https://dns.1ms.dog/zh-cn/
 
@@ -26,7 +30,7 @@
 - **只算真应答。** 返回 CORS 头的几家，逐条读取应答，只统计真正的应答（热门域名必须是 NOERROR；不存在的域名如果返回了地址，就标记为篡改 NXDOMAIN）。其他几家只能计时，由 `scripts/verify.mjs` 核实它们对这种查询返回的确实是 DNS 应答。
 - **开着代理？** 「直连规则」按钮给出 Clash/Mihomo、Surge、Shadowrocket、Quantumult X、Loon、sing-box、Xray 的规则，只把测试用到的主机名和 IP 设成直连，测到的就是你自己的网络而不是代理。远程规则集：`/rules/clash.yaml`、`surge.list`、`loon.list`、`quanx.list`、`singbox.json`。
 
-没有收录：114DNS、百度 DNS、CNNIC（只有普通 DNS，服务器不支持 HTTPS，浏览器连不到），Quad101（它的 DoH 在境外连不上）。
+没有收录：114DNS、百度 DNS、CNNIC（只有普通 DNS，服务器不支持 HTTPS，浏览器连不到）；Quad101（台湾）、Kakao（韩国）、火山引擎、Shecan（伊朗），我们从德国、美国和中国核实时它们的 DoH 都连不上。
 
 ## 文件
 

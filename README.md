@@ -2,7 +2,11 @@
 
 **English** · [简体中文](README.zh-CN.md)
 
-Which public DNS resolver is fastest from your network? [DNS Test](https://dns.1ms.dog) times 18 of them right in your browser: Cloudflare, Google, Quad9, OpenDNS, AdGuard, NextDNS, Control D, Mullvad, DNS.SB, Hurricane Electric, Wikimedia, AliDNS, DNSPod, 360, Yandex, DNS4EU, CIRA and IIJ.
+Which public DNS resolver is fastest from your network? [DNS Test](https://dns.1ms.dog) times 33 of them right in your browser:
+
+- **Global (anycast):** Cloudflare, Google, Quad9, OpenDNS, AdGuard DNS, AdGuard Unfiltered, NextDNS, Control D, Mullvad, DNS.SB, Hurricane Electric, Wikimedia DNS, CleanBrowsing, Rethink DNS
+- **Mainland China:** AliDNS, DNSPod, 360 DNS
+- **Regional:** Xfinity (US), CIRA Canadian Shield (CA), DNS4EU, CZ.NIC ODVR (CZ), SWITCH and Digitale Gesellschaft (CH), DNSForge (DE), UncensoredDNS (DK), Applied Privacy (AT), Njalla (SE), DNS4ALL (NL), LibreDNS (GR), Yandex DNS and Comss.one (RU), Tiarap (SG), IIJ (JP)
 
 **Live:** https://dns.1ms.dog
 
@@ -26,7 +30,7 @@ The hero names the fastest resolver as soon as answers come in, then the result,
 - **Real answers.** Where a resolver sends CORS headers, each answer is read and only real ones count (NOERROR for popular names; an address for a missing name marks the resolver as rewriting NXDOMAIN). The others can only be timed; `scripts/verify.mjs` checks they answer this exact query with a DNS message.
 - **Behind a proxy?** The *Direct rules* button gives rules for Clash/Mihomo, Surge, Shadowrocket, Quantumult X, Loon, sing-box and Xray that send exactly the test's hosts and addresses DIRECT, so the test measures your network and not your proxy's. Remote rule sets: `/rules/clash.yaml`, `surge.list`, `loon.list`, `quanx.list`, `singbox.json`.
 
-Not in the list: 114DNS, Baidu DNS and CNNIC (plain DNS only, no HTTPS on their servers, so a browser can't reach them), Quad101 (its DoH didn't answer from abroad).
+Not in the list: 114DNS, Baidu DNS and CNNIC (plain DNS only, no HTTPS on their servers, so a browser can't reach them); Quad101 (TW), Kakao (KR), Volcengine (CN) and Shecan (IR), whose DoH didn't answer in our checks from Germany, the US and China. Most ISPs' own resolvers offer no public DoH either: for them, compare against the resolver your router hands out by setting it yourself.
 
 ## Files
 
