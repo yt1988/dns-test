@@ -48,7 +48,7 @@
 <meta name="twitter:description" content="在瀏覽器裡從你自己的網路實測 Comss.one DNS：DoH 實測延遲，UDP、DoT 估算，以及它在 33 家公共 DNS 裡排第幾。附完整位址和各裝置的設定方法。">
 <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebApplication","name":"Comss.one DNS 測速 · 1ms.dog","url":"https://dns.1ms.dog/zh-tw/comss/","applicationCategory":"UtilitiesApplication","operatingSystem":"Any","browserRequirements":"Requires JavaScript","description":"在瀏覽器裡從你自己的網路實測 Comss.one DNS：DoH 實測延遲，UDP、DoT 估算，以及它在 33 家公共 DNS 裡排第幾。附完整位址和各裝置的設定方法。","inLanguage":"zh-TW","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"USD"}},{"@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Comss.one DNS 是什麼？","acceptedAnswer":{"@type":"Answer","text":"Comss.one DNS 是 Comss.ru 營運的免費公共 DNS，營運方在俄羅斯。它只提供加密 DNS（DoT、DoH），沒有公開的一般 DNS 位址。它主要在俄羅斯營運：離得近可能是最快的，離得遠通常比全球大型網路慢。它不驗證 DNSSEC。預設封鎖廣告和追蹤器。"}},{"@type":"Question","name":"Comss.one DNS 的 DNS 伺服器位址","acceptedAnswer":{"@type":"Answer","text":"使用 Comss.one DNS 時填寫：DoT / 私人 DNS: dns.comss.oneDoH: https://dns.comss.one/dns-query"}},{"@type":"Question","name":"Comss.one DNS 怎麼設定","acceptedAnswer":{"@type":"Answer","text":"Windows 11: Windows 要先有一般 DNS 位址才能用加密 DNS，而 Comss.one DNS 沒有公開這樣的位址：可以在瀏覽器裡用（見下文），或用 dnscrypt-proxy 這類本機 DNS 用戶端。macOS: macOS 透過描述檔使用加密 DNS：安裝一個指向 https://dns.comss.one/dns-query 的 DNS 描述檔。iPhone 和 iPad: 安裝一個指向 https://dns.comss.one/dns-query 的 DNS 描述檔，再到設定 → 一般 → VPN 與裝置管理 → DNS 裡啟用。Android: 設定 → 網路和網際網路 → 私人 DNS → 私人 DNS 供應商主機名稱，填 dns.comss.one。在所有網路上生效，而且是加密的（DoT）。各品牌選單位置略有不同，可在設定裡搜尋「私人 DNS」。路由器: 路由器只能填一般 DNS 位址，而 Comss.one DNS 沒有公開；OpenWrt 可以用 https-dns-proxy 轉發到 https://dns.comss.one/dns-query。瀏覽器: Chrome：設定 → 隱私權和安全性 → 安全性 → 使用安全 DNS → 自訂，填 https://dns.comss.one/dns-query。Edge 在「隱私權、搜尋與服務」裡有同樣的選項。Firefox：設定 → 隱私權與安全性 → DNS over HTTPS → 最大保護 → 自訂，填 https://dns.comss.one/dns-query。"}},{"@type":"Question","name":"Comss.one DNS 在中國大陸能用嗎？","acceptedAnswer":{"@type":"Answer","text":"一般 DNS 通常能回應，但伺服器在中國大陸以外，延遲較高，被封鎖網站的回應還可能在途中被偽造。到它的加密 DNS（DoH、DoT）經常被阻斷或不穩定。在本頁測一下：某一列沒有回應，就表示從你的網路連不上它。"}},{"@type":"Question","name":"Comss.one DNS 和 Yandex DNS 哪個快？","acceptedAnswer":{"@type":"Answer","text":"沒有哪個在所有地方都比較快：關鍵是兩家離你最近的伺服器有多遠、你的網路業者怎麼繞過去。本頁大約 20 秒就能從你自己的網路把兩家連同清單裡的其他 DNS 都測一遍；頁面頂部會顯示 Comss.one DNS 排第幾、比最快的慢多少。"}},{"@type":"Question","name":"為什麼 Comss.one DNS 對我來說很慢？","acceptedAnswer":{"@type":"Answer","text":"通常是距離：離你最近的伺服器很遠，或網路業者繞了遠路。開著代理或 VPN 時，查詢也走代理，測出來的是代理的線路（加上直連規則就好）。有些網路會限速或阻斷加密 DNS。另外，沒人查過的網域總是比較慢（見「未快取」一欄）。如果清單裡有明顯更快的 DNS，換成它就好。"}}]},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"DNS 測試","item":"https://dns.1ms.dog/zh-tw/"},{"@type":"ListItem","position":2,"name":"Comss.one DNS 測速","item":"https://dns.1ms.dog/zh-tw/comss/"}]}]}</script>
 <link rel="preload" href="/assets/fonts/geist-latin.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="/assets/app.73f783471c.css">
+<link rel="stylesheet" href="/assets/app.f02eff8038.css">
 </head>
 <body>
 <div class="app">
@@ -103,7 +103,7 @@
         <span class="prog-t" id="progTxt">&nbsp;</span>
         <button class="btn sm" id="cliBtn" type="button" aria-haspopup="dialog" aria-controls="cli" data-cli><svg viewBox="0 0 16 16" aria-hidden="true"><rect x="1.5" y="2.5" width="13" height="11" rx="2"/><path d="M4.5 6.5l2 1.5-2 1.5M8.5 10h3"/></svg><span data-i="cli_btn">命令列</span></button>
         <button class="btn sm" id="rulesBtn" type="button" aria-haspopup="dialog" aria-controls="rules"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M2 8h9M8 4.5 11.5 8 8 11.5M14 3v10"/></svg><span data-i="rules_btn">直連規則</span></button>
-        <button class="btn sm" id="shareBtn" type="button" aria-haspopup="dialog" aria-controls="shareDlg" disabled><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 10V2M5 5l3-3 3 3M3 9v4.5h10V9"/></svg><span data-i="share">分享</span></button>
+        <button class="btn sm" id="shareBtn" type="button" aria-haspopup="dialog" disabled><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 10V2M5 5l3-3 3 3M3 9v4.5h10V9"/></svg><span data-i="share">分享</span></button>
         <button class="btn pri" id="rerun" type="button" disabled><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M13.5 8a5.5 5.5 0 1 1-1.6-3.9M13.5 2v3h-3"/></svg><span data-i="rerun">重新測試</span></button>
       </div>
     </section>
@@ -165,23 +165,6 @@
     <div data-ms-more></div>
   </main>
 </div>
-<div class="scrim" id="shareDlg" hidden>
-  <div class="dialog share" role="dialog" aria-modal="true" aria-labelledby="shareT">
-    <div class="dlg-h"><h2 id="shareT" data-i="share_h">分享測試結果</h2>
-      <button class="icon-btn" data-close type="button" aria-label="關閉"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M4 4l8 8M12 4l-8 8"/></svg></button></div>
-    <div class="share-b">
-      <img id="shareImg" alt="" width="1200" height="760">
-      <div class="share-link"><input id="shareUrl" readonly aria-label="連結"><button class="btn pri" id="copyLink" type="button" data-i="copy_link">複製連結</button></div>
-      <div class="share-acts">
-        <button class="btn" id="copyImg" type="button" data-i="copy_img">複製圖片</button>
-        <button class="btn" id="dlImg" type="button" data-i="dl_img">下載圖片</button>
-        <button class="btn" id="nativeShare" type="button" data-i="more_share" hidden>更多分享方式</button>
-        <label class="chk"><input type="checkbox" id="shareCc"><span data-i="share_cc">顯示我的國家/地區</span></label>
-      </div>
-      <p class="note" data-i="share_note">圖片和連結都在你的瀏覽器裡產生，不會上傳。連結裡只有測試數字。</p>
-    </div>
-  </div>
-</div>
 <div class="scrim" id="cli" hidden>
   <div class="dialog cli-dlg" role="dialog" aria-modal="true" aria-labelledby="cliT">
     <div class="dlg-h"><div><h2 id="cliT"><span data-i="cli_h">在伺服器上實測 UDP、DoT、DoQ</span><a class="gh-link" href="https://github.com/yt1988/dns-test-cli" target="_blank" rel="noopener noreferrer" title="GitHub" aria-label="GitHub"><svg class="gh-ic" viewBox="0 0 16 16" aria-hidden="true"><path d="M8 .2a8 8 0 0 0-2.5 15.6c.4 0 .5-.2.5-.4v-1.5c-2.2.5-2.7-1-2.7-1-.4-.9-.9-1.2-.9-1.2-.7-.5.1-.5.1-.5.8.1 1.2.8 1.2.8.7 1.3 1.9.9 2.4.7 0-.5.3-.9.5-1.1-1.8-.2-3.6-.9-3.6-4 0-.9.3-1.6.8-2.1-.1-.2-.4-1 .1-2.1 0 0 .7-.2 2.2.8a7.4 7.4 0 0 1 4 0c1.5-1 2.2-.8 2.2-.8.4 1.1.2 1.9.1 2.1.5.6.8 1.3.8 2.1 0 3.1-1.9 3.7-3.6 3.9.3.3.6.8.6 1.5v2.2c0 .2.1.5.6.4A8 8 0 0 0 8 .2z"/></svg></a></h2><p class="note" data-i="cli_sub">瀏覽器只能估算 UDP 和 DoT。在 VPS、Linux 主機或路由器上執行這條指令，五種協定全部實測，還會和本機目前的 DNS 比較。</p></div>
@@ -217,7 +200,7 @@
 </div>
 
 <script type="application/json" id="data">{"lang":"zh-TW","paths":{"en":"/comss/","zh-CN":"/zh-cn/comss/","zh-TW":"/zh-tw/comss/","ja":"/ja/comss/","ko":"/ko/comss/","es":"/es/comss/","fr":"/fr/comss/","de":"/de/comss/","pt":"/pt/comss/","ru":"/ru/comss/"},"home":"/zh-tw/","focus":"comss"}</script>
-<script src="/assets/l.zh-tw.4ba18fa977.js"></script>
-<script src="/assets/app.725a026a12.js"></script>
+<script src="/assets/l.zh-tw.617cb0e5d8.js"></script>
+<script src="/assets/app.9a38d127e9.js"></script>
 </body>
 </html>

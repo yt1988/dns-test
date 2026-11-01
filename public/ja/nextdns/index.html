@@ -48,7 +48,7 @@
 <meta name="twitter:description" content="ブラウザで、あなた自身のネットワークから NextDNS を実測：DoH の実測遅延、UDP と DoT の推定、33 件の公開 DNS の中での順位。アドレスと各端末での設定方法も。">
 <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebApplication","name":"NextDNS 速度テスト · 1ms.dog","url":"https://dns.1ms.dog/ja/nextdns/","applicationCategory":"UtilitiesApplication","operatingSystem":"Any","browserRequirements":"Requires JavaScript","description":"ブラウザで、あなた自身のネットワークから NextDNS を実測：DoH の実測遅延、UDP と DoT の推定、33 件の公開 DNS の中での順位。アドレスと各端末での設定方法も。","inLanguage":"ja","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"USD"}},{"@type":"FAQPage","mainEntity":[{"@type":"Question","name":"NextDNS とは？","acceptedAnswer":{"@type":"Answer","text":"NextDNS は NextDNS が運営する無料の公開 DNS で、拠点はアメリカ合衆国です。通常の DNS は 45.90.28.0、45.90.30.0（IPv6：2a07:a8c0::、2a07:a8c1::）、暗号化 DNS は DoT、DoH、DoQ に対応しています。サーバーは世界各地にあり、クエリは最寄りのサーバーに届きます。DNSSEC を検証します。署名が合わない応答は拒否されます。フィルタリングはしません。すべての名前がそのまま解決されます。無料アカウントを作ると、独自のブロックリストとクエリログが使えます。公開アドレスはアカウントなしで使えます。"}},{"@type":"Question","name":"NextDNS の DNS サーバーアドレス","acceptedAnswer":{"@type":"Answer","text":"NextDNS を使うときに入力するもの：DNS (IPv4): 45.90.28.0、45.90.30.0DNS (IPv6): 2a07:a8c0::、2a07:a8c1::DoT / プライベート DNS: dns.nextdns.ioDoH: https://dns.nextdns.io/DoQ: quic://dns.nextdns.io"}},{"@type":"Question","name":"NextDNS の設定方法","acceptedAnswer":{"@type":"Answer","text":"Windows 11: 設定 → ネットワークとインターネット → Wi‑Fi またはイーサネット → ハードウェアのプロパティ → DNS サーバーの割り当て → 編集 → 手動。IPv4 をオンにして 45.90.28.0、45.90.30.0 を入力します。暗号化するには「DNS over HTTPS」を「オン（手動テンプレート）」にして、テンプレートに https://dns.nextdns.io/ を入力します。macOS: システム設定 → ネットワーク → Wi‑Fi（または Ethernet）→ 詳細 → DNS で + を押し、45.90.28.0、45.90.30.0 を追加します。暗号化 DNS（https://dns.nextdns.io/）には構成プロファイルが必要です。iPhone と iPad: 設定 → Wi‑Fi → ネットワーク横の ⓘ → DNSを構成 → 手動 で 45.90.28.0、45.90.30.0 を追加します。その Wi‑Fi だけに効きます。どのネットワークでも暗号化 DNS を使うには、https://dns.nextdns.io/ 向けの DNS プロファイルをインストールします。Android: 設定 → ネットワークとインターネット → プライベート DNS → プライベート DNS プロバイダのホスト名 に dns.nextdns.io を入力します。どのネットワークでも有効で、暗号化されます（DoT）。メニューはメーカーによって少し違うので、設定で「プライベート DNS」を検索してください。ルーター: ルーターの管理画面（WAN または DHCP の設定）で DNS サーバーを 45.90.28.0、45.90.30.0 にします。ネットワーク内のすべての端末がそれを使います。ブラウザ: Chrome：設定 → プライバシーとセキュリティ → セキュリティ → セキュア DNS を使用する → カスタム に https://dns.nextdns.io/。Edge は「プライバシー、検索、サービス」に同じ項目があります。Firefox：設定 → プライバシーとセキュリティ → DNS over HTTPS → 最大保護 → カスタム に https://dns.nextdns.io/。Linux: systemd-resolved の場合：/etc/systemd/resolved.conf に DNS=45.90.28.0 45.90.30.0 と書き、systemctl restart systemd-resolved を実行します。DoT を使うには、アドレスを 45.90.28.0#dns.nextdns.io と書き、DNSOverTLS=yes を加えます。"}},{"@type":"Question","name":"NextDNS は中国本土で使えますか？","acceptedAnswer":{"@type":"Answer","text":"通常の DNS はたいてい応答しますが、サーバーが中国本土の外にあるため遅く、ブロックされたサイトへの応答は途中で偽造されることがあります。暗号化 DNS（DoH、DoT）はしばしば遮断されるか不安定です。このページで測ってみてください。応答のない行は、あなたのネットワークから届かないということです。"}},{"@type":"Question","name":"NextDNS と AdGuard DNS、どちらが速い？","acceptedAnswer":{"@type":"Answer","text":"どこでも速いほうはありません。決め手は、それぞれの最寄りのサーバーがどれだけ遠いか、プロバイダーがどんな経路でそこへ行くかです。このページは約 20 秒で、両方と一覧の他の DNS をあなたのネットワークから測ります。ページ上部に NextDNS の順位と最速との差が出ます。"}},{"@type":"Question","name":"NextDNS が遅いのはなぜ？","acceptedAnswer":{"@type":"Answer","text":"たいていは距離です。最寄りのサーバーが遠いか、プロバイダーが遠回りしています。プロキシや VPN を通すとクエリもそこを通り、測っているのはプロキシの経路になります（直接接続ルールで解決します）。暗号化 DNS を遅くしたり遮断したりするネットワークもあります。まだ誰も問い合わせていない名前は常に時間がかかります（「キャッシュなし」列）。一覧にはっきり速い DNS があれば、そちらに切り替えましょう。"}}]},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"DNS テスト","item":"https://dns.1ms.dog/ja/"},{"@type":"ListItem","position":2,"name":"NextDNS 速度テスト","item":"https://dns.1ms.dog/ja/nextdns/"}]}]}</script>
 <link rel="preload" href="/assets/fonts/geist-latin.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="/assets/app.73f783471c.css">
+<link rel="stylesheet" href="/assets/app.f02eff8038.css">
 </head>
 <body>
 <div class="app">
@@ -103,7 +103,7 @@
         <span class="prog-t" id="progTxt">&nbsp;</span>
         <button class="btn sm" id="cliBtn" type="button" aria-haspopup="dialog" aria-controls="cli" data-cli><svg viewBox="0 0 16 16" aria-hidden="true"><rect x="1.5" y="2.5" width="13" height="11" rx="2"/><path d="M4.5 6.5l2 1.5-2 1.5M8.5 10h3"/></svg><span data-i="cli_btn">コマンドライン</span></button>
         <button class="btn sm" id="rulesBtn" type="button" aria-haspopup="dialog" aria-controls="rules"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M2 8h9M8 4.5 11.5 8 8 11.5M14 3v10"/></svg><span data-i="rules_btn">直接接続ルール</span></button>
-        <button class="btn sm" id="shareBtn" type="button" aria-haspopup="dialog" aria-controls="shareDlg" disabled><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 10V2M5 5l3-3 3 3M3 9v4.5h10V9"/></svg><span data-i="share">シェア</span></button>
+        <button class="btn sm" id="shareBtn" type="button" aria-haspopup="dialog" disabled><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 10V2M5 5l3-3 3 3M3 9v4.5h10V9"/></svg><span data-i="share">シェア</span></button>
         <button class="btn pri" id="rerun" type="button" disabled><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M13.5 8a5.5 5.5 0 1 1-1.6-3.9M13.5 2v3h-3"/></svg><span data-i="rerun">もう一度テスト</span></button>
       </div>
     </section>
@@ -165,23 +165,6 @@
     <div data-ms-more></div>
   </main>
 </div>
-<div class="scrim" id="shareDlg" hidden>
-  <div class="dialog share" role="dialog" aria-modal="true" aria-labelledby="shareT">
-    <div class="dlg-h"><h2 id="shareT" data-i="share_h">結果をシェア</h2>
-      <button class="icon-btn" data-close type="button" aria-label="閉じる"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M4 4l8 8M12 4l-8 8"/></svg></button></div>
-    <div class="share-b">
-      <img id="shareImg" alt="" width="1200" height="760">
-      <div class="share-link"><input id="shareUrl" readonly aria-label="リンク"><button class="btn pri" id="copyLink" type="button" data-i="copy_link">リンクをコピー</button></div>
-      <div class="share-acts">
-        <button class="btn" id="copyImg" type="button" data-i="copy_img">画像をコピー</button>
-        <button class="btn" id="dlImg" type="button" data-i="dl_img">画像を保存</button>
-        <button class="btn" id="nativeShare" type="button" data-i="more_share" hidden>ほかの方法でシェア</button>
-        <label class="chk"><input type="checkbox" id="shareCc"><span data-i="share_cc">国・地域を表示</span></label>
-      </div>
-      <p class="note" data-i="share_note">画像とリンクはブラウザーの中で作られ、アップロードされません。リンクに入るのは数値だけです。</p>
-    </div>
-  </div>
-</div>
 <div class="scrim" id="cli" hidden>
   <div class="dialog cli-dlg" role="dialog" aria-modal="true" aria-labelledby="cliT">
     <div class="dlg-h"><div><h2 id="cliT"><span data-i="cli_h">サーバーで UDP・DoT・DoQ を実測</span><a class="gh-link" href="https://github.com/yt1988/dns-test-cli" target="_blank" rel="noopener noreferrer" title="GitHub" aria-label="GitHub"><svg class="gh-ic" viewBox="0 0 16 16" aria-hidden="true"><path d="M8 .2a8 8 0 0 0-2.5 15.6c.4 0 .5-.2.5-.4v-1.5c-2.2.5-2.7-1-2.7-1-.4-.9-.9-1.2-.9-1.2-.7-.5.1-.5.1-.5.8.1 1.2.8 1.2.8.7 1.3 1.9.9 2.4.7 0-.5.3-.9.5-1.1-1.8-.2-3.6-.9-3.6-4 0-.9.3-1.6.8-2.1-.1-.2-.4-1 .1-2.1 0 0 .7-.2 2.2.8a7.4 7.4 0 0 1 4 0c1.5-1 2.2-.8 2.2-.8.4 1.1.2 1.9.1 2.1.5.6.8 1.3.8 2.1 0 3.1-1.9 3.7-3.6 3.9.3.3.6.8.6 1.5v2.2c0 .2.1.5.6.4A8 8 0 0 0 8 .2z"/></svg></a></h2><p class="note" data-i="cli_sub">ブラウザーでは UDP と DoT は推定しかできません。VPS や Linux マシン、ルーターでこのコマンドを実行すると、5 つのプロトコルすべてを実測し、今の DNS とも比べます。</p></div>
@@ -217,7 +200,7 @@
 </div>
 
 <script type="application/json" id="data">{"lang":"ja","paths":{"en":"/nextdns/","zh-CN":"/zh-cn/nextdns/","zh-TW":"/zh-tw/nextdns/","ja":"/ja/nextdns/","ko":"/ko/nextdns/","es":"/es/nextdns/","fr":"/fr/nextdns/","de":"/de/nextdns/","pt":"/pt/nextdns/","ru":"/ru/nextdns/"},"home":"/ja/","focus":"nextdns"}</script>
-<script src="/assets/l.ja.399c91bf09.js"></script>
-<script src="/assets/app.725a026a12.js"></script>
+<script src="/assets/l.ja.51828f0ef1.js"></script>
+<script src="/assets/app.9a38d127e9.js"></script>
 </body>
 </html>

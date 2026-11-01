@@ -48,7 +48,7 @@
 <meta name="twitter:description" content="Mesurez Quad9 DNS depuis votre propre réseau, dans le navigateur : latence DoH réelle, estimation UDP et DoT, et son rang parmi 33 DNS publics. Avec ses adresses et comment le configurer sur chaque appareil.">
 <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebApplication","name":"Test de vitesse Quad9 DNS · 1ms.dog","url":"https://dns.1ms.dog/fr/quad9/","applicationCategory":"UtilitiesApplication","operatingSystem":"Any","browserRequirements":"Requires JavaScript","description":"Mesurez Quad9 DNS depuis votre propre réseau, dans le navigateur : latence DoH réelle, estimation UDP et DoT, et son rang parmi 33 DNS publics. Avec ses adresses et comment le configurer sur chaque appareil.","inLanguage":"fr","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"USD"}},{"@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Qu'est-ce que Quad9 DNS ?","acceptedAnswer":{"@type":"Answer","text":"Quad9 DNS est un service DNS public et gratuit exploité par Quad9 Foundation (Suisse). Il répond en DNS classique sur 9.9.9.9, 149.112.112.112 (IPv6 : 2620:fe::fe, 2620:fe::9), et en DNS chiffré : DoT, DoH. Ses serveurs sont répartis dans le monde entier, et vos requêtes vont au plus proche. Il valide DNSSEC : les réponses dont la signature ne colle pas sont refusées. Par défaut, il bloque domaines de malware et d’hameçonnage. Il est exploité à but non lucratif. Son opérateur affirme ne pas conserver votre adresse IP."}},{"@type":"Question","name":"Adresses des serveurs DNS de Quad9 DNS","acceptedAnswer":{"@type":"Answer","text":"Ce qu'il faut saisir pour utiliser Quad9 DNS : DNS (IPv4): 9.9.9.9, 149.112.112.112 DNS (IPv6): 2620:fe::fe, 2620:fe::9 DoT / DNS privé: dns.quad9.net DoH: https://dns.quad9.net/dns-query"}},{"@type":"Question","name":"Comment configurer Quad9 DNS","acceptedAnswer":{"@type":"Answer","text":"Windows 11: Paramètres → Réseau et Internet → Wi‑Fi ou Ethernet → Propriétés du matériel → Attribution du serveur DNS → Modifier → Manuel. Activez IPv4 et saisissez 9.9.9.9, 149.112.112.112. Pour chiffrer, réglez DNS sur HTTPS sur Activé (modèle manuel) avec https://dns.quad9.net/dns-query. macOS: Réglages Système → Réseau → Wi‑Fi (ou Ethernet) → Détails → DNS : cliquez sur + et ajoutez 9.9.9.9, 149.112.112.112. Le DNS chiffré (https://dns.quad9.net/dns-query) demande un profil de configuration. iPhone et iPad: Réglages → Wi‑Fi → ⓘ à côté du réseau → Configurer le DNS → Manuel, puis ajoutez 9.9.9.9, 149.112.112.112. Cela ne vaut que pour ce Wi‑Fi ; pour du DNS chiffré sur tous les réseaux, installez un profil DNS pour https://dns.quad9.net/dns-query. Android: Paramètres → Réseau et Internet → DNS privé → Nom d'hôte du fournisseur DNS privé : dns.quad9.net. Valable sur tous les réseaux, et chiffré (DoT). Le menu varie un peu selon la marque : cherchez « DNS privé » dans les paramètres. Routeur: Dans la page d'administration du routeur (réglages WAN ou DHCP), mettez 9.9.9.9, 149.112.112.112 comme serveurs DNS : tous les appareils du réseau l'utilisent alors. Navigateur: Chrome : Paramètres → Confidentialité et sécurité → Sécurité → Utiliser un DNS sécurisé → Personnalisé : https://dns.quad9.net/dns-query. Edge propose la même option dans Confidentialité, recherche et services. Firefox : Paramètres → Vie privée et sécurité → DNS via HTTPS → Protection maximale → Personnalisé : https://dns.quad9.net/dns-query. Linux: Avec systemd-resolved : mettez DNS=9.9.9.9 149.112.112.112 dans /etc/systemd/resolved.conf, puis lancez systemctl restart systemd-resolved. Pour DoT, écrivez l'adresse sous la forme 9.9.9.9#dns.quad9.net et ajoutez DNSOverTLS=yes."}},{"@type":"Question","name":"Peut-on utiliser Quad9 DNS en Chine continentale ?","acceptedAnswer":{"@type":"Answer","text":"Son DNS classique répond en général, mais plus lentement, car les serveurs sont hors de Chine continentale, et les réponses pour les sites bloqués peuvent être falsifiées en route. Le DNS chiffré (DoH, DoT) vers lui est souvent bloqué ou instable. Faites le test sur cette page : une ligne sans réponse veut dire qu'il n'est pas joignable depuis votre réseau."}},{"@type":"Question","name":"Quad9 DNS ou Cloudflare DNS : lequel est le plus rapide ?","acceptedAnswer":{"@type":"Answer","text":"Aucun n'est plus rapide partout : ce qui compte, c'est la distance jusqu'au serveur le plus proche de chacun et la route que prend votre fournisseur. Cette page mesure les deux, et tous les autres DNS de la liste, depuis votre propre réseau en une vingtaine de secondes ; le haut de la page indique le rang de Quad9 DNS et son écart avec le plus rapide."}},{"@type":"Question","name":"Pourquoi Quad9 DNS est-il lent chez moi ?","acceptedAnswer":{"@type":"Answer","text":"Le plus souvent, la distance : son serveur le plus proche est loin, ou votre fournisseur fait un détour. Un proxy ou un VPN transporte aussi les requêtes, et le test mesure alors la route du proxy (les règles directes règlent ça). Certains réseaux ralentissent ou bloquent le DNS chiffré. Et un nom que personne ne lui a encore demandé prend toujours plus de temps (colonne Sans cache). Si un autre DNS de la liste est nettement plus rapide, passez-y."}}]},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Test DNS","item":"https://dns.1ms.dog/fr/"},{"@type":"ListItem","position":2,"name":"Test de vitesse Quad9 DNS","item":"https://dns.1ms.dog/fr/quad9/"}]}]}</script>
 <link rel="preload" href="/assets/fonts/geist-latin.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="/assets/app.73f783471c.css">
+<link rel="stylesheet" href="/assets/app.f02eff8038.css">
 </head>
 <body>
 <div class="app">
@@ -103,7 +103,7 @@
         <span class="prog-t" id="progTxt">&nbsp;</span>
         <button class="btn sm" id="cliBtn" type="button" aria-haspopup="dialog" aria-controls="cli" data-cli><svg viewBox="0 0 16 16" aria-hidden="true"><rect x="1.5" y="2.5" width="13" height="11" rx="2"/><path d="M4.5 6.5l2 1.5-2 1.5M8.5 10h3"/></svg><span data-i="cli_btn">Ligne de commande</span></button>
         <button class="btn sm" id="rulesBtn" type="button" aria-haspopup="dialog" aria-controls="rules"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M2 8h9M8 4.5 11.5 8 8 11.5M14 3v10"/></svg><span data-i="rules_btn">Règles directes</span></button>
-        <button class="btn sm" id="shareBtn" type="button" aria-haspopup="dialog" aria-controls="shareDlg" disabled><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 10V2M5 5l3-3 3 3M3 9v4.5h10V9"/></svg><span data-i="share">Partager</span></button>
+        <button class="btn sm" id="shareBtn" type="button" aria-haspopup="dialog" disabled><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 10V2M5 5l3-3 3 3M3 9v4.5h10V9"/></svg><span data-i="share">Partager</span></button>
         <button class="btn pri" id="rerun" type="button" disabled><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M13.5 8a5.5 5.5 0 1 1-1.6-3.9M13.5 2v3h-3"/></svg><span data-i="rerun">Refaire le test</span></button>
       </div>
     </section>
@@ -165,23 +165,6 @@
     <div data-ms-more></div>
   </main>
 </div>
-<div class="scrim" id="shareDlg" hidden>
-  <div class="dialog share" role="dialog" aria-modal="true" aria-labelledby="shareT">
-    <div class="dlg-h"><h2 id="shareT" data-i="share_h">Partager le résultat</h2>
-      <button class="icon-btn" data-close type="button" aria-label="Fermer"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M4 4l8 8M12 4l-8 8"/></svg></button></div>
-    <div class="share-b">
-      <img id="shareImg" alt="" width="1200" height="760">
-      <div class="share-link"><input id="shareUrl" readonly aria-label="Lien"><button class="btn pri" id="copyLink" type="button" data-i="copy_link">Copier le lien</button></div>
-      <div class="share-acts">
-        <button class="btn" id="copyImg" type="button" data-i="copy_img">Copier l’image</button>
-        <button class="btn" id="dlImg" type="button" data-i="dl_img">Télécharger l’image</button>
-        <button class="btn" id="nativeShare" type="button" data-i="more_share" hidden>Autres options</button>
-        <label class="chk"><input type="checkbox" id="shareCc"><span data-i="share_cc">Afficher mon pays</span></label>
-      </div>
-      <p class="note" data-i="share_note">L’image et le lien sont créés ici, dans votre navigateur ; rien n’est envoyé. Le lien ne contient que les chiffres.</p>
-    </div>
-  </div>
-</div>
 <div class="scrim" id="cli" hidden>
   <div class="dialog cli-dlg" role="dialog" aria-modal="true" aria-labelledby="cliT">
     <div class="dlg-h"><div><h2 id="cliT"><span data-i="cli_h">Mesurez vraiment UDP, DoT et DoQ sur un serveur</span><a class="gh-link" href="https://github.com/yt1988/dns-test-cli" target="_blank" rel="noopener noreferrer" title="GitHub" aria-label="GitHub"><svg class="gh-ic" viewBox="0 0 16 16" aria-hidden="true"><path d="M8 .2a8 8 0 0 0-2.5 15.6c.4 0 .5-.2.5-.4v-1.5c-2.2.5-2.7-1-2.7-1-.4-.9-.9-1.2-.9-1.2-.7-.5.1-.5.1-.5.8.1 1.2.8 1.2.8.7 1.3 1.9.9 2.4.7 0-.5.3-.9.5-1.1-1.8-.2-3.6-.9-3.6-4 0-.9.3-1.6.8-2.1-.1-.2-.4-1 .1-2.1 0 0 .7-.2 2.2.8a7.4 7.4 0 0 1 4 0c1.5-1 2.2-.8 2.2-.8.4 1.1.2 1.9.1 2.1.5.6.8 1.3.8 2.1 0 3.1-1.9 3.7-3.6 3.9.3.3.6.8.6 1.5v2.2c0 .2.1.5.6.4A8 8 0 0 0 8 .2z"/></svg></a></h2><p class="note" data-i="cli_sub">Les navigateurs ne peuvent qu’estimer UDP et DoT. Sur un VPS, une machine Linux ou un routeur, cette commande mesure les cinq protocoles et compare votre DNS actuel.</p></div>
@@ -217,7 +200,7 @@
 </div>
 
 <script type="application/json" id="data">{"lang":"fr","paths":{"en":"/quad9/","zh-CN":"/zh-cn/quad9/","zh-TW":"/zh-tw/quad9/","ja":"/ja/quad9/","ko":"/ko/quad9/","es":"/es/quad9/","fr":"/fr/quad9/","de":"/de/quad9/","pt":"/pt/quad9/","ru":"/ru/quad9/"},"home":"/fr/","focus":"quad9"}</script>
-<script src="/assets/l.fr.c8be7ca048.js"></script>
-<script src="/assets/app.725a026a12.js"></script>
+<script src="/assets/l.fr.11a8191f19.js"></script>
+<script src="/assets/app.9a38d127e9.js"></script>
 </body>
 </html>

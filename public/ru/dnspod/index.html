@@ -48,7 +48,7 @@
 <meta name="twitter:description" content="Проверьте DNSPod Public DNS из своей сети прямо в браузере: реальная задержка DoH, оценка UDP и DoT и его место среди 33 публичных DNS. С адресами и настройкой на каждом устройстве.">
 <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebApplication","name":"Тест скорости DNSPod Public DNS · 1ms.dog","url":"https://dns.1ms.dog/ru/dnspod/","applicationCategory":"UtilitiesApplication","operatingSystem":"Any","browserRequirements":"Requires JavaScript","description":"Проверьте DNSPod Public DNS из своей сети прямо в браузере: реальная задержка DoH, оценка UDP и DoT и его место среди 33 публичных DNS. С адресами и настройкой на каждом устройстве.","inLanguage":"ru","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"USD"}},{"@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Что такое DNSPod Public DNS?","acceptedAnswer":{"@type":"Answer","text":"DNSPod Public DNS — бесплатный публичный DNS, его оператор — Tencent Cloud (Китай). Обычный DNS отвечает на 119.29.29.29 (IPv6: 2402:4e00::), есть и шифрованный DNS: DoT, DoH. Серверы находятся в материковом Китае: там быстро, из других мест медленно. DNSSEC не проверяет. Ничего не фильтрует: все имена разрешаются как есть."}},{"@type":"Question","name":"Адреса DNS-серверов DNSPod Public DNS","acceptedAnswer":{"@type":"Answer","text":"Что вписать, чтобы пользоваться DNSPod Public DNS: DNS (IPv4): 119.29.29.29 DNS (IPv6): 2402:4e00:: DoT / Частный DNS: dot.pub DoH: https://doh.pub/dns-query"}},{"@type":"Question","name":"Как настроить DNSPod Public DNS","acceptedAnswer":{"@type":"Answer","text":"Windows 11: Параметры → Сеть и Интернет → Wi‑Fi или Ethernet → Свойства оборудования → Назначение DNS-сервера → Изменить → Вручную. Включите IPv4 и введите 119.29.29.29. Для шифрования включите DNS через HTTPS (шаблон вручную) с шаблоном https://doh.pub/dns-query. macOS: Системные настройки → Сеть → Wi‑Fi (или Ethernet) → Подробнее → DNS: нажмите + и добавьте 119.29.29.29. Для шифрованного DNS (https://doh.pub/dns-query) нужен профиль конфигурации. iPhone и iPad: Настройки → Wi‑Fi → ⓘ рядом с сетью → Настройка DNS → Вручную, добавьте 119.29.29.29. Это только для этой сети Wi‑Fi; для шифрованного DNS везде установите DNS-профиль для https://doh.pub/dns-query. Android: Настройки → Сеть и интернет → Персональный DNS-сервер → Имя хоста поставщика: dot.pub. Работает в любой сети и шифруется (DoT). Меню немного отличается у разных производителей: найдите в настройках «Персональный DNS». Роутер: В веб-интерфейсе роутера (настройки WAN или DHCP) укажите DNS-серверы 119.29.29.29: тогда им пользуются все устройства в сети. Браузер: Chrome: Настройки → Конфиденциальность и безопасность → Безопасность → Использовать безопасный DNS → Другой: https://doh.pub/dns-query. В Edge то же самое в разделе «Конфиденциальность, поиск и службы». Firefox: Настройки → Приватность и защита → DNS через HTTPS → Максимальная защита → Другой: https://doh.pub/dns-query. Linux: С systemd-resolved: впишите DNS=119.29.29.29 в /etc/systemd/resolved.conf и выполните systemctl restart systemd-resolved. Для DoT запишите адрес как 119.29.29.29#dot.pub и добавьте DNSOverTLS=yes."}},{"@type":"Question","name":"Работает ли DNSPod Public DNS в материковом Китае?","acceptedAnswer":{"@type":"Answer","text":"Да: его серверы в материковом Китае, и это один из привычных вариантов там. Работают обычный DNS, DoT и DoH."}},{"@type":"Question","name":"DNSPod Public DNS или AliDNS: что быстрее?","acceptedAnswer":{"@type":"Answer","text":"Ни один не быстрее везде: важно, насколько далеко ближайший сервер каждого и каким маршрутом туда идёт ваш провайдер. Эта страница примерно за 20 секунд замеряет оба и все остальные DNS из списка из вашей сети; вверху видно, какое место занял DNSPod Public DNS и насколько он отстаёт от самого быстрого."}},{"@type":"Question","name":"Почему DNSPod Public DNS у меня медленный?","acceptedAnswer":{"@type":"Answer","text":"Обычно дело в расстоянии: ближайший сервер далеко или провайдер ведёт трафик в обход. Прокси или VPN тоже пропускают через себя запросы, и тогда тест меряет маршрут прокси (это исправляют прямые правила). Некоторые сети замедляют или блокируют шифрованный DNS. А имя, о котором его ещё никто не спрашивал, всегда разрешается дольше (столбец «Без кеша»). Если другой DNS в списке заметно быстрее, переходите на него."}}]},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Тест DNS","item":"https://dns.1ms.dog/ru/"},{"@type":"ListItem","position":2,"name":"Тест скорости DNSPod Public DNS","item":"https://dns.1ms.dog/ru/dnspod/"}]}]}</script>
 <link rel="preload" href="/assets/fonts/geist-latin.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="/assets/app.73f783471c.css">
+<link rel="stylesheet" href="/assets/app.f02eff8038.css">
 </head>
 <body>
 <div class="app">
@@ -103,7 +103,7 @@
         <span class="prog-t" id="progTxt">&nbsp;</span>
         <button class="btn sm" id="cliBtn" type="button" aria-haspopup="dialog" aria-controls="cli" data-cli><svg viewBox="0 0 16 16" aria-hidden="true"><rect x="1.5" y="2.5" width="13" height="11" rx="2"/><path d="M4.5 6.5l2 1.5-2 1.5M8.5 10h3"/></svg><span data-i="cli_btn">Командная строка</span></button>
         <button class="btn sm" id="rulesBtn" type="button" aria-haspopup="dialog" aria-controls="rules"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M2 8h9M8 4.5 11.5 8 8 11.5M14 3v10"/></svg><span data-i="rules_btn">Прямые правила</span></button>
-        <button class="btn sm" id="shareBtn" type="button" aria-haspopup="dialog" aria-controls="shareDlg" disabled><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 10V2M5 5l3-3 3 3M3 9v4.5h10V9"/></svg><span data-i="share">Поделиться</span></button>
+        <button class="btn sm" id="shareBtn" type="button" aria-haspopup="dialog" disabled><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 10V2M5 5l3-3 3 3M3 9v4.5h10V9"/></svg><span data-i="share">Поделиться</span></button>
         <button class="btn pri" id="rerun" type="button" disabled><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M13.5 8a5.5 5.5 0 1 1-1.6-3.9M13.5 2v3h-3"/></svg><span data-i="rerun">Проверить снова</span></button>
       </div>
     </section>
@@ -165,23 +165,6 @@
     <div data-ms-more></div>
   </main>
 </div>
-<div class="scrim" id="shareDlg" hidden>
-  <div class="dialog share" role="dialog" aria-modal="true" aria-labelledby="shareT">
-    <div class="dlg-h"><h2 id="shareT" data-i="share_h">Поделиться результатом</h2>
-      <button class="icon-btn" data-close type="button" aria-label="Закрыть"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M4 4l8 8M12 4l-8 8"/></svg></button></div>
-    <div class="share-b">
-      <img id="shareImg" alt="" width="1200" height="760">
-      <div class="share-link"><input id="shareUrl" readonly aria-label="Ссылка"><button class="btn pri" id="copyLink" type="button" data-i="copy_link">Копировать ссылку</button></div>
-      <div class="share-acts">
-        <button class="btn" id="copyImg" type="button" data-i="copy_img">Копировать картинку</button>
-        <button class="btn" id="dlImg" type="button" data-i="dl_img">Скачать картинку</button>
-        <button class="btn" id="nativeShare" type="button" data-i="more_share" hidden>Другие способы</button>
-        <label class="chk"><input type="checkbox" id="shareCc"><span data-i="share_cc">Показать мою страну</span></label>
-      </div>
-      <p class="note" data-i="share_note">Картинка и ссылка создаются здесь, в вашем браузере; ничего не загружается. В ссылке только цифры.</p>
-    </div>
-  </div>
-</div>
 <div class="scrim" id="cli" hidden>
   <div class="dialog cli-dlg" role="dialog" aria-modal="true" aria-labelledby="cliT">
     <div class="dlg-h"><div><h2 id="cliT"><span data-i="cli_h">Настоящий замер UDP, DoT и DoQ на сервере</span><a class="gh-link" href="https://github.com/yt1988/dns-test-cli" target="_blank" rel="noopener noreferrer" title="GitHub" aria-label="GitHub"><svg class="gh-ic" viewBox="0 0 16 16" aria-hidden="true"><path d="M8 .2a8 8 0 0 0-2.5 15.6c.4 0 .5-.2.5-.4v-1.5c-2.2.5-2.7-1-2.7-1-.4-.9-.9-1.2-.9-1.2-.7-.5.1-.5.1-.5.8.1 1.2.8 1.2.8.7 1.3 1.9.9 2.4.7 0-.5.3-.9.5-1.1-1.8-.2-3.6-.9-3.6-4 0-.9.3-1.6.8-2.1-.1-.2-.4-1 .1-2.1 0 0 .7-.2 2.2.8a7.4 7.4 0 0 1 4 0c1.5-1 2.2-.8 2.2-.8.4 1.1.2 1.9.1 2.1.5.6.8 1.3.8 2.1 0 3.1-1.9 3.7-3.6 3.9.3.3.6.8.6 1.5v2.2c0 .2.1.5.6.4A8 8 0 0 0 8 .2z"/></svg></a></h2><p class="note" data-i="cli_sub">Браузер может только оценить UDP и DoT. На VPS, Linux-машине или роутере эта команда измеряет все пять протоколов и сравнивает с вашим текущим DNS.</p></div>
@@ -217,7 +200,7 @@
 </div>
 
 <script type="application/json" id="data">{"lang":"ru","paths":{"en":"/dnspod/","zh-CN":"/zh-cn/dnspod/","zh-TW":"/zh-tw/dnspod/","ja":"/ja/dnspod/","ko":"/ko/dnspod/","es":"/es/dnspod/","fr":"/fr/dnspod/","de":"/de/dnspod/","pt":"/pt/dnspod/","ru":"/ru/dnspod/"},"home":"/ru/","focus":"dnspod"}</script>
-<script src="/assets/l.ru.d00baca74f.js"></script>
-<script src="/assets/app.725a026a12.js"></script>
+<script src="/assets/l.ru.cb7843df86.js"></script>
+<script src="/assets/app.9a38d127e9.js"></script>
 </body>
 </html>

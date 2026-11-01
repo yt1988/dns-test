@@ -48,7 +48,7 @@
 <meta name="twitter:description" content="IIJ Public DNS aus Ihrem eigenen Netz im Browser messen: echte DoH-Latenz, Schätzung für UDP und DoT, und sein Rang unter 33 öffentlichen DNS. Mit Adressen und Einrichtung für jedes Gerät.">
 <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebApplication","name":"IIJ Public DNS Speedtest · 1ms.dog","url":"https://dns.1ms.dog/de/iij/","applicationCategory":"UtilitiesApplication","operatingSystem":"Any","browserRequirements":"Requires JavaScript","description":"IIJ Public DNS aus Ihrem eigenen Netz im Browser messen: echte DoH-Latenz, Schätzung für UDP und DoT, und sein Rang unter 33 öffentlichen DNS. Mit Adressen und Einrichtung für jedes Gerät.","inLanguage":"de","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"USD"}},{"@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Was ist IIJ Public DNS?","acceptedAnswer":{"@type":"Answer","text":"IIJ Public DNS ist ein kostenloser öffentlicher DNS-Dienst von IIJ (Japan). Er bietet nur verschlüsseltes DNS (DoT, DoH); eine öffentliche Adresse für normales DNS gibt es nicht. Er bedient vor allem eine Region (Japan): In der Nähe kann er der schnellste sein, aus der Ferne ist er meist langsamer als die großen globalen Netze. Er prüft DNSSEC: Antworten mit ungültiger Signatur werden verworfen. Er filtert nicht: Jeder Name wird so aufgelöst, wie er ist."}},{"@type":"Question","name":"DNS-Server-Adressen von IIJ Public DNS","acceptedAnswer":{"@type":"Answer","text":"Das tragen Sie ein, um IIJ Public DNS zu nutzen: DoT / Privates DNS: public.dns.iij.jp DoH: https://public.dns.iij.jp/dns-query"}},{"@type":"Question","name":"IIJ Public DNS einrichten","acceptedAnswer":{"@type":"Answer","text":"Windows 11: Windows braucht eine normale DNS-Adresse, bevor es verschlüsseltes DNS nutzt, und IIJ Public DNS veröffentlicht keine: Nutzen Sie ihn im Browser (unten) oder mit einem lokalen DNS-Client wie dnscrypt-proxy. macOS: macOS nutzt verschlüsseltes DNS über ein Konfigurationsprofil: Installieren Sie ein DNS-Profil für https://public.dns.iij.jp/dns-query. iPhone und iPad: Ein DNS-Profil für https://public.dns.iij.jp/dns-query installieren und unter Einstellungen → Allgemein → VPN & Geräteverwaltung → DNS einschalten. Android: Einstellungen → Netzwerk & Internet → Privates DNS → Hostname des privaten DNS-Anbieters: public.dns.iij.jp. Gilt in jedem Netz und ist verschlüsselt (DoT). Das Menü unterscheidet sich je nach Hersteller etwas: in den Einstellungen nach „Privates DNS“ suchen. Router: Router nehmen normale DNS-Adressen, und IIJ Public DNS veröffentlicht keine; unter OpenWrt kann https-dns-proxy an https://public.dns.iij.jp/dns-query weiterleiten. Browser: Chrome: Einstellungen → Datenschutz und Sicherheit → Sicherheit → Sicheres DNS verwenden → Benutzerdefiniert: https://public.dns.iij.jp/dns-query. Edge hat dasselbe unter Datenschutz, Suche und Dienste. Firefox: Einstellungen → Datenschutz & Sicherheit → DNS über HTTPS → Maximaler Schutz → Benutzerdefiniert: https://public.dns.iij.jp/dns-query."}},{"@type":"Question","name":"Lässt sich IIJ Public DNS in Festlandchina nutzen?","acceptedAnswer":{"@type":"Answer","text":"Normales DNS antwortet meist, aber langsamer, weil die Server außerhalb Festlandchinas stehen, und Antworten für gesperrte Seiten können unterwegs gefälscht werden. Verschlüsseltes DNS (DoH, DoT) zu ihm ist oft gesperrt oder instabil. Testen Sie es auf dieser Seite: Eine Zeile ohne Antwort heißt, dass er aus Ihrem Netz nicht erreichbar ist."}},{"@type":"Question","name":"IIJ Public DNS oder Google Public DNS: Welcher ist schneller?","acceptedAnswer":{"@type":"Answer","text":"Keiner ist überall schneller: Entscheidend ist, wie weit der jeweils nächste Server von Ihnen entfernt ist und wie Ihr Anbieter dorthin routet. Diese Seite misst beide und alle anderen DNS der Liste aus Ihrem eigenen Netz in etwa 20 Sekunden; oben steht, auf welchem Platz IIJ Public DNS landet und wie weit er hinter dem schnellsten liegt."}},{"@type":"Question","name":"Warum ist IIJ Public DNS bei mir langsam?","acceptedAnswer":{"@type":"Answer","text":"Meist die Entfernung: Sein nächster Server ist weit weg, oder Ihr Anbieter nimmt einen Umweg. Ein Proxy oder VPN transportiert die Anfragen ebenfalls, dann misst der Test die Route des Proxys (die Direkt-Regeln beheben das). Manche Netze bremsen oder sperren verschlüsseltes DNS. Und ein Name, nach dem ihn noch niemand gefragt hat, dauert immer länger (Spalte Ohne Cache). Ist ein anderer DNS der Liste deutlich schneller, wechseln Sie zu ihm."}}]},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"DNS-Test","item":"https://dns.1ms.dog/de/"},{"@type":"ListItem","position":2,"name":"IIJ Public DNS Speedtest","item":"https://dns.1ms.dog/de/iij/"}]}]}</script>
 <link rel="preload" href="/assets/fonts/geist-latin.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="/assets/app.73f783471c.css">
+<link rel="stylesheet" href="/assets/app.f02eff8038.css">
 </head>
 <body>
 <div class="app">
@@ -103,7 +103,7 @@
         <span class="prog-t" id="progTxt">&nbsp;</span>
         <button class="btn sm" id="cliBtn" type="button" aria-haspopup="dialog" aria-controls="cli" data-cli><svg viewBox="0 0 16 16" aria-hidden="true"><rect x="1.5" y="2.5" width="13" height="11" rx="2"/><path d="M4.5 6.5l2 1.5-2 1.5M8.5 10h3"/></svg><span data-i="cli_btn">Kommandozeile</span></button>
         <button class="btn sm" id="rulesBtn" type="button" aria-haspopup="dialog" aria-controls="rules"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M2 8h9M8 4.5 11.5 8 8 11.5M14 3v10"/></svg><span data-i="rules_btn">Direkt-Regeln</span></button>
-        <button class="btn sm" id="shareBtn" type="button" aria-haspopup="dialog" aria-controls="shareDlg" disabled><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 10V2M5 5l3-3 3 3M3 9v4.5h10V9"/></svg><span data-i="share">Teilen</span></button>
+        <button class="btn sm" id="shareBtn" type="button" aria-haspopup="dialog" disabled><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 10V2M5 5l3-3 3 3M3 9v4.5h10V9"/></svg><span data-i="share">Teilen</span></button>
         <button class="btn pri" id="rerun" type="button" disabled><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M13.5 8a5.5 5.5 0 1 1-1.6-3.9M13.5 2v3h-3"/></svg><span data-i="rerun">Erneut testen</span></button>
       </div>
     </section>
@@ -165,23 +165,6 @@
     <div data-ms-more></div>
   </main>
 </div>
-<div class="scrim" id="shareDlg" hidden>
-  <div class="dialog share" role="dialog" aria-modal="true" aria-labelledby="shareT">
-    <div class="dlg-h"><h2 id="shareT" data-i="share_h">Ergebnis teilen</h2>
-      <button class="icon-btn" data-close type="button" aria-label="Schließen"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M4 4l8 8M12 4l-8 8"/></svg></button></div>
-    <div class="share-b">
-      <img id="shareImg" alt="" width="1200" height="760">
-      <div class="share-link"><input id="shareUrl" readonly aria-label="Link"><button class="btn pri" id="copyLink" type="button" data-i="copy_link">Link kopieren</button></div>
-      <div class="share-acts">
-        <button class="btn" id="copyImg" type="button" data-i="copy_img">Bild kopieren</button>
-        <button class="btn" id="dlImg" type="button" data-i="dl_img">Bild herunterladen</button>
-        <button class="btn" id="nativeShare" type="button" data-i="more_share" hidden>Weitere Optionen</button>
-        <label class="chk"><input type="checkbox" id="shareCc"><span data-i="share_cc">Mein Land anzeigen</span></label>
-      </div>
-      <p class="note" data-i="share_note">Bild und Link entstehen hier in Ihrem Browser; nichts wird hochgeladen. Der Link enthält nur die Zahlen.</p>
-    </div>
-  </div>
-</div>
 <div class="scrim" id="cli" hidden>
   <div class="dialog cli-dlg" role="dialog" aria-modal="true" aria-labelledby="cliT">
     <div class="dlg-h"><div><h2 id="cliT"><span data-i="cli_h">UDP, DoT und DoQ auf einem Server wirklich messen</span><a class="gh-link" href="https://github.com/yt1988/dns-test-cli" target="_blank" rel="noopener noreferrer" title="GitHub" aria-label="GitHub"><svg class="gh-ic" viewBox="0 0 16 16" aria-hidden="true"><path d="M8 .2a8 8 0 0 0-2.5 15.6c.4 0 .5-.2.5-.4v-1.5c-2.2.5-2.7-1-2.7-1-.4-.9-.9-1.2-.9-1.2-.7-.5.1-.5.1-.5.8.1 1.2.8 1.2.8.7 1.3 1.9.9 2.4.7 0-.5.3-.9.5-1.1-1.8-.2-3.6-.9-3.6-4 0-.9.3-1.6.8-2.1-.1-.2-.4-1 .1-2.1 0 0 .7-.2 2.2.8a7.4 7.4 0 0 1 4 0c1.5-1 2.2-.8 2.2-.8.4 1.1.2 1.9.1 2.1.5.6.8 1.3.8 2.1 0 3.1-1.9 3.7-3.6 3.9.3.3.6.8.6 1.5v2.2c0 .2.1.5.6.4A8 8 0 0 0 8 .2z"/></svg></a></h2><p class="note" data-i="cli_sub">Browser können UDP und DoT nur schätzen. Auf einem VPS, einem Linux-Rechner oder einem Router misst dieser Befehl alle fünf Protokolle und vergleicht Ihren aktuellen DNS.</p></div>
@@ -217,7 +200,7 @@
 </div>
 
 <script type="application/json" id="data">{"lang":"de","paths":{"en":"/iij/","zh-CN":"/zh-cn/iij/","zh-TW":"/zh-tw/iij/","ja":"/ja/iij/","ko":"/ko/iij/","es":"/es/iij/","fr":"/fr/iij/","de":"/de/iij/","pt":"/pt/iij/","ru":"/ru/iij/"},"home":"/de/","focus":"iij"}</script>
-<script src="/assets/l.de.0a78e15b35.js"></script>
-<script src="/assets/app.725a026a12.js"></script>
+<script src="/assets/l.de.9ec454a025.js"></script>
+<script src="/assets/app.9a38d127e9.js"></script>
 </body>
 </html>

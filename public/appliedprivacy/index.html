@@ -48,7 +48,7 @@
 <meta name="twitter:description" content="Test Applied Privacy DNS from your own network in the browser: real DoH latency, UDP and DoT estimates, and where it ranks among 33 public DNS. With its addresses and how to set it up on every device.">
 <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebApplication","name":"Applied Privacy DNS speed test · 1ms.dog","url":"https://dns.1ms.dog/appliedprivacy/","applicationCategory":"UtilitiesApplication","operatingSystem":"Any","browserRequirements":"Requires JavaScript","description":"Test Applied Privacy DNS from your own network in the browser: real DoH latency, UDP and DoT estimates, and where it ranks among 33 public DNS. With its addresses and how to set it up on every device.","inLanguage":"en","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"USD"}},{"@type":"FAQPage","mainEntity":[{"@type":"Question","name":"What is Applied Privacy DNS?","acceptedAnswer":{"@type":"Answer","text":"Applied Privacy DNS is a free public DNS service run by Applied Privacy Foundation (Austria). It offers encrypted DNS only (DoT, DoH); there is no public plain-DNS address. It mainly serves one region (Austria): close by it can be the fastest, from far away it is usually slower than the big global networks. It validates DNSSEC: answers whose signatures don't check out are refused. It doesn't filter: every name resolves as it is. It is run as a non-profit. Its operator states that it doesn't keep your IP address."}},{"@type":"Question","name":"Applied Privacy DNS DNS server addresses","acceptedAnswer":{"@type":"Answer","text":"What to enter to use Applied Privacy DNS: DoT / Private DNS: dot1.applied-privacy.net DoH: https://doh.applied-privacy.net/query"}},{"@type":"Question","name":"How to set up Applied Privacy DNS","acceptedAnswer":{"@type":"Answer","text":"Windows 11: Windows needs a plain DNS address before it can use encrypted DNS, and Applied Privacy DNS doesn't publish one: use it in the browser (below) or with a local DNS client such as dnscrypt-proxy. macOS: macOS takes encrypted DNS through a configuration profile: install a DNS profile for https://doh.applied-privacy.net/query. iPhone and iPad: Install a DNS profile for https://doh.applied-privacy.net/query, then turn it on in Settings → General → VPN & Device Management → DNS. Android: Settings → Network & internet → Private DNS → Private DNS provider hostname: dot1.applied-privacy.net. It works on every network and is encrypted (DoT). The menu differs a little by brand: search Settings for “Private DNS”. Router: Routers take plain DNS addresses, which Applied Privacy DNS doesn't publish; on OpenWrt, https-dns-proxy can forward to https://doh.applied-privacy.net/query. Browser: Chrome: Settings → Privacy and security → Security → Use secure DNS → Custom: https://doh.applied-privacy.net/query. Edge has the same under Privacy, search, and services. Firefox: Settings → Privacy & Security → DNS over HTTPS → Max Protection → Custom: https://doh.applied-privacy.net/query."}},{"@type":"Question","name":"Can Applied Privacy DNS be used in mainland China?","acceptedAnswer":{"@type":"Answer","text":"Its plain DNS usually answers, but more slowly, since the servers are outside mainland China, and answers for blocked sites can be forged on the way. Encrypted DNS (DoH, DoT) to it is often blocked or unstable. Run the test on this page: a row with no answer means it isn't reachable from your network."}},{"@type":"Question","name":"Applied Privacy DNS or Mullvad DNS: which is faster?","acceptedAnswer":{"@type":"Answer","text":"Neither is faster everywhere: what counts is how far each one's nearest server is from you and how your provider routes there. This page times both, and every other DNS in the list, from your own network in about 20 seconds; the top of the page shows where Applied Privacy DNS ranks and how far it is behind the fastest."}},{"@type":"Question","name":"Why is Applied Privacy DNS slow for me?","acceptedAnswer":{"@type":"Answer","text":"Usually distance: its nearest server is far away, or your provider routes there the long way. A proxy or VPN carries the queries too, and then the test measures the proxy's route (the direct rules fix that). Some networks slow down or block encrypted DNS. And a name nobody has asked it for yet always takes longer (the Uncached column). If another DNS in the list is clearly faster, switch to it."}}]},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"DNS Test","item":"https://dns.1ms.dog/"},{"@type":"ListItem","position":2,"name":"Applied Privacy DNS speed test","item":"https://dns.1ms.dog/appliedprivacy/"}]}]}</script>
 <link rel="preload" href="/assets/fonts/geist-latin.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="/assets/app.73f783471c.css">
+<link rel="stylesheet" href="/assets/app.f02eff8038.css">
 </head>
 <body>
 <div class="app">
@@ -103,7 +103,7 @@
         <span class="prog-t" id="progTxt">&nbsp;</span>
         <button class="btn sm" id="cliBtn" type="button" aria-haspopup="dialog" aria-controls="cli" data-cli><svg viewBox="0 0 16 16" aria-hidden="true"><rect x="1.5" y="2.5" width="13" height="11" rx="2"/><path d="M4.5 6.5l2 1.5-2 1.5M8.5 10h3"/></svg><span data-i="cli_btn">Command line</span></button>
         <button class="btn sm" id="rulesBtn" type="button" aria-haspopup="dialog" aria-controls="rules"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M2 8h9M8 4.5 11.5 8 8 11.5M14 3v10"/></svg><span data-i="rules_btn">Direct rules</span></button>
-        <button class="btn sm" id="shareBtn" type="button" aria-haspopup="dialog" aria-controls="shareDlg" disabled><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 10V2M5 5l3-3 3 3M3 9v4.5h10V9"/></svg><span data-i="share">Share</span></button>
+        <button class="btn sm" id="shareBtn" type="button" aria-haspopup="dialog" disabled><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 10V2M5 5l3-3 3 3M3 9v4.5h10V9"/></svg><span data-i="share">Share</span></button>
         <button class="btn pri" id="rerun" type="button" disabled><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M13.5 8a5.5 5.5 0 1 1-1.6-3.9M13.5 2v3h-3"/></svg><span data-i="rerun">Test again</span></button>
       </div>
     </section>
@@ -165,23 +165,6 @@
     <div data-ms-more></div>
   </main>
 </div>
-<div class="scrim" id="shareDlg" hidden>
-  <div class="dialog share" role="dialog" aria-modal="true" aria-labelledby="shareT">
-    <div class="dlg-h"><h2 id="shareT" data-i="share_h">Share your result</h2>
-      <button class="icon-btn" data-close type="button" aria-label="Close"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M4 4l8 8M12 4l-8 8"/></svg></button></div>
-    <div class="share-b">
-      <img id="shareImg" alt="" width="1200" height="760">
-      <div class="share-link"><input id="shareUrl" readonly aria-label="Link"><button class="btn pri" id="copyLink" type="button" data-i="copy_link">Copy link</button></div>
-      <div class="share-acts">
-        <button class="btn" id="copyImg" type="button" data-i="copy_img">Copy image</button>
-        <button class="btn" id="dlImg" type="button" data-i="dl_img">Download image</button>
-        <button class="btn" id="nativeShare" type="button" data-i="more_share" hidden>More options</button>
-        <label class="chk"><input type="checkbox" id="shareCc"><span data-i="share_cc">Show my country</span></label>
-      </div>
-      <p class="note" data-i="share_note">The image and the link are made here in your browser; nothing is uploaded. The link carries the numbers only.</p>
-    </div>
-  </div>
-</div>
 <div class="scrim" id="cli" hidden>
   <div class="dialog cli-dlg" role="dialog" aria-modal="true" aria-labelledby="cliT">
     <div class="dlg-h"><div><h2 id="cliT"><span data-i="cli_h">Test UDP, DoT and DoQ for real on a server</span><a class="gh-link" href="https://github.com/yt1988/dns-test-cli" target="_blank" rel="noopener noreferrer" title="GitHub" aria-label="GitHub"><svg class="gh-ic" viewBox="0 0 16 16" aria-hidden="true"><path d="M8 .2a8 8 0 0 0-2.5 15.6c.4 0 .5-.2.5-.4v-1.5c-2.2.5-2.7-1-2.7-1-.4-.9-.9-1.2-.9-1.2-.7-.5.1-.5.1-.5.8.1 1.2.8 1.2.8.7 1.3 1.9.9 2.4.7 0-.5.3-.9.5-1.1-1.8-.2-3.6-.9-3.6-4 0-.9.3-1.6.8-2.1-.1-.2-.4-1 .1-2.1 0 0 .7-.2 2.2.8a7.4 7.4 0 0 1 4 0c1.5-1 2.2-.8 2.2-.8.4 1.1.2 1.9.1 2.1.5.6.8 1.3.8 2.1 0 3.1-1.9 3.7-3.6 3.9.3.3.6.8.6 1.5v2.2c0 .2.1.5.6.4A8 8 0 0 0 8 .2z"/></svg></a></h2><p class="note" data-i="cli_sub">Browsers can only estimate UDP and DoT. On a VPS, a Linux box or a router, this command measures all five protocols and compares your current DNS.</p></div>
@@ -217,7 +200,7 @@
 </div>
 
 <script type="application/json" id="data">{"lang":"en","paths":{"en":"/appliedprivacy/","zh-CN":"/zh-cn/appliedprivacy/","zh-TW":"/zh-tw/appliedprivacy/","ja":"/ja/appliedprivacy/","ko":"/ko/appliedprivacy/","es":"/es/appliedprivacy/","fr":"/fr/appliedprivacy/","de":"/de/appliedprivacy/","pt":"/pt/appliedprivacy/","ru":"/ru/appliedprivacy/"},"home":"/","focus":"appliedprivacy"}</script>
-<script src="/assets/l.en.1e462a8c12.js"></script>
-<script src="/assets/app.725a026a12.js"></script>
+<script src="/assets/l.en.f17e66b0a9.js"></script>
+<script src="/assets/app.9a38d127e9.js"></script>
 </body>
 </html>

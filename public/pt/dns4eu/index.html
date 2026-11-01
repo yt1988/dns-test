@@ -48,7 +48,7 @@
 <meta name="twitter:description" content="Meça o DNS4EU a partir da sua própria rede, no navegador: latência DoH real, estimativa de UDP e DoT, e a posição dele entre 33 DNS públicos. Com os endereços e como configurar em cada aparelho.">
 <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebApplication","name":"Teste de velocidade do DNS4EU · 1ms.dog","url":"https://dns.1ms.dog/pt/dns4eu/","applicationCategory":"UtilitiesApplication","operatingSystem":"Any","browserRequirements":"Requires JavaScript","description":"Meça o DNS4EU a partir da sua própria rede, no navegador: latência DoH real, estimativa de UDP e DoT, e a posição dele entre 33 DNS públicos. Com os endereços e como configurar em cada aparelho.","inLanguage":"pt","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"USD"}},{"@type":"FAQPage","mainEntity":[{"@type":"Question","name":"O que é o DNS4EU?","acceptedAnswer":{"@type":"Answer","text":"DNS4EU é um serviço de DNS público e gratuito operado por DNS4EU (Whalebone) (União Europeia). Responde DNS comum em 86.54.11.100, 86.54.11.200 (IPv6: 2a13:1001::86:54:11:100, 2a13:1001::86:54:11:200), e DNS criptografado: DoT, DoH. Atende sobretudo uma região (União Europeia): de perto pode ser o mais rápido; de longe costuma ser mais lento que as grandes redes globais. Valida DNSSEC: respostas com assinatura inválida são recusadas. Não filtra: todo nome é resolvido como é."}},{"@type":"Question","name":"Endereços dos servidores DNS do DNS4EU","acceptedAnswer":{"@type":"Answer","text":"O que digitar para usar o DNS4EU: DNS (IPv4): 86.54.11.100, 86.54.11.200 DNS (IPv6): 2a13:1001::86:54:11:100, 2a13:1001::86:54:11:200 DoT / DNS privado: unfiltered.joindns4.eu DoH: https://unfiltered.joindns4.eu/dns-query"}},{"@type":"Question","name":"Como configurar o DNS4EU","acceptedAnswer":{"@type":"Answer","text":"Windows 11: Configurações → Rede e Internet → Wi‑Fi ou Ethernet → Propriedades de hardware → Atribuição de servidor DNS → Editar → Manual. Ative o IPv4 e digite 86.54.11.100, 86.54.11.200. Para criptografar, ponha DNS por HTTPS em Ativado (modelo manual) com https://unfiltered.joindns4.eu/dns-query. macOS: Ajustes do Sistema → Rede → Wi‑Fi (ou Ethernet) → Detalhes → DNS: clique em + e adicione 86.54.11.100, 86.54.11.200. O DNS criptografado (https://unfiltered.joindns4.eu/dns-query) precisa de um perfil de configuração. iPhone e iPad: Ajustes → Wi‑Fi → ⓘ ao lado da rede → Configurar DNS → Manual, e adicione 86.54.11.100, 86.54.11.200. Vale só para essa Wi‑Fi; para DNS criptografado em qualquer rede, instale um perfil DNS para https://unfiltered.joindns4.eu/dns-query. Android: Configurações → Rede e Internet → DNS particular → Nome do host do provedor de DNS particular: unfiltered.joindns4.eu. Vale em qualquer rede e é criptografado (DoT). O menu muda um pouco conforme a marca: procure “DNS particular” nas configurações. Roteador: Na página de administração do roteador (configurações WAN ou DHCP), defina os servidores DNS como 86.54.11.100, 86.54.11.200: todos os aparelhos da rede passam a usá-lo. Navegador: Chrome: Configurações → Privacidade e segurança → Segurança → Usar DNS seguro → Personalizado: https://unfiltered.joindns4.eu/dns-query. O Edge tem o mesmo em Privacidade, pesquisa e serviços. Firefox: Configurações → Privacidade e segurança → DNS sobre HTTPS → Proteção máxima → Personalizado: https://unfiltered.joindns4.eu/dns-query. Linux: Com systemd-resolved: coloque DNS=86.54.11.100 86.54.11.200 em /etc/systemd/resolved.conf e rode systemctl restart systemd-resolved. Para DoT, escreva o endereço como 86.54.11.100#unfiltered.joindns4.eu e acrescente DNSOverTLS=yes."}},{"@type":"Question","name":"Dá para usar o DNS4EU na China continental?","acceptedAnswer":{"@type":"Answer","text":"O DNS comum costuma responder, mas mais devagar, porque os servidores ficam fora da China continental, e as respostas para sites bloqueados podem ser falsificadas no caminho. O DNS criptografado (DoH, DoT) até ele muitas vezes é bloqueado ou instável. Faça o teste nesta página: uma linha sem resposta quer dizer que ele não é alcançável da sua rede."}},{"@type":"Question","name":"DNS4EU ou Quad9 DNS: qual é mais rápido?","acceptedAnswer":{"@type":"Answer","text":"Nenhum é mais rápido em todo lugar: conta a distância até o servidor mais próximo de cada um e a rota que seu provedor faz até lá. Esta página mede os dois, e todos os outros DNS da lista, a partir da sua rede em cerca de 20 segundos; no topo aparece a posição do DNS4EU e quanto ele fica atrás do mais rápido."}},{"@type":"Question","name":"Por que o DNS4EU está lento para mim?","acceptedAnswer":{"@type":"Answer","text":"Quase sempre é distância: o servidor mais próximo está longe, ou seu provedor dá uma volta. Um proxy ou VPN também carrega as consultas, e então o teste mede a rota do proxy (as regras diretas resolvem). Algumas redes deixam o DNS criptografado lento ou o bloqueiam. E um nome que ninguém pediu ainda sempre demora mais (coluna Sem cache). Se outro DNS da lista for claramente mais rápido, troque por ele."}}]},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Teste de DNS","item":"https://dns.1ms.dog/pt/"},{"@type":"ListItem","position":2,"name":"Teste de velocidade do DNS4EU","item":"https://dns.1ms.dog/pt/dns4eu/"}]}]}</script>
 <link rel="preload" href="/assets/fonts/geist-latin.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="/assets/app.73f783471c.css">
+<link rel="stylesheet" href="/assets/app.f02eff8038.css">
 </head>
 <body>
 <div class="app">
@@ -103,7 +103,7 @@
         <span class="prog-t" id="progTxt">&nbsp;</span>
         <button class="btn sm" id="cliBtn" type="button" aria-haspopup="dialog" aria-controls="cli" data-cli><svg viewBox="0 0 16 16" aria-hidden="true"><rect x="1.5" y="2.5" width="13" height="11" rx="2"/><path d="M4.5 6.5l2 1.5-2 1.5M8.5 10h3"/></svg><span data-i="cli_btn">Linha de comando</span></button>
         <button class="btn sm" id="rulesBtn" type="button" aria-haspopup="dialog" aria-controls="rules"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M2 8h9M8 4.5 11.5 8 8 11.5M14 3v10"/></svg><span data-i="rules_btn">Regras diretas</span></button>
-        <button class="btn sm" id="shareBtn" type="button" aria-haspopup="dialog" aria-controls="shareDlg" disabled><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 10V2M5 5l3-3 3 3M3 9v4.5h10V9"/></svg><span data-i="share">Compartilhar</span></button>
+        <button class="btn sm" id="shareBtn" type="button" aria-haspopup="dialog" disabled><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 10V2M5 5l3-3 3 3M3 9v4.5h10V9"/></svg><span data-i="share">Compartilhar</span></button>
         <button class="btn pri" id="rerun" type="button" disabled><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M13.5 8a5.5 5.5 0 1 1-1.6-3.9M13.5 2v3h-3"/></svg><span data-i="rerun">Testar de novo</span></button>
       </div>
     </section>
@@ -165,23 +165,6 @@
     <div data-ms-more></div>
   </main>
 </div>
-<div class="scrim" id="shareDlg" hidden>
-  <div class="dialog share" role="dialog" aria-modal="true" aria-labelledby="shareT">
-    <div class="dlg-h"><h2 id="shareT" data-i="share_h">Compartilhar resultado</h2>
-      <button class="icon-btn" data-close type="button" aria-label="Fechar"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M4 4l8 8M12 4l-8 8"/></svg></button></div>
-    <div class="share-b">
-      <img id="shareImg" alt="" width="1200" height="760">
-      <div class="share-link"><input id="shareUrl" readonly aria-label="Link"><button class="btn pri" id="copyLink" type="button" data-i="copy_link">Copiar link</button></div>
-      <div class="share-acts">
-        <button class="btn" id="copyImg" type="button" data-i="copy_img">Copiar imagem</button>
-        <button class="btn" id="dlImg" type="button" data-i="dl_img">Baixar imagem</button>
-        <button class="btn" id="nativeShare" type="button" data-i="more_share" hidden>Mais opções</button>
-        <label class="chk"><input type="checkbox" id="shareCc"><span data-i="share_cc">Mostrar meu país</span></label>
-      </div>
-      <p class="note" data-i="share_note">A imagem e o link são feitos aqui, no seu navegador; nada é enviado. O link leva só os números.</p>
-    </div>
-  </div>
-</div>
 <div class="scrim" id="cli" hidden>
   <div class="dialog cli-dlg" role="dialog" aria-modal="true" aria-labelledby="cliT">
     <div class="dlg-h"><div><h2 id="cliT"><span data-i="cli_h">Meça UDP, DoT e DoQ de verdade num servidor</span><a class="gh-link" href="https://github.com/yt1988/dns-test-cli" target="_blank" rel="noopener noreferrer" title="GitHub" aria-label="GitHub"><svg class="gh-ic" viewBox="0 0 16 16" aria-hidden="true"><path d="M8 .2a8 8 0 0 0-2.5 15.6c.4 0 .5-.2.5-.4v-1.5c-2.2.5-2.7-1-2.7-1-.4-.9-.9-1.2-.9-1.2-.7-.5.1-.5.1-.5.8.1 1.2.8 1.2.8.7 1.3 1.9.9 2.4.7 0-.5.3-.9.5-1.1-1.8-.2-3.6-.9-3.6-4 0-.9.3-1.6.8-2.1-.1-.2-.4-1 .1-2.1 0 0 .7-.2 2.2.8a7.4 7.4 0 0 1 4 0c1.5-1 2.2-.8 2.2-.8.4 1.1.2 1.9.1 2.1.5.6.8 1.3.8 2.1 0 3.1-1.9 3.7-3.6 3.9.3.3.6.8.6 1.5v2.2c0 .2.1.5.6.4A8 8 0 0 0 8 .2z"/></svg></a></h2><p class="note" data-i="cli_sub">Navegadores só conseguem estimar UDP e DoT. Num VPS, num computador Linux ou num roteador, este comando mede os cinco protocolos e compara seu DNS atual.</p></div>
@@ -217,7 +200,7 @@
 </div>
 
 <script type="application/json" id="data">{"lang":"pt","paths":{"en":"/dns4eu/","zh-CN":"/zh-cn/dns4eu/","zh-TW":"/zh-tw/dns4eu/","ja":"/ja/dns4eu/","ko":"/ko/dns4eu/","es":"/es/dns4eu/","fr":"/fr/dns4eu/","de":"/de/dns4eu/","pt":"/pt/dns4eu/","ru":"/ru/dns4eu/"},"home":"/pt/","focus":"dns4eu"}</script>
-<script src="/assets/l.pt.72132a7f52.js"></script>
-<script src="/assets/app.725a026a12.js"></script>
+<script src="/assets/l.pt.3a53df8348.js"></script>
+<script src="/assets/app.9a38d127e9.js"></script>
 </body>
 </html>

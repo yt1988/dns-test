@@ -51,7 +51,7 @@
 <meta name="twitter:description" content="在浏览器里从你自己的网络实测 360 安全 DNS：DoH 实测延迟，UDP、DoT 估算，以及它在 33 家公共 DNS 里排第几。附完整地址和各设备的设置方法。">
 <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebApplication","name":"360 安全 DNS 测速 · 1ms.dog","url":"https://dns.1ms.dog/zh-cn/360/","applicationCategory":"UtilitiesApplication","operatingSystem":"Any","browserRequirements":"Requires JavaScript","description":"在浏览器里从你自己的网络实测 360 安全 DNS：DoH 实测延迟，UDP、DoT 估算，以及它在 33 家公共 DNS 里排第几。附完整地址和各设备的设置方法。","inLanguage":"zh-CN","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"USD"}},{"@type":"FAQPage","mainEntity":[{"@type":"Question","name":"360 安全 DNS 是什么？","acceptedAnswer":{"@type":"Answer","text":"360 安全 DNS 是奇虎 360 运营的免费公共 DNS，运营方在中国。普通 DNS 地址是 101.226.4.6、218.30.118.6，也支持加密 DNS：DoT、DoH。它的服务器在中国大陆：在国内快，在境外慢。它不验证 DNSSEC。它不做过滤，所有域名照常解析。"}},{"@type":"Question","name":"360 安全 DNS 的 DNS 服务器地址","acceptedAnswer":{"@type":"Answer","text":"使用 360 安全 DNS 时填写：DNS (IPv4): 101.226.4.6、218.30.118.6DoT / 私人 DNS: dot.360.cnDoH: https://doh.360.cn/dns-query"}},{"@type":"Question","name":"360 安全 DNS 怎么设置","acceptedAnswer":{"@type":"Answer","text":"Windows 11: 设置 → 网络和 Internet → WLAN 或以太网 → 硬件属性 → DNS 服务器分配 → 编辑 → 手动。打开 IPv4，填入 101.226.4.6、218.30.118.6。要加密的话，把「DNS over HTTPS」设为「开（手动模板）」，模板填 https://doh.360.cn/dns-query。macOS: 系统设置 → 网络 → Wi‑Fi（或以太网）→ 详细信息 → DNS，点 + 添加 101.226.4.6、218.30.118.6。加密 DNS（https://doh.360.cn/dns-query）需要安装描述文件。iPhone 和 iPad: 设置 → 无线局域网 → 网络旁的 ⓘ → 配置 DNS → 手动，添加 101.226.4.6、218.30.118.6。只对这个 Wi‑Fi 生效；想在所有网络上用加密 DNS，安装一个指向 https://doh.360.cn/dns-query 的 DNS 描述文件。安卓: 设置 → 网络和互联网 → 私人 DNS → 私人 DNS 提供商主机名，填 dot.360.cn。在所有网络上生效，并且是加密的（DoT）。各品牌菜单位置略有不同，可在设置里搜索「私人 DNS」。路由器: 进入路由器管理页面（WAN 或 DHCP 设置），把 DNS 服务器改成 101.226.4.6、218.30.118.6：局域网里的所有设备都会用它。浏览器: Chrome：设置 → 隐私和安全 → 安全 → 使用安全 DNS → 自定义，填 https://doh.360.cn/dns-query。Edge 在「隐私、搜索和服务」里有同样的选项。Firefox：设置 → 隐私与安全 → 基于 HTTPS 的 DNS → 最大保护 → 自定义，填 https://doh.360.cn/dns-query。Linux: 使用 systemd-resolved 时：在 /etc/systemd/resolved.conf 里写 DNS=101.226.4.6 218.30.118.6，再运行 systemctl restart systemd-resolved。要用 DoT，把地址写成 101.226.4.6#dot.360.cn，并加上 DNSOverTLS=yes。"}},{"@type":"Question","name":"360 安全 DNS 在中国大陆能用吗？","acceptedAnswer":{"@type":"Answer","text":"能：它的服务器在中国大陆，是国内常用的公共 DNS 之一。普通 DNS、DoT、DoH 都能用。"}},{"@type":"Question","name":"360 安全 DNS 和阿里 DNS 哪个快？","acceptedAnswer":{"@type":"Answer","text":"没有哪个在所有地方都更快：关键是两家离你最近的服务器有多远、你的运营商怎么走到那里。本页大约 20 秒就能从你自己的网络把两家连同列表里的其他 DNS 都测一遍；页面顶部会显示 360 安全 DNS 排第几、比最快的慢多少。"}},{"@type":"Question","name":"为什么 360 安全 DNS 对我来说很慢？","acceptedAnswer":{"@type":"Answer","text":"通常是距离：离你最近的服务器很远，或者运营商绕了远路。开着代理或 VPN 时，查询也走代理，测出来的是代理的线路（加上直连规则就好）。有些网络会限速或阻断加密 DNS。另外，没人查过的域名总是更慢（见「未缓存」一列）。如果列表里有明显更快的 DNS，换成它就好。"}}]},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"DNS 测试","item":"https://dns.1ms.dog/zh-cn/"},{"@type":"ListItem","position":2,"name":"360 安全 DNS 测速","item":"https://dns.1ms.dog/zh-cn/360/"}]}]}</script>
 <link rel="preload" href="/assets/fonts/geist-latin.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="/assets/app.73f783471c.css">
+<link rel="stylesheet" href="/assets/app.f02eff8038.css">
 </head>
 <body>
 <div class="app">
@@ -106,7 +106,7 @@
         <span class="prog-t" id="progTxt">&nbsp;</span>
         <button class="btn sm" id="cliBtn" type="button" aria-haspopup="dialog" aria-controls="cli" data-cli><svg viewBox="0 0 16 16" aria-hidden="true"><rect x="1.5" y="2.5" width="13" height="11" rx="2"/><path d="M4.5 6.5l2 1.5-2 1.5M8.5 10h3"/></svg><span data-i="cli_btn">命令行</span></button>
         <button class="btn sm" id="rulesBtn" type="button" aria-haspopup="dialog" aria-controls="rules"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M2 8h9M8 4.5 11.5 8 8 11.5M14 3v10"/></svg><span data-i="rules_btn">直连规则</span></button>
-        <button class="btn sm" id="shareBtn" type="button" aria-haspopup="dialog" aria-controls="shareDlg" disabled><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 10V2M5 5l3-3 3 3M3 9v4.5h10V9"/></svg><span data-i="share">分享</span></button>
+        <button class="btn sm" id="shareBtn" type="button" aria-haspopup="dialog" disabled><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 10V2M5 5l3-3 3 3M3 9v4.5h10V9"/></svg><span data-i="share">分享</span></button>
         <button class="btn pri" id="rerun" type="button" disabled><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M13.5 8a5.5 5.5 0 1 1-1.6-3.9M13.5 2v3h-3"/></svg><span data-i="rerun">重新测试</span></button>
       </div>
     </section>
@@ -168,23 +168,6 @@
     <div data-ms-more></div>
   </main>
 </div>
-<div class="scrim" id="shareDlg" hidden>
-  <div class="dialog share" role="dialog" aria-modal="true" aria-labelledby="shareT">
-    <div class="dlg-h"><h2 id="shareT" data-i="share_h">分享测试结果</h2>
-      <button class="icon-btn" data-close type="button" aria-label="关闭"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M4 4l8 8M12 4l-8 8"/></svg></button></div>
-    <div class="share-b">
-      <img id="shareImg" alt="" width="1200" height="760">
-      <div class="share-link"><input id="shareUrl" readonly aria-label="链接"><button class="btn pri" id="copyLink" type="button" data-i="copy_link">复制链接</button></div>
-      <div class="share-acts">
-        <button class="btn" id="copyImg" type="button" data-i="copy_img">复制图片</button>
-        <button class="btn" id="dlImg" type="button" data-i="dl_img">下载图片</button>
-        <button class="btn" id="nativeShare" type="button" data-i="more_share" hidden>更多分享方式</button>
-        <label class="chk"><input type="checkbox" id="shareCc"><span data-i="share_cc">显示我的国家/地区</span></label>
-      </div>
-      <p class="note" data-i="share_note">图片和链接都在你的浏览器里生成，不会上传。链接里只有测试数字。</p>
-    </div>
-  </div>
-</div>
 <div class="scrim" id="cli" hidden>
   <div class="dialog cli-dlg" role="dialog" aria-modal="true" aria-labelledby="cliT">
     <div class="dlg-h"><div><h2 id="cliT"><span data-i="cli_h">在服务器上实测 UDP、DoT、DoQ</span><a class="gh-link" href="https://github.com/yt1988/dns-test-cli" target="_blank" rel="noopener noreferrer" title="GitHub" aria-label="GitHub"><svg class="gh-ic" viewBox="0 0 16 16" aria-hidden="true"><path d="M8 .2a8 8 0 0 0-2.5 15.6c.4 0 .5-.2.5-.4v-1.5c-2.2.5-2.7-1-2.7-1-.4-.9-.9-1.2-.9-1.2-.7-.5.1-.5.1-.5.8.1 1.2.8 1.2.8.7 1.3 1.9.9 2.4.7 0-.5.3-.9.5-1.1-1.8-.2-3.6-.9-3.6-4 0-.9.3-1.6.8-2.1-.1-.2-.4-1 .1-2.1 0 0 .7-.2 2.2.8a7.4 7.4 0 0 1 4 0c1.5-1 2.2-.8 2.2-.8.4 1.1.2 1.9.1 2.1.5.6.8 1.3.8 2.1 0 3.1-1.9 3.7-3.6 3.9.3.3.6.8.6 1.5v2.2c0 .2.1.5.6.4A8 8 0 0 0 8 .2z"/></svg></a></h2><p class="note" data-i="cli_sub">浏览器只能估算 UDP 和 DoT。在 VPS、Linux 主机或路由器上运行这条命令，五种协议全部实测，还会和本机当前的 DNS 对比。</p></div>
@@ -220,7 +203,7 @@
 </div>
 
 <script type="application/json" id="data">{"lang":"zh-CN","paths":{"en":"/360/","zh-CN":"/zh-cn/360/","zh-TW":"/zh-tw/360/","ja":"/ja/360/","ko":"/ko/360/","es":"/es/360/","fr":"/fr/360/","de":"/de/360/","pt":"/pt/360/","ru":"/ru/360/"},"home":"/zh-cn/","focus":"360"}</script>
-<script src="/assets/l.zh-cn.e8f42fbe1d.js"></script>
-<script src="/assets/app.725a026a12.js"></script>
+<script src="/assets/l.zh-cn.26b5d858b9.js"></script>
+<script src="/assets/app.9a38d127e9.js"></script>
 </body>
 </html>

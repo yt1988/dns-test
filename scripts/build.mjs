@@ -5,7 +5,7 @@
 //                                              hero, its addresses, facts and setup (src/about.mjs)
 //   assets/app.<hash>.js, assets/app.<hash>.css the page's code (with the resolver list) and styles, shared by every language
 //   assets/l.<lang>.<hash>.js                    the strings the browser code needs, per language
-//   assets/qr.<hash>.js                          QR encoder for the share card, loaded only when someone shares
+//   (assets/share/: the shared 1ms.dog share dialog, copied verbatim from 1ms-shell and committed, not built here)
 //   og/<lang>.png                                link preview images: made by scripts/assets.mjs, committed, not here
 //   rules/*                                     direct rules for proxy tools (src/rules.mjs)
 //   resolvers.json                              the list for the command-line tool (github.com/yt1988/dns-test-cli)
@@ -215,16 +215,14 @@ export async function build({ check = false } = {}) {
   const tpl = await readFile(new URL("page.html", src), "utf8");
 
   const root = fileURLToPath(new URL("..", import.meta.url));
-  // the QR encoder for the share card stays out of the app bundle: only a visitor who shares downloads it
-  const qr = (await bundle({ stdin: { contents: 'import q from "qrcode-generator"; self.QR1MS = q;', resolveDir: root },
-    bundle: true, minify: true, format: "iife", target: "es2020", legalComments: "none", write: false })).outputFiles[0].text;
-  const qrName = `qr.${hash(qr)}.js`;
   const js = (await bundle({ entryPoints: [fileURLToPath(new URL("app.js", src))], bundle: true, minify: true, format: "iife", target: "es2020",
-    legalComments: "none", write: false, absWorkingDir: root, define: { QR_JS: JSON.stringify("/assets/" + qrName) } })).outputFiles[0].text;
+    legalComments: "none", write: false, absWorkingDir: root,
+    // the share dialog is loaded from the site when someone shares, never bundled (1ms-shell compares the copy)
+    external: ["/assets/share/*"] })).outputFiles[0].text;
   const cssFull = (await Promise.all(["fonts.css", "base.css", "style.css"].map(f => readFile(new URL(f, src), "utf8")))).join("\n");
   const css = (await transform(cssFull, { loader: "css", minify: true, legalComments: "none" })).code;
   const jsName = `app.${hash(js)}.js`, cssName = `app.${hash(css)}.css`;
-  const files = { ["assets/" + jsName]: js, ["assets/" + cssName]: css, ["assets/" + qrName]: qr };
+  const files = { ["assets/" + jsName]: js, ["assets/" + cssName]: css };
 
   // the pages: per language, the test of them all and one page per resolver (pathOf)
   const PAGES = [null, ...RESOLVERS.map(r => r.id)];
@@ -346,6 +344,9 @@ export async function build({ check = false } = {}) {
 /assets/l.*
   ! Cache-Control
   Cache-Control: public, max-age=31536000, immutable
+/assets/share/*
+  ! Cache-Control
+  Cache-Control: public, max-age=86400
 /assets/fonts/*
   ! Cache-Control
   Cache-Control: public, max-age=31536000, immutable
@@ -371,7 +372,7 @@ export async function build({ check = false } = {}) {
 `;
 
   // generated files that are no longer produced (old hashes) are stale too
-  const gen = async () => (await readdir(new URL("assets/", pub))).filter(f => /^(app|l|qr)\..+\.(js|css)$/.test(f)).map(f => "assets/" + f);
+  const gen = async () => (await readdir(new URL("assets/", pub))).filter(f => /^(app|l)\..+\.(js|css)$/.test(f)).map(f => "assets/" + f);
   const stale = [];
   for (const [f, body] of Object.entries(files)) {
     let cur = null; try { cur = await readFile(new URL(f, pub), "utf8"); } catch (e) {}
