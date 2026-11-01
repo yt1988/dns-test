@@ -78,12 +78,15 @@ import { FORMATS, FORMAT_NAMES, items as ruleItems, inline as ruleInline, remote
   document.addEventListener("keydown", e => { if (e.key === "Escape") useOpen(false); });
 
   /* ---------- the command-line tool's install line ---------- */
-  $("#cliCopy").onclick = () => {
-    const b = $("#cliCopy");
-    (navigator.clipboard ? navigator.clipboard.writeText($("#cliCmd").textContent) : Promise.reject()).then(() => {
+  // any copy button copies the command next to it
+  document.addEventListener("click", e => {
+    const b = e.target.closest && e.target.closest("[data-copy]");
+    if (!b || !navigator.clipboard) return;
+    navigator.clipboard.writeText(b.parentNode.querySelector("code").textContent).then(() => {
       b.textContent = t("copied"); setTimeout(() => { b.textContent = t("copy"); }, 1200);
     }, () => {});
-  };
+  });
+  $$("[data-cli]").forEach(b => { b.onclick = () => openDlg("cli"); });
 
   /* ---------- tooltips (data-why) ---------- */
   let tipEl;

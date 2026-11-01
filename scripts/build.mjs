@@ -43,6 +43,22 @@ const BUILD_ONLY = new Set(["name", "seo_title", "seo_desc", "seo_kw", "og_sub",
 // every origin the page asks: the resolvers' DoH hosts and the addresses used for the estimates
 export const ORIGINS = [...new Set(RESOLVERS.flatMap(r => [r.doh, r.ip].filter(Boolean).map(u => new URL(u).origin)))];
 
+// the command-line dialog: how to install and run dnstest, every command with its copy button
+function cliDlg(T) {
+  const line = (cmd, note) => `<div class="cmdline"><code>${esc(cmd)}</code><button class="btn sm" type="button" data-copy>${esc(T("copy"))}</button></div>` + (note ? `<span class="note">${esc(note)}</span>` : "");
+  const sec = (h, body) => `<section class="rblk"><b>${esc(T(h))}</b>${body}</section>`;
+  const win = `${SITE}/dl/latest/dnstest-windows-amd64.exe`;
+  return [
+    sec("cli_install", line(`curl -fsSL ${SITE}/i | sh`, T("cli_install_s"))),
+    sec("cli_once", line(`curl -fsSL ${SITE}/i | sh -s -- run`)),
+    sec("cli_wget", line(`wget -qO- ${SITE}/i | sh`)),
+    sec("cli_opts", line("dnstest -p udp,dot,doq", T("cli_o_proto")) + line("dnstest -r cloudflare,google,alidns", T("cli_o_res")) +
+      line("dnstest -6", T("cli_o_v6")) + line("dnstest --json > dns.json", T("cli_o_json"))),
+    sec("cli_win", `<a class="dl" href="${esc(win)}">dnstest-windows-amd64.exe ↓</a><span class="note">${esc(T("cli_win_s"))}</span>`),
+    `<a class="cli-gh" href="https://github.com/yt1988/dns-test-cli" target="_blank" rel="noopener noreferrer">${esc(T("cli_src"))} ↗</a>`,
+  ].join("");
+}
+
 // one row per resolver, drawn before any answer; the details under it say what to enter to use it
 function rowsHTML(T) {
   const proto = r => [r.udp && "UDP", r.dot && "DoT", "DoH", r.doq && "DoQ"].filter(Boolean).map(p => `<i>${p}</i>`).join("");
@@ -140,7 +156,7 @@ export async function build({ check = false } = {}) {
       .replace("{{lang}}", lang).replace("{{pathsAttr}}", esc(JSON.stringify(paths))).replace("{{rootAttr}}", slug ? "" : " data-root")
       .replace("{{prepaint}}", PREPAINT).replace("{{head}}", head).replace("{{css}}", cssName).replace("{{js}}", jsName).replace("{{strings}}", sName)
       .split("{{homeHref}}").join(path(slug)).replace("{{langOpts}}", langOpts).replace("{{h1}}", esc(T("h1")))
-      .replace("{{rows}}", rowsHTML(T)).replace("{{cliCmd}}", esc(`curl -fsSL ${SITE}/i | sh`))
+      .replace("{{rows}}", rowsHTML(T)).replace("{{cliCmd}}", esc(`curl -fsSL ${SITE}/i | sh`)).replace("{{cliDlg}}", cliDlg(T))
       .replace("{{helpNav}}", helpNav).replace("{{helpC}}", helpC).replace("{{data}}", JSON.stringify({ lang, paths }).replace(/</g, "\\u003c"));
     if (/\{\{[\w:]+\}\}/.test(html)) throw new Error("unfilled placeholder in " + path(slug) + ": " + /\{\{[\w:]+\}\}/.exec(html)[0]);
     files[(slug ? slug + "/" : "") + "index.html"] = html;

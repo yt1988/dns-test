@@ -58,6 +58,7 @@
       <div class="bar">
         <div class="prog" id="prog"><i></i></div>
         <span class="prog-t" id="progTxt">&nbsp;</span>
+        <button class="btn sm" id="cliBtn" type="button" aria-haspopup="dialog" aria-controls="cli" data-cli><svg viewBox="0 0 16 16" aria-hidden="true"><rect x="1.5" y="2.5" width="13" height="11" rx="2"/><path d="M4.5 6.5l2 1.5-2 1.5M8.5 10h3"/></svg><span data-i="cli_btn"></span></button>
         <button class="btn sm" id="rulesBtn" type="button" aria-haspopup="dialog" aria-controls="rules"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M2 8h9M8 4.5 11.5 8 8 11.5M14 3v10"/></svg><span data-i="rules_btn"></span></button>
         <button class="btn pri" id="rerun" type="button" disabled><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M13.5 8a5.5 5.5 0 1 1-1.6-3.9M13.5 2v3h-3"/></svg><span data-i="rerun"></span></button>
       </div>
@@ -74,11 +75,18 @@
     <section class="cli card">
       <svg class="cli-ic" viewBox="0 0 16 16" aria-hidden="true"><rect x="1.5" y="2.5" width="13" height="11" rx="2"/><path d="M4.5 6.5l2 1.5-2 1.5M8.5 10h3"/></svg>
       <div class="cli-t"><h2 data-i="cli_h"></h2><p data-i="cli_sub"></p></div>
-      <div class="cli-cmd"><code id="cliCmd">{{cliCmd}}</code><button class="btn sm" id="cliCopy" type="button" data-i="copy"></button><a class="cli-gh" href="https://github.com/yt1988/dns-test-cli" target="_blank" rel="noopener noreferrer">GitHub ↗</a></div>
+      <div class="cli-cmd"><code id="cliCmd">{{cliCmd}}</code><button class="btn sm" type="button" data-copy data-i="copy"></button><button class="btn sm" type="button" data-cli data-i="cli_more"></button><a class="cli-gh" href="https://github.com/yt1988/dns-test-cli" target="_blank" rel="noopener noreferrer">GitHub ↗</a></div>
     </section>
 
     <div data-ms-more></div>
   </main>
+</div>
+<div class="scrim" id="cli" hidden>
+  <div class="dialog cli-dlg" role="dialog" aria-modal="true" aria-labelledby="cliT">
+    <div class="dlg-h"><div><h2 id="cliT" data-i="cli_h"></h2><p class="note" data-i="cli_sub"></p></div>
+      <button class="icon-btn" data-close type="button" aria-label="{{a:a_close}}"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M4 4l8 8M12 4l-8 8"/></svg></button></div>
+    <div class="dlg-b">{{cliDlg}}</div>
+  </div>
 </div>
 <div class="scrim" id="rules" hidden>
   <div class="dialog rules" role="dialog" aria-modal="true" aria-labelledby="rulesT">

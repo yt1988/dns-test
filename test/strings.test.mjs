@@ -41,3 +41,9 @@ test("no English fallback in the page script or the build", async () => {
     assert.ok(!/\|\|\s*\w+(\.name)?\.en\b|\?\?\s*en\[/.test(s), name + " falls back to English");
   }
 });
+
+test("lists come from $$, never $ (which returns one element)", async () => {
+  const app = await read("src/app.js");
+  const bad = app.split("\n").filter(l => /(^|[^$])\$\([^)]*\)\.(forEach|map|filter)\(/.test(l));
+  assert.deepEqual(bad, []);
+});
