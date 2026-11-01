@@ -180,13 +180,15 @@ function addrCard(r, T, lang) {
   const facts = [
     [T("rp_k_org"), local(a.org, lang)],
     hq && [T("rp_k_hq"), new Intl.DisplayNames([lang], { type: "region" }).of(hq)],
+    a.as && [T("rp_k_as"), `<span data-asn="${a.as}">AS${a.as}</span>`, true],
     ["DNSSEC", r.dnssec ? "✓" : "–"],
     [T("d_blocks"), r.blocks ? T("blocks_" + r.blocks) : T("rp_none")],
-  ].filter(Boolean).map(([k, v]) => `<li><span>${esc(k)}</span>${esc(v)}</li>`).join("");
+  ].filter(Boolean).map(([k, v, html]) => `<li><span>${esc(k)}</span>${html ? v : esc(v)}</li>`).join("");
   return `<section class="addr card">
       <div class="addr-h"><h2>${esc(fillL(lang, T("rp_addr_h"), { name }))}</h2><span class="addr-acts"><button class="btn sm" type="button" data-help="${SETUP_DOC}">${esc(T("rp_setup_btn"))}</button><a class="btn sm" href="${esc(r.site)}" target="_blank" rel="noopener noreferrer">${esc(T("d_site"))} ↗</a></span></div>
       <dl class="addr-l">${addrRows(r, T)}</dl>
       <ul class="facts">${facts}</ul>
+      <a class="next" id="leakLink" hidden target="_blank" rel="noopener">${esc(T("rp_leak"))} →</a>
     </section>
 `;
 }

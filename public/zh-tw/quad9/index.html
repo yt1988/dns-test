@@ -48,7 +48,7 @@
 <meta name="twitter:description" content="在瀏覽器裡從你自己的網路實測 Quad9 DNS：DoH 實測延遲，UDP、DoT 估算，以及它在 33 家公共 DNS 裡排第幾。附完整位址和各裝置的設定方法。">
 <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebApplication","name":"Quad9 DNS 測速 · 1ms.dog","url":"https://dns.1ms.dog/zh-tw/quad9/","applicationCategory":"UtilitiesApplication","operatingSystem":"Any","browserRequirements":"Requires JavaScript","description":"在瀏覽器裡從你自己的網路實測 Quad9 DNS：DoH 實測延遲，UDP、DoT 估算，以及它在 33 家公共 DNS 裡排第幾。附完整位址和各裝置的設定方法。","inLanguage":"zh-TW","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"USD"}},{"@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Quad9 DNS 是什麼？","acceptedAnswer":{"@type":"Answer","text":"Quad9 DNS 是 Quad9 Foundation 營運的免費公共 DNS，營運方在瑞士。一般 DNS 位址是 9.9.9.9、149.112.112.112（IPv6：2620:fe::fe、2620:fe::9），也支援加密 DNS：DoT、DoH。它的伺服器分布在全球多地，查詢會送到離你最近的一台。它驗證 DNSSEC：簽章對不上的回應會被拒絕。預設封鎖惡意軟體和釣魚網站。它由非營利機構營運。營運方聲明不保存使用者的 IP 位址。"}},{"@type":"Question","name":"Quad9 DNS 的 DNS 伺服器位址","acceptedAnswer":{"@type":"Answer","text":"使用 Quad9 DNS 時填寫：DNS (IPv4): 9.9.9.9、149.112.112.112DNS (IPv6): 2620:fe::fe、2620:fe::9DoT / 私人 DNS: dns.quad9.netDoH: https://dns.quad9.net/dns-query"}},{"@type":"Question","name":"Quad9 DNS 怎麼設定","acceptedAnswer":{"@type":"Answer","text":"Windows 11: 設定 → 網路和網際網路 → Wi‑Fi 或乙太網路 → 硬體內容 → DNS 伺服器指派 → 編輯 → 手動。開啟 IPv4，填入 9.9.9.9、149.112.112.112。要加密的話，把「DNS over HTTPS」設為「開啟（手動範本）」，範本填 https://dns.quad9.net/dns-query。macOS: 系統設定 → 網路 → Wi‑Fi（或乙太網路）→ 詳細資訊 → DNS，按 + 加入 9.9.9.9、149.112.112.112。加密 DNS（https://dns.quad9.net/dns-query）需要安裝描述檔。iPhone 和 iPad: 設定 → Wi‑Fi → 網路旁的 ⓘ → 設定 DNS → 手動，加入 9.9.9.9、149.112.112.112。只對這個 Wi‑Fi 生效；想在所有網路上用加密 DNS，安裝一個指向 https://dns.quad9.net/dns-query 的 DNS 描述檔。Android: 設定 → 網路和網際網路 → 私人 DNS → 私人 DNS 供應商主機名稱，填 dns.quad9.net。在所有網路上生效，而且是加密的（DoT）。各品牌選單位置略有不同，可在設定裡搜尋「私人 DNS」。路由器: 進入路由器管理頁面（WAN 或 DHCP 設定），把 DNS 伺服器改成 9.9.9.9、149.112.112.112：區域網路裡的所有裝置都會用它。瀏覽器: Chrome：設定 → 隱私權和安全性 → 安全性 → 使用安全 DNS → 自訂，填 https://dns.quad9.net/dns-query。Edge 在「隱私權、搜尋與服務」裡有同樣的選項。Firefox：設定 → 隱私權與安全性 → DNS over HTTPS → 最大保護 → 自訂，填 https://dns.quad9.net/dns-query。Linux: 使用 systemd-resolved 時：在 /etc/systemd/resolved.conf 裡寫 DNS=9.9.9.9 149.112.112.112，再執行 systemctl restart systemd-resolved。要用 DoT，把位址寫成 9.9.9.9#dns.quad9.net，並加上 DNSOverTLS=yes。"}},{"@type":"Question","name":"Quad9 DNS 在中國大陸能用嗎？","acceptedAnswer":{"@type":"Answer","text":"一般 DNS 通常能回應，但伺服器在中國大陸以外，延遲較高，被封鎖網站的回應還可能在途中被偽造。到它的加密 DNS（DoH、DoT）經常被阻斷或不穩定。在本頁測一下：某一列沒有回應，就表示從你的網路連不上它。"}},{"@type":"Question","name":"Quad9 DNS 和 Cloudflare DNS 哪個快？","acceptedAnswer":{"@type":"Answer","text":"沒有哪個在所有地方都比較快：關鍵是兩家離你最近的伺服器有多遠、你的網路業者怎麼繞過去。本頁大約 20 秒就能從你自己的網路把兩家連同清單裡的其他 DNS 都測一遍；頁面頂部會顯示 Quad9 DNS 排第幾、比最快的慢多少。"}},{"@type":"Question","name":"為什麼 Quad9 DNS 對我來說很慢？","acceptedAnswer":{"@type":"Answer","text":"通常是距離：離你最近的伺服器很遠，或網路業者繞了遠路。開著代理或 VPN 時，查詢也走代理，測出來的是代理的線路（加上直連規則就好）。有些網路會限速或阻斷加密 DNS。另外，沒人查過的網域總是比較慢（見「未快取」一欄）。如果清單裡有明顯更快的 DNS，換成它就好。"}}]},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"DNS 測試","item":"https://dns.1ms.dog/zh-tw/"},{"@type":"ListItem","position":2,"name":"Quad9 DNS 測速","item":"https://dns.1ms.dog/zh-tw/quad9/"}]}]}</script>
 <link rel="preload" href="/assets/fonts/geist-latin.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="/assets/app.ab4f312d62.css">
+<link rel="stylesheet" href="/assets/app.29de364af5.css">
 </head>
 <body>
 <div class="app">
@@ -111,7 +111,8 @@
 <section class="addr card">
       <div class="addr-h"><h2>Quad9 DNS 位址</h2><span class="addr-acts"><button class="btn sm" type="button" data-help="2">設定方法</button><a class="btn sm" href="https://quad9.net/" target="_blank" rel="noopener noreferrer">官網 ↗</a></span></div>
       <dl class="addr-l"><dt>DNS (IPv4)</dt><dd><code>9.9.9.9</code> <code>149.112.112.112</code></dd><dt>DNS (IPv6)</dt><dd><code>2620:fe::fe</code> <code>2620:fe::9</code></dd><dt>DoT / 私人 DNS</dt><dd><code>dns.quad9.net</code></dd><dt>DoH</dt><dd><code>https://dns.quad9.net/dns-query</code></dd></dl>
-      <ul class="facts"><li><span>營運方</span>Quad9 Foundation</li><li><span>所在地</span>瑞士</li><li><span>DNSSEC</span>✓</li><li><span>攔截</span>惡意軟體和釣魚網站</li></ul>
+      <ul class="facts"><li><span>營運方</span>Quad9 Foundation</li><li><span>所在地</span>瑞士</li><li><span>網路</span><span data-asn="19281">AS19281</span></li><li><span>DNSSEC</span>✓</li><li><span>攔截</span>惡意軟體和釣魚網站</li></ul>
+      <a class="next" id="leakLink" hidden target="_blank" rel="noopener">設定好之後，查一下裝置實際在用哪個 DNS →</a>
     </section>
     <section class="cli card">
       <svg class="cli-ic" viewBox="0 0 16 16" aria-hidden="true"><rect x="1.5" y="2.5" width="13" height="11" rx="2"/><path d="M4.5 6.5l2 1.5-2 1.5M8.5 10h3"/></svg>
@@ -121,7 +122,7 @@
     </section>
 
     <section class="res card">
-      <div class="res-h"><h2 data-i="h_all">全部 DNS</h2><a class="who" id="whoLink" hidden target="_blank" rel="noopener"><span data-i="who_link">你的裝置實際在用哪個 DNS？到「你是誰」查 DNS 洩漏</span> ↗</a></div>
+      <div class="res-h"><h2 data-i="h_all">全部 DNS</h2><span class="res-l"><a class="who" id="whoLink" hidden target="_blank" rel="noopener"><span data-i="who_link">你的裝置實際在用哪個 DNS？到「你是誰」查 DNS 洩漏</span> ↗</a><a class="who" id="speedLink" hidden target="_blank" rel="noopener"><span data-i="speed_link">DNS 沒問題但還是慢？測一下網速</span> ↗</a></span></div>
       <div class="tbl" id="tbl">
         <div class="th"><span>#</span><span data-i="c_dns">DNS</span><span data-i="c_doh">DoH</span><span data-why="估算值：瀏覽器發不出 UDP 和 DoT 查詢，這裡測的是在已建立的連線上向同一台伺服器發 DoH，往返和背後的解析器都一樣。" tabindex="0">UDP ≈</span><span data-why="估算值：瀏覽器發不出 UDP 和 DoT 查詢，這裡測的是在已建立的連線上向同一台伺服器發 DoH，往返和背後的解析器都一樣。" tabindex="0">DoT ≈</span><span data-why="任何 DNS 都沒快取過的網域：DNS 得先去問網站自己的 DNS 伺服器。快慢取決於那些伺服器在哪，所以不列入排名。" tabindex="0">未快取</span><span data-why="驗證 DNSSEC：簽章對不上的回應會被拒絕。" tabindex="0">DNSSEC</span></div>
         <div class="tr wait" data-r="cloudflare" role="button" tabindex="0" aria-expanded="false"><span class="rk"></span><span class="nm"><img class="ic" src="/icons/cloudflare.png" width="18" height="18" alt=""><b>Cloudflare</b><span class="pp"><i>UDP</i><i>DoT</i><i>DoH</i></span></span><span class="v" data-c="doh"></span><span class="v" data-c="udp"></span><span class="v" data-c="dot"></span><span class="v" data-c="unc"></span><span class="v sec"><b class="ok">✓</b></span></div><div class="td" data-d="cloudflare" hidden><dl><dt>DNS (IPv4)</dt><dd><code>1.1.1.1</code> <code>1.0.0.1</code></dd><dt>DNS (IPv6)</dt><dd><code>2606:4700:4700::1111</code> <code>2606:4700:4700::1001</code></dd><dt>DoT / 私人 DNS</dt><dd><code>one.one.one.one</code></dd><dt>DoH</dt><dd><code>https://cloudflare-dns.com/dns-query</code></dd></dl><span class="td-l"><a href="/zh-tw/cloudflare/">Cloudflare DNS 專頁：位址和設定方法 →</a><a href="https://one.one.one.one/" target="_blank" rel="noopener noreferrer">官網 ↗</a></span></div>
@@ -216,7 +217,7 @@
 </div>
 
 <script type="application/json" id="data">{"lang":"zh-TW","paths":{"en":"/quad9/","zh-CN":"/zh-cn/quad9/","zh-TW":"/zh-tw/quad9/","ja":"/ja/quad9/","ko":"/ko/quad9/","es":"/es/quad9/","fr":"/fr/quad9/","de":"/de/quad9/","pt":"/pt/quad9/","ru":"/ru/quad9/"},"home":"/zh-tw/","focus":"quad9"}</script>
-<script src="/assets/l.zh-tw.3045f787e1.js"></script>
-<script src="/assets/app.1f9a26371d.js"></script>
+<script src="/assets/l.zh-tw.40c62853a7.js"></script>
+<script src="/assets/app.1d2c5561f7.js"></script>
 </body>
 </html>

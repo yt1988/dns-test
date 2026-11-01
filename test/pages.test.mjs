@@ -41,6 +41,10 @@ test("every resolver's page, in every language, is its own", async () => {
       assert.ok(h.includes(`<div class="tr wait me" data-r="${r.id}"`), where + ": its row marked");
       assert.ok(h.includes(`<code>${r.doh}</code>`) && (!r.udp || h.includes(`<code>${r.udp[0]}</code>`)), where + ": addresses");
       assert.ok(h.includes(`-r ${r.id},${ABOUT[r.id].vs}</code>`), where + ": the command line tests it");
+      // where to go next: the DNS leak check once it is set up, its network on ASN Lookup, the speed test (the page fills
+      // their addresses from the shell's meta tags)
+      assert.ok(h.includes("id=\"leakLink\"") && h.includes("id=\"speedLink\""), where + ": leak check and speed test links");
+      if (ABOUT[r.id].as) assert.ok(h.includes(`<span data-asn="${ABOUT[r.id].as}">AS${ABOUT[r.id].as}</span>`), where + ": its AS number");
       // its questions first, in the FAQ data too; the way back to the test of them all and on to the others
       const ld = JSON.parse(one(h, /<script type="application\/ld\+json">(.*?)<\/script>/));
       const faq = ld["@graph"].find(x => x["@type"] === "FAQPage").mainEntity;

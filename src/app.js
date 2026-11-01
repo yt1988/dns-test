@@ -85,6 +85,16 @@ import { encode as encodeShare, decode as decodeShare, sharePath } from "./share
   /* ---------- Who Are You: which resolver this device really uses, and DNS leaks (on 1ms.dog only) ---------- */
   const WHO = document.querySelector('meta[name="who"]');
   if (WHO) { $("#whoLink").href = WHO.content.replace(/\/+$/, "") + D.home; $("#whoLink").hidden = false; }
+  // and the other 1ms.dog tools a DNS page leads to, each where the shell says it is (a self-hosted copy has none):
+  // a resolver's page to the DNS leak check once it is set up, every AS number to ASN Lookup, and the speed test
+  const tool = n => { const m = document.querySelector(`meta[name="${n}"]`); return m ? m.content.replace(/\/+$/, "") + D.home : ""; };
+  const link = (el, href) => { if (el && href) { el.href = href; el.hidden = false; } };
+  link($("#leakLink"), tool("who") && tool("who") + "dns-leak/");
+  link($("#speedLink"), tool("speed"));
+  if (tool("asn")) $$("[data-asn]").forEach(s => {
+    const a = Object.assign(document.createElement("a"), { href: tool("asn") + "AS" + s.dataset.asn, target: "_blank", rel: "noopener", textContent: s.textContent });
+    s.replaceWith(a);
+  });
 
   /* ---------- the command-line tool's install line ---------- */
   // any copy button copies the command next to it
