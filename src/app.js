@@ -82,17 +82,18 @@ import { encode as encodeShare, decode as decodeShare, sharePath } from "./share
   document.addEventListener("click", e => { if (!$("#use").hidden && !e.target.closest(".use-w")) useOpen(false); });
   document.addEventListener("keydown", e => { if (e.key === "Escape") useOpen(false); });
 
-  /* ---------- Who Are You: which resolver this device really uses, and DNS leaks (on 1ms.dog only) ---------- */
-  const WHO = document.querySelector('meta[name="who"]');
-  if (WHO) { $("#whoLink").href = WHO.content.replace(/\/+$/, "") + D.home; $("#whoLink").hidden = false; }
-  // and the other 1ms.dog tools a DNS page leads to, each where the shell says it is (a self-hosted copy has none):
-  // a resolver's page to the DNS leak check once it is set up, every AS number to ASN Lookup, and the speed test
+  /* ---------- the other 1ms.dog tools a DNS page leads to (on 1ms.dog only) ---------- */
+  // Each where the shell says it is (a self-hosted copy has none), in the page's language: Who Are You's DNS leak check
+  // (which resolver this device really uses: beside the list, and on a resolver's page once it is set up), every AS
+  // number to ASN Lookup, and the speed test. A link to another tool ends in the site's external-link icon.
   const tool = n => { const m = document.querySelector(`meta[name="${n}"]`); return m ? m.content.replace(/\/+$/, "") + D.home : ""; };
   const link = (el, href) => { if (el && href) { el.href = href; el.hidden = false; } };
+  link($("#whoLink"), tool("who") && tool("who") + "dns-leak/");
   link($("#leakLink"), tool("who") && tool("who") + "dns-leak/");
   link($("#speedLink"), tool("speed"));
   if (tool("asn")) $$("[data-asn]").forEach(s => {
-    const a = Object.assign(document.createElement("a"), { href: tool("asn") + "AS" + s.dataset.asn, target: "_blank", rel: "noopener", textContent: s.textContent });
+    const a = Object.assign(document.createElement("a"), { className: "xl", href: tool("asn") + "AS" + s.dataset.asn, target: "_blank", rel: "noopener", textContent: s.textContent });
+    a.insertAdjacentHTML("beforeend", $("#whoLink svg.ext").outerHTML);
     s.replaceWith(a);
   });
 

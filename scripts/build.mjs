@@ -188,7 +188,7 @@ function addrCard(r, T, lang) {
       <div class="addr-h"><h2>${esc(fillL(lang, T("rp_addr_h"), { name }))}</h2><span class="addr-acts"><button class="btn sm" type="button" data-help="${SETUP_DOC}">${esc(T("rp_setup_btn"))}</button><a class="btn sm" href="${esc(r.site)}" target="_blank" rel="noopener noreferrer">${esc(T("d_site"))} ↗</a></span></div>
       <dl class="addr-l">${addrRows(r, T)}</dl>
       <ul class="facts">${facts}</ul>
-      <a class="next" id="leakLink" hidden target="_blank" rel="noopener">${esc(T("rp_leak"))} →</a>
+      <a class="next xl" id="leakLink" hidden target="_blank" rel="noopener">${esc(T("rp_leak"))}<svg class="ext" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 2.5h4.5V7M13.5 2.5 7.5 8.5M12 10v3.5H2.5V4H6"/></svg></a>
     </section>
 `;
 }
