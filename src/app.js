@@ -77,6 +77,14 @@ import { FORMATS, FORMAT_NAMES, items as ruleItems, inline as ruleInline, remote
   document.addEventListener("click", e => { if (!$("#use").hidden && !e.target.closest(".use-w")) useOpen(false); });
   document.addEventListener("keydown", e => { if (e.key === "Escape") useOpen(false); });
 
+  /* ---------- the command-line tool's install line ---------- */
+  $("#cliCopy").onclick = () => {
+    const b = $("#cliCopy");
+    (navigator.clipboard ? navigator.clipboard.writeText($("#cliCmd").textContent) : Promise.reject()).then(() => {
+      b.textContent = t("copied"); setTimeout(() => { b.textContent = t("copy"); }, 1200);
+    }, () => {});
+  };
+
   /* ---------- tooltips (data-why) ---------- */
   let tipEl;
   function showTip(el) {
@@ -156,7 +164,7 @@ import { FORMATS, FORMAT_NAMES, items as ruleItems, inline as ruleInline, remote
     $("#winName").innerHTML = '<i class="skl"></i>'; $("#winIc").removeAttribute("style");
     $("#winSub").innerHTML = "&nbsp;";
     $$(".win-m li").forEach(li => { li.querySelector("b").className = ""; li.querySelector("b").textContent = "–"; });
-    useOpen(false); $("#useBtn").disabled = true;
+    useOpen(false); $(".use-w").classList.remove("on");
     $("#winK").textContent = t("lead_k");
     $("#alt").innerHTML = "&nbsp;";
   }
@@ -176,12 +184,17 @@ import { FORMATS, FORMAT_NAMES, items as ruleItems, inline as ruleInline, remote
     const before = new Map(els.map(e => [e, e.getBoundingClientRect().top]));
     for (const e of els) tbl.appendChild(e);
     if (matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    const moved = [];
     for (const e of els) {
       const dy = before.get(e) - e.getBoundingClientRect().top;
       if (!dy || e.hidden) continue;
       e.style.transition = "none"; e.style.transform = `translateY(${dy}px)`;
-      requestAnimationFrame(() => requestAnimationFrame(() => { e.style.transition = "transform .45s cubic-bezier(.2,.8,.2,1)"; e.style.transform = ""; }));
+      moved.push(e);
     }
+    // one forced style flush, then the slide back starts in the same task: no animation frame needed, so a row can't
+    // be left halfway when the tab is in the background
+    if (moved.length) void $("#tbl").offsetHeight;
+    for (const e of moved) { e.style.transition = "transform .45s cubic-bezier(.2,.8,.2,1)"; e.style.transform = ""; }
   }
   // while the test runs: by the time so far, at most every 600 ms so the list doesn't shuffle on every answer
   let sortAt = 0, sortTimer = 0;
@@ -219,6 +232,7 @@ import { FORMATS, FORMAT_NAMES, items as ruleItems, inline as ruleInline, remote
     // what to enter, by what the device likely supports first
     const use = [win.udp && [t("use_udp"), win.udp.join("  ")], win.dot && [t("use_dot"), win.dot], [t("use_doh"), win.doh]].filter(Boolean).slice(0, 3);
     $("#useBtn").disabled = false;
+    $(".use-w").classList.toggle("on", final);
     $$("#use li").forEach((li, i) => {
       li.querySelector("span").textContent = use[i] ? use[i][0] : "";
       li.querySelector("code").textContent = use[i] ? use[i][1] : "";

@@ -20,21 +20,24 @@ code.copied { background: var(--ink-soft); color: var(--ink); }
    the name. It keeps its height from the first paint, so a new leader only changes text. */
 .win-l { display: flex; flex-direction: column; align-items: center; gap: 6px; min-width: 0; text-align: center; }
 .win-k { font-size: 11.5px; font-weight: 600; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); }
-.win-n { display: flex; align-items: center; justify-content: center; gap: 12px; min-height: 48px; max-width: 100%; }
+.win-n { display: flex; align-items: center; justify-content: center; gap: 12px; height: 52px; width: 100%; }
 .win-n > b { min-width: 0; font-size: clamp(28px, 3.6vw, 38px); line-height: 1.15; font-weight: 750; letter-spacing: -.02em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .win-ic { width: 36px; height: 36px; flex: none; border-radius: 8px; background: var(--soft) center / 100% no-repeat; }
 .win-ic:not([style]) { visibility: hidden; }
-.win-s { color: var(--muted); font-size: 13px; min-height: 1.5em; }
+.win-s, .alt { width: 100%; height: 1.6em; line-height: 1.6; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.win-s { color: var(--muted); font-size: 13px; }
 .win-m { list-style: none; margin: 8px 0 0; padding: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); width: 100%; max-width: 540px; }
-.win-m li { display: flex; flex-direction: column; align-items: center; gap: 2px; padding: 0 10px; border-left: 1px solid var(--line); min-width: 0; }
+.win-m li { display: flex; flex-direction: column; align-items: stretch; text-align: center; gap: 2px; padding: 0 10px; border-left: 1px solid var(--line); min-width: 0; }
 .win-m li:first-child { border-left: 0; }
 .win-m li > span { font-size: 12px; color: var(--muted); font-weight: 600; white-space: nowrap; }
 .win-m li > span i { font-style: normal; font-weight: 400; }
-.win-m b { font: 600 22px/30px var(--f-num); font-variant-numeric: tabular-nums; white-space: nowrap; }
+.win-m b { display: block; font: 600 22px/30px var(--f-num); font-variant-numeric: tabular-nums; white-space: nowrap; }
 .win-m b.na { color: var(--muted); font-weight: 400; cursor: help; }
-.alt { font-size: 13px; color: var(--muted); min-height: 1.6em; line-height: 1.6; margin-top: 6px; }
+.alt { font-size: 13px; color: var(--muted); margin-top: 6px; }
 .alt b { color: var(--fg); font-weight: 600; }
-.use-w { position: relative; flex: none; margin-left: 4px; }
+/* shown when the test is over; until then it keeps its place, so the name doesn't move when it appears */
+.use-w { position: relative; flex: none; margin-left: 4px; visibility: hidden; }
+.use-w.on { visibility: visible; }
 .use-w .btn.sm { height: 30px; padding: 0 10px; font-size: 12.5px; }
 .use-w .btn.sm[aria-expanded="true"] { border-color: var(--ink); background: var(--ink-soft); }
 .use { position: absolute; z-index: 30; top: calc(100% + 6px); left: 50%; transform: translateX(-50%); text-align: left; width: max-content; max-width: min(420px, calc(100vw - 32px));
@@ -49,7 +52,8 @@ code.copied { background: var(--ink-soft); color: var(--ink); }
 .prog i { display: block; height: 100%; background: var(--ink); transform: scaleX(0); transform-origin: left; transition: transform .25s, opacity .4s .3s; }
 .prog.end i { opacity: 0; }
 .bar .btn { flex: none; }
-.bar .btn.sm { margin-left: auto; height: 30px; padding: 0 10px; font-size: 12.5px; color: var(--muted); flex: none; }
+.bar #rulesBtn { margin-left: auto; }
+.bar .btn.sm { height: 30px; padding: 0 10px; font-size: 12.5px; color: var(--muted); flex: none; }
 .bar .btn.sm:hover { color: var(--fg); border-color: var(--ink); }
 .prog-t { font: 12.5px var(--f-num); color: var(--muted); font-variant-numeric: tabular-nums; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 
@@ -90,6 +94,17 @@ code.copied { background: var(--ink-soft); color: var(--ink); }
 .td a:hover { text-decoration: underline; }
 .tip { position: fixed; z-index: 50; white-space: pre-line; max-width: min(340px, calc(100vw - 16px)); background: var(--fg); color: var(--bg); font: 500 12.5px/1.45 var(--f-ui); padding: 6px 10px; border-radius: 7px; pointer-events: none; opacity: 0; transition: opacity .12s; }
 .tip.on { opacity: 1; }
+
+/* the command-line tool: UDP, DoT and DoQ measured for real on a server */
+.cli { padding: 16px 22px; display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 10px 14px; align-items: center; }
+.cli-ic { width: 28px; height: 28px; color: var(--ink); }
+.cli-t h2 { font-size: 15px; }
+.cli-t p { color: var(--muted); font-size: 13px; margin-top: 2px; }
+.cli-cmd { grid-column: 2; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.cli-cmd code { font-size: 13px; padding: 6px 10px; white-space: nowrap; }
+.cli-cmd .btn.sm { height: 30px; padding: 0 12px; font-size: 12.5px; }
+.cli-gh { font-size: 12.5px; color: var(--muted); text-decoration: none; white-space: nowrap; }
+.cli-gh:hover { color: var(--ink); }
 
 /* the other 1ms.dog tools */
 .tools-sec h2 { margin: 0 0 10px 2px; }
@@ -141,9 +156,13 @@ details.rblk > summary { cursor: pointer; font-size: 13px; color: var(--ink); }
   .bar { margin: 0 -16px; padding: 11px 16px 13px; }
   .res { padding: 16px 16px 12px; }
   .use { left: auto; right: 0; transform: none; }
+  .alt { height: 3.2em; white-space: normal; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
   .win-m li { padding: 0 10px; }
   .win-m b { font-size: 18px; }
   /* phones: rank, name, DoH, UDP ≈; the rest is in the row's details and the hero */
+  .cli { padding: 14px 16px; }
+  .cli-cmd { grid-column: 1 / -1; }
+  .cli-cmd code { white-space: normal; }
   .th, .tr { grid-template-columns: 20px minmax(0, 1fr) 62px 62px; }
   .th > :nth-child(n+5), .tr > :nth-child(n+5) { display: none; }
   .td { padding-left: 12px; }

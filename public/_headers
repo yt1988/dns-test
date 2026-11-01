@@ -19,6 +19,9 @@
   Cache-Control: public, max-age=31536000, immutable
 /icons/*
   Cache-Control: public, max-age=2592000
+/resolvers.json
+  Access-Control-Allow-Origin: *
+  Cache-Control: public, max-age=3600
 /rules/*
   Access-Control-Allow-Origin: *
   Cache-Control: public, max-age=3600

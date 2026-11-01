@@ -4,15 +4,16 @@
 //   assets/app.<hash>.js, assets/app.<hash>.css the page's code (with the resolver list) and styles, shared by every language
 //   assets/l.<lang>.<hash>.js                    the strings the browser code needs, per language
 //   rules/*                                     direct rules for proxy tools (src/rules.mjs)
+//   resolvers.json                              the list for the command-line tool (github.com/yt1988/dns-test-cli)
 //   sitemap.xml, robots.txt, llms.txt, _headers  SEO and security headers (CSP: every resolver the page asks)
-// There is no Worker script: the whole site is static files.
+// The Worker (src/worker.js: the command-line tool's installer and downloads) is deployed from source by wrangler.
 // Usage: node scripts/build.mjs          write the files
 //        node scripts/build.mjs --check  exit 1 if anything in public/ is out of date (CI)
 import { mkdir, readFile, readdir, writeFile, rm } from "node:fs/promises";
 import { createHash } from "node:crypto";
 import { fileURLToPath } from "node:url";
 import { build as bundle, transform } from "esbuild";
-import { RESOLVERS } from "../src/resolvers.mjs";
+import { RESOLVERS, NAMES, NXZONE, CHECKS } from "../src/resolvers.mjs";
 import { ruleSets } from "../src/rules.mjs";
 
 const SITE = (process.env.SITE_URL || "https://dns.1ms.dog").replace(/\/+$/, "");
@@ -81,6 +82,18 @@ function rowsHTML(T) {
   }).join("\n");
 }
 
+// The list as the command-line tool reads it: every way to reach each resolver, which the tool measures for real
+// (UDP, TCP, DoT, DoH, DoQ). It looks up host names itself, so only names and URLs are given.
+export function resolversJSON() {
+  const ep = (k, v) => v ? { [k]: v } : undefined;
+  const list = RESOLVERS.map(r => Object.fromEntries(Object.entries({
+    id: r.id, name: r.name, group: r.group, cc: r.cc, site: r.site, udp: r.udp, udp6: r.udp6,
+    dot: ep("host", r.dot), doh: ep("url", r.doh), doq: ep("host", r.doq), dnssec: r.dnssec, blocks: r.blocks,
+  }).filter(([, v]) => v !== undefined)));
+  return JSON.stringify({ version: 1, names: NAMES, nxzone: NXZONE,
+    checks: { dnssec_bad: CHECKS.dnssecBad, dnssec_good: CHECKS.dnssecGood, ecs: CHECKS.ecs }, resolvers: list }, null, 1) + "\n";
+}
+
 export async function build({ check = false } = {}) {
   const I = await loadI18n(), en = I.en;
   const langs = LANGS.filter(([l]) => I[l]);
@@ -145,7 +158,7 @@ export async function build({ check = false } = {}) {
       .replace("{{lang}}", lang).replace("{{pathsAttr}}", esc(JSON.stringify(paths))).replace("{{rootAttr}}", slug ? "" : " data-root")
       .replace("{{prepaint}}", PREPAINT).replace("{{head}}", head).replace("{{css}}", cssName).replace("{{js}}", jsName).replace("{{strings}}", sName)
       .split("{{homeHref}}").join(path(slug)).replace("{{langOpts}}", langOpts).replace("{{h1}}", esc(T("h1")))
-      .replace("{{rows}}", rowsHTML(T)).replace("{{tools}}", tools)
+      .replace("{{rows}}", rowsHTML(T)).replace("{{cliCmd}}", esc(`curl -fsSL ${SITE}/i | sh`)).replace("{{tools}}", tools)
       .replace("{{helpNav}}", helpNav).replace("{{helpC}}", helpC).replace("{{data}}", JSON.stringify({ lang, paths }).replace(/</g, "\\u003c"));
     if (/\{\{[\w:]+\}\}/.test(html)) throw new Error("unfilled placeholder in " + path(slug) + ": " + /\{\{[\w:]+\}\}/.exec(html)[0]);
     files[(slug ? slug + "/" : "") + "index.html"] = html;
@@ -155,6 +168,7 @@ export async function build({ check = false } = {}) {
     langs.map(([, s]) => `  <url>\n    <loc>${SITE + path(s)}</loc>\n` + langs.map(([l, s2]) => `    <xhtml:link rel="alternate" hreflang="${l}" href="${SITE + path(s2)}"/>`).join("\n") +
       `\n    <xhtml:link rel="alternate" hreflang="x-default" href="${SITE}/"/>\n  </url>`).join("\n") + "\n</urlset>\n";
   for (const [name, text] of Object.entries(ruleSets(SITE))) files["rules/" + name] = text;
+  files["resolvers.json"] = resolversJSON();
   files["robots.txt"] = `User-agent: *\nAllow: /\n\nSitemap: ${SITE}/sitemap.xml\n`;
   files["llms.txt"] = `# ${en.app_name} · 1ms.dog
 
@@ -196,6 +210,9 @@ ${TOOLS.map(x => `- ${typeof x.name === "string" ? x.name : x.name.en}: https://
   Cache-Control: public, max-age=31536000, immutable
 /icons/*
   Cache-Control: public, max-age=2592000
+/resolvers.json
+  Access-Control-Allow-Origin: *
+  Cache-Control: public, max-age=3600
 /rules/*
   Access-Control-Allow-Origin: *
   Cache-Control: public, max-age=3600

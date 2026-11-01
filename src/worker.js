@@ -1,0 +1,73 @@
+// The DNS Test Worker. Files in ./public are served before it runs, so it only sees paths that are not files:
+//   /i                    the command-line tool's installer (install.sh of the latest release): curl -fsSL …/i | sh
+//   /v                    the latest dnstest release, "0.1.0", asked of GitHub and kept for 10 minutes
+//   /dl/<tag>/<file>      a file of that release, fetched from GitHub once and then kept (a tag's files never change);
+//                         <tag> may be "latest", which redirects to the current tag
+//   anything else         a bare 404; 1ms-shell puts the shared 1ms.dog 404 page in front of it
+// The installer and the tool try these before GitHub, which is often slow or blocked in mainland China.
+
+const REPO = "yt1988/dns-test-cli";
+const FILE = /^(dnstest-[a-z0-9]+-[a-z0-9]+(\.exe)?|checksums\.txt|install\.sh)$/;
+
+export default {
+  async fetch(req, _env, ctx) {
+    const url = new URL(req.url);
+    if (req.method !== "GET" && req.method !== "HEAD") return new Response("Method not allowed\n", { status: 405 });
+
+    if (url.pathname === "/v" || url.pathname === "/i") {
+      const v = await latest(url, ctx);
+      if (!v) return new Response("GitHub did not answer\n", { status: 502 });
+      if (url.pathname === "/i") return release(`v${v}`, "install.sh", req, ctx);
+      return new Response(v + "\n", { headers: { "content-type": "text/plain; charset=utf-8", "cache-control": "public, max-age=300" } });
+    }
+
+    const m = /^\/dl\/(latest|v\d+\.\d+\.\d+)\/([^/]+)$/.exec(url.pathname);
+    if (m && FILE.test(m[2])) {
+      if (m[1] === "latest") {
+        const v = await latest(url, ctx);
+        if (!v) return new Response("GitHub did not answer\n", { status: 502 });
+        return new Response(null, { status: 302, headers: { location: `/dl/v${v}/${m[2]}`, "cache-control": "public, max-age=300" } });
+      }
+      return release(m[1], m[2], req, ctx);
+    }
+
+    return new Response(req.method === "HEAD" ? null : "Not found\n", {
+      status: 404,
+      headers: { "content-type": "text/plain; charset=utf-8", "cache-control": "public, max-age=0, must-revalidate" },
+    });
+  },
+};
+
+// the newest release's version, from the redirect GitHub gives for /releases/latest
+async function latest(url, ctx) {
+  const cache = caches.default, key = new URL("/__latest", url).toString();
+  const hit = await cache.match(key);
+  if (hit) return (await hit.text()).trim();
+  const res = await fetch(`https://github.com/${REPO}/releases/latest`, { method: "HEAD", redirect: "manual" });
+  const tag = (res.headers.get("location") || "").split("/").pop();
+  if (!/^v\d+\.\d+\.\d+$/.test(tag)) return null;
+  const v = tag.slice(1);
+  ctx.waitUntil(cache.put(key, new Response(v, { headers: { "cache-control": "public, max-age=600" } })));
+  return v;
+}
+
+async function release(tag, file, req, ctx) {
+  const cache = caches.default;
+  const key = new Request(new URL(`/dl/${tag}/${file}`, req.url).toString());
+  let res = await cache.match(key);
+  if (!res) {
+    const up = await fetch(`https://github.com/${REPO}/releases/download/${tag}/${file}`, { redirect: "follow" });
+    if (!up.ok) return new Response(`${tag}/${file}: GitHub answered ${up.status}\n`, { status: up.status === 404 ? 404 : 502 });
+    const text = /\.(txt|sh)$/.test(file);
+    // no content-length: GitHub may send the file compressed, and the body here is already decompressed
+    res = new Response(up.body, {
+      headers: {
+        "content-type": text ? "text/plain; charset=utf-8" : "application/octet-stream",
+        "cache-control": "public, max-age=31536000, immutable",
+        ...(text ? {} : { "content-disposition": `attachment; filename="${file}"` }),
+      },
+    });
+    ctx.waitUntil(cache.put(key, res.clone()));
+  }
+  return req.method === "HEAD" ? new Response(null, { headers: res.headers }) : res;
+}
