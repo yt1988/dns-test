@@ -1,5 +1,6 @@
 // The DNS Test Worker. Files in ./public are served before it runs, so it only sees paths that are not files:
-//   /i                    the command-line tool's installer (install.sh of the latest release): curl -fsSL …/i | sh
+//   /i, /i.ps1            the command-line tool's installers (install.sh, install.ps1 of the latest release):
+//                         curl -fsSL …/i | sh   ·   irm …/i.ps1 | iex
 //   /v                    the latest dnstest release, "0.1.0", asked of GitHub and kept for 10 minutes
 //   /dl/<tag>/<file>      a file of that release, fetched from GitHub once and then kept (a tag's files never change);
 //                         <tag> may be "latest", which redirects to the current tag
@@ -7,17 +8,18 @@
 // The installer and the tool try these before GitHub, which is often slow or blocked in mainland China.
 
 const REPO = "yt1988/dns-test-cli";
-const FILE = /^(dnstest-[a-z0-9]+-[a-z0-9]+(\.exe)?|checksums\.txt|install\.sh)$/;
+const FILE = /^(dnstest-[a-z0-9]+-[a-z0-9]+(\.exe)?|checksums\.txt|install\.sh|install\.ps1)$/;
+const INSTALLER = { "/i": "install.sh", "/i.ps1": "install.ps1" };
 
 export default {
   async fetch(req, _env, ctx) {
     const url = new URL(req.url);
     if (req.method !== "GET" && req.method !== "HEAD") return new Response("Method not allowed\n", { status: 405 });
 
-    if (url.pathname === "/v" || url.pathname === "/i") {
+    if (url.pathname === "/v" || INSTALLER[url.pathname]) {
       const v = await latest(url, ctx);
       if (!v) return new Response("GitHub did not answer\n", { status: 502 });
-      if (url.pathname === "/i") return release(`v${v}`, "install.sh", req, ctx);
+      if (INSTALLER[url.pathname]) return release(`v${v}`, INSTALLER[url.pathname], req, ctx);
       return new Response(v + "\n", { headers: { "content-type": "text/plain; charset=utf-8", "cache-control": "public, max-age=300" } });
     }
 
@@ -58,7 +60,7 @@ async function release(tag, file, req, ctx) {
   if (!res) {
     const up = await fetch(`https://github.com/${REPO}/releases/download/${tag}/${file}`, { redirect: "follow" });
     if (!up.ok) return new Response(`${tag}/${file}: GitHub answered ${up.status}\n`, { status: up.status === 404 ? 404 : 502 });
-    const text = /\.(txt|sh)$/.test(file);
+    const text = /\.(txt|sh|ps1)$/.test(file);
     // no content-length: GitHub may send the file compressed, and the body here is already decompressed
     res = new Response(up.body, {
       headers: {

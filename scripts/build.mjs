@@ -54,7 +54,7 @@ function cliDlg(T) {
     sec("cli_wget", line(`wget -qO- ${SITE}/i | sh`)),
     sec("cli_opts", line("dnstest -p udp,dot,doq", T("cli_o_proto")) + line("dnstest -r cloudflare,google,alidns", T("cli_o_res")) +
       line("dnstest -6", T("cli_o_v6")) + line("dnstest --json > dns.json", T("cli_o_json"))),
-    sec("cli_win", `<a class="dl" href="${esc(win)}">dnstest-windows-amd64.exe ↓</a><span class="note">${esc(T("cli_win_s"))}</span>`),
+    sec("cli_win", line(`irm ${SITE}/i.ps1 | iex`, T("cli_win_s")) + `<a class="dl" href="${esc(win)}">dnstest-windows-amd64.exe ↓</a>`),
     `<a class="cli-gh" href="https://github.com/yt1988/dns-test-cli" target="_blank" rel="noopener noreferrer"><svg class="gh-ic" viewBox="0 0 16 16" aria-hidden="true"><path d="M8 .2a8 8 0 0 0-2.5 15.6c.4 0 .5-.2.5-.4v-1.5c-2.2.5-2.7-1-2.7-1-.4-.9-.9-1.2-.9-1.2-.7-.5.1-.5.1-.5.8.1 1.2.8 1.2.8.7 1.3 1.9.9 2.4.7 0-.5.3-.9.5-1.1-1.8-.2-3.6-.9-3.6-4 0-.9.3-1.6.8-2.1-.1-.2-.4-1 .1-2.1 0 0 .7-.2 2.2.8a7.4 7.4 0 0 1 4 0c1.5-1 2.2-.8 2.2-.8.4 1.1.2 1.9.1 2.1.5.6.8 1.3.8 2.1 0 3.1-1.9 3.7-3.6 3.9.3.3.6.8.6 1.5v2.2c0 .2.1.5.6.4A8 8 0 0 0 8 .2z"/></svg>${esc(T("cli_src"))} ↗</a>`,
   ].join("");
 }
