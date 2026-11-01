@@ -1,5 +1,6 @@
 // DNS Test page. Every resolver's row is in the HTML from the start; the test (src/measure.mjs) fills them as answers
-// come in, and when it ends the rows are sorted once and the hero names the fastest. Strings: window.L1MS.
+// come in. The rows stay sorted by the time so far and the hero names the leader, both as the answers come in; at the
+// end, by the final medians. Strings: window.L1MS.
 import { RESOLVERS, NAMES, NXZONE } from "./resolvers.mjs";
 import { targets, run, median, loss, score } from "./measure.mjs";
 import { FORMATS, FORMAT_NAMES, items as ruleItems, inline as ruleInline, remote as ruleRemote } from "./rules.mjs";
@@ -154,14 +155,37 @@ import { FORMATS, FORMAT_NAMES, items as ruleItems, inline as ruleInline, remote
     $("#alt").innerHTML = "&nbsp;";
   }
 
-  // put the rows in order: fastest DoH first, then the ones with no answer
+  // put the rows in order: fastest DoH first, then the ones with no answer yet, then the ones that didn't answer.
+  // Rows that move slide from where they were (transform only, nothing else on the page moves).
+  let order = RESOLVERS.map(r => r.id);
   function sortRows(ranked) {
     const tbl = $("#tbl");
-    const down = RESOLVERS.filter(r => !ranked.includes(r));
-    [...ranked, ...down].forEach((r, i) => {
-      ROW[r.id].querySelector(".rk").textContent = ranked.includes(r) ? i + 1 : "";
-      tbl.appendChild(ROW[r.id]); tbl.appendChild(DET[r.id]);
-    });
+    const wait = RESOLVERS.filter(r => !ranked.includes(r) && !ROW[r.id].classList.contains("down"));
+    const down = RESOLVERS.filter(r => !ranked.includes(r) && ROW[r.id].classList.contains("down"));
+    const next = [...ranked, ...wait, ...down];
+    next.forEach((r, i) => { ROW[r.id].querySelector(".rk").textContent = ranked.includes(r) ? i + 1 : ""; });
+    if (next.map(r => r.id).join() === order.join()) return;
+    order = next.map(r => r.id);
+    const els = next.flatMap(r => [ROW[r.id], DET[r.id]]);
+    const before = new Map(els.map(e => [e, e.getBoundingClientRect().top]));
+    for (const e of els) tbl.appendChild(e);
+    if (matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    for (const e of els) {
+      const dy = before.get(e) - e.getBoundingClientRect().top;
+      if (!dy || e.hidden) continue;
+      e.style.transition = "none"; e.style.transform = `translateY(${dy}px)`;
+      requestAnimationFrame(() => requestAnimationFrame(() => { e.style.transition = "transform .45s cubic-bezier(.2,.8,.2,1)"; e.style.transform = ""; }));
+    }
+  }
+  // while the test runs: by the time so far, at most every 600 ms so the list doesn't shuffle on every answer
+  let sortAt = 0, sortTimer = 0;
+  function sortLive() {
+    if (sortTimer) return;
+    sortTimer = setTimeout(() => {
+      sortTimer = 0; sortAt = performance.now();
+      if (!RUN) return;
+      sortRows(RESOLVERS.map(r => ({ r, s: soFar(tgt(r.id, "doh")) })).filter(x => x.s != null).sort((a, b) => a.s - b.s).map(x => x.r));
+    }, Math.max(0, 600 - (performance.now() - sortAt)));
   }
 
   // A target's time so far: the median of its rounds once it has two, before that the cache-filling queries of the
@@ -227,7 +251,7 @@ import { FORMATS, FORMAT_NAMES, items as ruleItems, inline as ruleInline, remote
     $("#prog").classList.remove("end"); $("#rerun").disabled = true;
     total = TS.length * (1 + 10); done = 0; t0 = performance.now(); progress();
     const res = await run(TS, { names: NAMES, nxzone: NXZONE, signal: ctl.signal, onStep: x => {
-      done = Math.min(total, done + 1); progress(); fillRow(x.r.id); heroSoon();
+      done = Math.min(total, done + 1); progress(); fillRow(x.r.id); heroSoon(); sortLive();
       // a target that didn't answer the warm-up skips the rounds
       if (x.up === false) { done += 10; progress(); }
     } });
