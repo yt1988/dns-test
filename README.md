@@ -63,7 +63,7 @@ npm run dev        # http://localhost:8793
 npx wrangler deploy
 ```
 
-The site is static files on a Cloudflare Worker with static assets (no Worker script, so requests aren't metered). `wrangler.toml` binds no domain: on 1ms.dog the shared shell routes `dns.1ms.dog` to it. To self-host, bind your own domain to the Worker in the Cloudflare dashboard and build with `SITE_URL=https://your.domain npm run build`. The random names for uncached lookups are under `NXZONE` in `src/resolvers.mjs` (`nx.dns.1ms.dog`); any zone with no wildcard record works.
+The site is static files on a Cloudflare Worker with static assets: files are served without running any script, so those requests aren't metered. `src/worker.js` only answers `/i`, `/v` and `/dl/*` (the command-line tool's installer and its release files, passed on from GitHub). Pushing to `main` deploys through Workers Builds (`npm ci && npm test`, then `npx wrangler deploy`). `wrangler.toml` binds no domain: on 1ms.dog the shared shell routes `dns.1ms.dog` to it. To self-host, bind your own domain to the Worker in the Cloudflare dashboard and build with `SITE_URL=https://your.domain npm run build`. The random names for uncached lookups are under `NXZONE` in `src/resolvers.mjs` (`nx.dns.1ms.dog`); any zone with no wildcard record works.
 
 ## License
 
