@@ -4,6 +4,7 @@
 import { RESOLVERS, NAMES, NXZONE } from "./resolvers.mjs";
 import { targets, run, median, loss, score } from "./measure.mjs";
 import { FORMATS, FORMAT_NAMES, items as ruleItems, inline as ruleInline, remote as ruleRemote } from "./rules.mjs";
+import { encode as encodeShare, decode as decodeShare, sharePath } from "./share.mjs";
 
 (function () {
   "use strict";
@@ -76,6 +77,10 @@ import { FORMATS, FORMAT_NAMES, items as ruleItems, inline as ruleInline, remote
   $("#useBtn").onclick = e => { e.stopPropagation(); useOpen($("#use").hidden); };
   document.addEventListener("click", e => { if (!$("#use").hidden && !e.target.closest(".use-w")) useOpen(false); });
   document.addEventListener("keydown", e => { if (e.key === "Escape") useOpen(false); });
+
+  /* ---------- Who Are You: which resolver this device really uses, and DNS leaks (on 1ms.dog only) ---------- */
+  const WHO = document.querySelector('meta[name="who"]');
+  if (WHO) { $("#whoLink").href = WHO.content.replace(/\/+$/, "") + D.paths[D.lang]; $("#whoLink").hidden = false; }
 
   /* ---------- the command-line tool's install line ---------- */
   // any copy button copies the command next to it
@@ -258,16 +263,168 @@ import { FORMATS, FORMAT_NAMES, items as ruleItems, inline as ruleInline, remote
     $("#prog").classList.add("end");
     $("#progTxt").textContent = t("done", { s: ((performance.now() - t0) / 1000).toFixed(0), names: names.join(", ") });
     $("#rerun").disabled = false;
+    LAST = snapshot(rs);
+    $("#shareBtn").disabled = false;
   }
 
-  // where the visitor is (Cloudflare's own trace, on sites it serves): only to add the mainland China note
+  // where the visitor is (Cloudflare's own trace, on sites it serves): for the mainland China note, and for the share
+  // card when the visitor ticks "show my country"
   let CC = "";
   fetch("/cdn-cgi/trace", { cache: "no-store" }).then(r => r.ok ? r.text() : "").then(s => { const m = /\bloc=([A-Z]{2})/.exec(s); if (m) CC = m[1]; }).catch(() => {});
+  const country = cc => { try { return new Intl.DisplayNames([D.lang], { type: "region" }).of(cc); } catch (e) { return cc; } };
+
+  /* ---------- share: a link that carries the result, an image drawn here, the system share sheet ---------- */
+  // The result as the link carries it (src/share.mjs): every resolver in rank order, its times, nothing about the visitor
+  let LAST = null;
+  function snapshot(rs) {
+    const ranked = rs.map(x => x.r), rest = RESOLVERS.filter(r => !ranked.includes(r));
+    const m = x => x && x.up && x.cached.length ? median(x.cached) : null;
+    return { ts: Date.now(), cc: CC, rows: [...ranked, ...rest].map(r => {
+      const d = tgt(r.id, "doh");
+      return { id: r.id, doh: m(d), udp: m(estOf(r, "udp")), dot: m(estOf(r, "dot")), unc: d && d.up ? median(d.uncached) : null, loss: d && d.up ? loss(d) : 0 };
+    }) };
+  }
+  const shareLink = () => location.origin + D.paths[D.lang] + "r/" + encodeShare({ ...LAST, cc: $("#shareCc").checked ? LAST.cc : "" });
+  let shortFor = null;
+  async function shortLink(long) {
+    const meta = document.querySelector('meta[name="shortener"]');          // present on 1ms.dog; absent when self-hosted
+    if (!meta) return long;
+    if (shortFor && shortFor[0] === long) return shortFor[1];
+    try {
+      const r = await fetch(meta.content, { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ url: long }), signal: AbortSignal.timeout(5000) });
+      const j = await r.json(); if (j.url) { shortFor = [long, j.url]; return j.url; }
+    } catch (e) {}
+    return long;
+  }
+  let shareBlob = null, shareRun = 0;
+  async function prepareShare() {
+    const run = ++shareRun, long = shareLink();
+    $("#shareUrl").value = long; $("#shareImg").removeAttribute("src"); shareBlob = null;
+    loadQR().catch(() => {});
+    const url = await shortLink(long);
+    if (run !== shareRun) return;
+    $("#shareUrl").value = url;
+    // the QR code carries the short link; a long one would be too dense to scan, so then it points at the page
+    const c = await drawCard(url.length <= 300 ? url : location.origin + D.paths[D.lang]).catch(() => null);
+    if (!c || run !== shareRun) return;
+    $("#shareImg").src = c.toDataURL("image/png"); c.toBlob(b => { shareBlob = b; }, "image/png");
+  }
+  $("#shareBtn").onclick = () => {
+    if (!LAST) return;
+    $("#shareCc").disabled = !LAST.cc;
+    $("#nativeShare").hidden = !navigator.share;
+    openDlg("shareDlg");
+    prepareShare();
+  };
+  $("#shareCc").onchange = prepareShare;
+  let qrP = null;
+  const loadQR = () => qrP ||= new Promise((res, rej) => {
+    const el = document.createElement("script"); el.src = QR_JS;
+    el.onload = () => res(self.QR1MS); el.onerror = () => { qrP = null; rej(); };
+    document.head.appendChild(el);
+  });
+  const flash = (btn, k) => { const o = btn.textContent; btn.textContent = t(k); setTimeout(() => { btn.textContent = o; }, 1500); };
+  $("#copyLink").onclick = async e => { try { await navigator.clipboard.writeText($("#shareUrl").value); flash(e.target, "copied"); } catch (x) { $("#shareUrl").select(); } };
+  $("#copyImg").onclick = async e => { try { await navigator.clipboard.write([new ClipboardItem({ "image/png": shareBlob })]); flash(e.target, "copied"); } catch (x) {} };
+  $("#dlImg").onclick = () => { const a = document.createElement("a"); a.href = $("#shareImg").src; a.download = "dns-test.png"; a.click(); };
+  $("#nativeShare").onclick = async () => {
+    const w = LAST.rows.find(r => r.doh != null), name = w ? RESOLVERS.find(r => r.id === w.id).name : "";
+    const text = t("share_text", { name, ms: w ? fmt(w.doh) : "–" });
+    const file = shareBlob && new File([shareBlob], "dns-test.png", { type: "image/png" });
+    try { await navigator.share(file && navigator.canShare && navigator.canShare({ files: [file] }) ? { text, url: $("#shareUrl").value, files: [file] } : { text, url: $("#shareUrl").value }); } catch (e) {}
+  };
+
+  // The card: brand, the winner with its three times, the next resolvers on a speed scale, a QR code for the link; in
+  // the page's own theme. The country only when the visitor ticked it.
+  const img = src => new Promise((res, rej) => { const i = new Image(); i.onload = () => res(i); i.onerror = rej; i.src = src; });
+  const pos = ms => Math.max(0, Math.min(1, Math.log10(Math.max(1, ms)) / 3));    // 1 ms … 1 s, log scale
+  function clip(x, s, w) { if (x.measureText(s).width <= w) return s; while (s && x.measureText(s + "…").width > w) s = s.slice(0, -1); return s + "…"; }
+  function roundRect(x, a, b, w, h, r) { x.beginPath(); x.moveTo(a + r, b); x.arcTo(a + w, b, a + w, b + h, r); x.arcTo(a + w, b + h, a, b + h, r); x.arcTo(a, b + h, a, b, r); x.arcTo(a, b, a + w, b, r); x.closePath(); }
+  async function drawCard(link) {
+    const W = 1200, H = 760, P = 56, cc = $("#shareCc").checked ? LAST.cc : "";
+    const F = "Geist, 'PingFang SC', 'Microsoft YaHei', 'Hiragino Sans', 'Malgun Gothic', sans-serif", M = "'Geist Mono', Consolas, monospace";
+    const css = getComputedStyle(document.documentElement), v = n => css.getPropertyValue("--" + n).trim(), dark = css.colorScheme === "dark";
+    const C = { bg: v("bg"), panel: v("panel"), line: v("line"), fg: v("fg"), muted: v("muted"), ink: v("ink"), t1: v("t1"), t2: v("t2"), t3: v("t3"), t4: v("t4"), t5: v("t5") };
+    const c = document.createElement("canvas"); c.width = W; c.height = H;
+    const x = c.getContext("2d");
+    x.fillStyle = C.bg; x.fillRect(0, 0, W, H);
+    const rows = LAST.rows.filter(r => r.doh != null), byId = id => RESOLVERS.find(r => r.id === id);
+    const icons = await Promise.all(rows.slice(0, 9).map(r => img(`/icons/${r.id}.png`).catch(() => null)));
+    const logo = await img(dark ? "/assets/logo-dark.svg" : "/assets/logo-light.svg");
+    x.drawImage(logo, P, 40, 150, 60);
+    x.textBaseline = "alphabetic";
+    x.fillStyle = C.muted; x.font = `600 24px ${F}`; x.fillText(t("app_name") + "  ·  dns.1ms.dog", P + 170, 80);
+    // the QR code, top right
+    const QS = 150;
+    const qr = link && await loadQR().then(Q => { const q = Q(0, "M"); q.addData(link); q.make(); return q; }).catch(() => null);
+    if (qr) {
+      const n = qr.getModuleCount(), s = (QS - 16) / n, qx = W - P - QS, qy = 36;
+      x.fillStyle = "#fff"; roundRect(x, qx, qy, QS, QS, 12); x.fill();
+      x.fillStyle = "#111";
+      for (let i = 0; i < n; i++) for (let j = 0; j < n; j++) if (qr.isDark(i, j)) x.fillRect(qx + 8 + j * s, qy + 8 + i * s, s + .3, s + .3);
+    }
+    // the winner
+    const w = rows[0], wr = byId(w.id), right = W - P - (qr ? QS + 30 : 0);
+    x.fillStyle = C.muted; x.font = `600 26px ${F}`; x.fillText(t("card_head"), P, 158);
+    if (icons[0]) x.drawImage(icons[0], P, 182, 60, 60);
+    x.fillStyle = C.fg; x.font = `750 64px ${F}`; x.fillText(clip(x, wr.name, right - P - 80), P + 80, 236);
+    const cell = (label, ms, at) => {
+      x.fillStyle = C.muted; x.font = `500 22px ${F}`; x.fillText(label, at, 292);
+      x.fillStyle = ms == null ? C.muted : C[tier(ms)]; x.font = `600 40px ${M}`; x.fillText(ms == null ? "–" : (label === t("c_doh") ? "" : "≈ ") + fmt(ms) + " ms", at, 338);
+    };
+    cell(t("c_doh"), w.doh, P); cell(t("c_udp"), w.udp, P + 290); cell(t("c_dot"), w.dot, P + 580);
+    // the next ones, each on the same speed scale
+    const top = 392, RH = 38, l0 = P + 300, l1 = W - P - 110;
+    x.fillStyle = C.line; x.fillRect(P, top - 22, W - P * 2, 2);
+    rows.slice(1, 9).forEach((r, i) => {
+      const y = top + 22 + i * RH, k = C[tier(r.doh)];
+      x.fillStyle = C.muted; x.font = `600 20px ${M}`; x.textAlign = "right"; x.fillText(String(i + 2), P + 26, y + 7); x.textAlign = "left";
+      if (icons[i + 1]) x.drawImage(icons[i + 1], P + 40, y - 12, 24, 24);
+      x.fillStyle = C.fg; x.font = `500 22px ${F}`; x.fillText(clip(x, byId(r.id).name, l0 - P - 90), P + 76, y + 8);
+      x.fillStyle = C.line; x.fillRect(l0, y - 1.5, l1 - l0, 3);
+      const px = l0 + (l1 - l0) * pos(r.doh);
+      x.fillStyle = k + "99"; x.fillRect(l0, y - 1.5, px - l0, 3);
+      x.beginPath(); x.arc(px, y, 7, 0, Math.PI * 2); x.fillStyle = k; x.fill();
+      x.font = `600 22px ${M}`; x.textAlign = "right"; x.fillText(fmt(r.doh), W - P, y + 8); x.textAlign = "left";
+    });
+    // what was measured, when, and where (only if ticked)
+    x.fillStyle = C.muted; x.font = `400 20px ${F}`;
+    const foot = [t("card_sub", { n: rows.length }), new Date(LAST.ts).toLocaleDateString(D.lang), cc && country(cc)].filter(Boolean).join("  ·  ");
+    x.fillText(clip(x, foot, W - P * 2), P, H - 34);
+    return c;
+  }
+
+  /* ---------- a shared result ---------- */
+  // Opening /r/<code> shows that result, as the test would have drawn it, and doesn't test until the visitor asks
+  function showShared(S) {
+    TS = targets(RESOLVERS);
+    for (const r of RESOLVERS) {
+      const row = S.rows.find(x => x.id === r.id), set = (x, ms, unc, l) => {
+        if (!x) return;
+        x.up = ms != null; x.err = "fail"; x.cached = ms != null ? [ms] : []; x.uncached = unc != null ? [unc] : [];
+        x.sent = 100; x.lost = Math.round((l || 0) * 100);
+      };
+      set(tgt(r.id, "doh"), row && row.doh, row && row.unc, row && row.loss);
+      // the estimate address carries the UDP estimate when that comes from it, else the DoT one
+      set(tgt(r.id, "ip"), row && (r.est.udp === "ip" ? row.udp : row.dot), null, 0);
+    }
+    for (const id in ROW) fillRow(id);
+    const rs = hero(true);
+    sortRows(rs.map(x => x.r));
+    $("#sharedTxt").textContent = t("shared_on", { where: S.cc ? t("shared_where", { where: country(S.cc) }) : "", date: new Date(S.ts).toLocaleString(D.lang, { dateStyle: "medium", timeStyle: "short" }) });
+    $("#shared").hidden = false;
+    $("#prog").classList.add("end"); $("#progTxt").innerHTML = "&nbsp;";
+    $("#rerun").disabled = false;
+    LAST = S; $("#shareBtn").disabled = false;
+  }
 
   async function start() {
+    // a shared result gives way to the visitor's own test, on the language's page
+    if (!$("#shared").hidden) { $("#shared").hidden = true; history.replaceState(null, "", D.paths[D.lang]); }
     if (RUN) RUN.abort();
     const ctl = RUN = new AbortController();
     TS = targets(RESOLVERS);
+    LAST = null; $("#shareBtn").disabled = true;
     // the order the list has until the test ends
     sortRows([]);
     for (const id in ROW) { DET[id].hidden = true; ROW[id].setAttribute("aria-expanded", "false"); fillRow(id); }
@@ -284,5 +441,7 @@ import { FORMATS, FORMAT_NAMES, items as ruleItems, inline as ruleInline, remote
     finish(res.names);
   }
   $("#rerun").onclick = start;
-  start();
+  $("#testMine").onclick = start;
+  const SP = sharePath(location.pathname), SHARED = SP && decodeShare(SP.code, new Set(RESOLVERS.map(r => r.id)));
+  if (SHARED) showShared(SHARED); else start();
 })();

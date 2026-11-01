@@ -59,3 +59,27 @@ test("direct rules name only exact hosts and single addresses", () => {
   assert.deepEqual(JSON.parse(sets["singbox.json"]).rules[0].ip_cidr.slice(0, 1), ["1.1.1.1/32"]);
   for (const f of FORMATS) assert.ok(inline(f, { top: "t", fakeip: "f" }).length > 100, f);
 });
+
+test("a shared result survives the link, unknown resolvers are skipped, other formats refused", async () => {
+  const { encode, decode, sharePath } = await import("../src/share.mjs");
+  const known = new Set(["alidns", "adguard-nf", "google"]);
+  const r = { ts: 1793500000000, cc: "CN", rows: [
+    { id: "alidns", doh: 6.5, udp: 6.5, dot: 6.4, unc: 269, loss: 0 },
+    { id: "gone", doh: 3, udp: null, dot: null, unc: null, loss: 0 },
+    { id: "adguard-nf", doh: 131.2, udp: null, dot: 131, unc: 1020, loss: .05 },
+    { id: "google", doh: null, udp: null, dot: null, unc: null, loss: 0 }] };
+  const code = encode(r);
+  assert.match(code, /^1~[0-9a-z]+~CN~/);
+  assert.match(code, /^[0-9A-Za-z~._-]+$/, "path-safe");
+  const back = decode(code, known);
+  assert.deepEqual(back.rows.map(x => x.id), ["alidns", "adguard-nf", "google"]);
+  assert.deepEqual(back.rows[1], { id: "adguard-nf", doh: 131.2, udp: null, dot: 131, unc: 1020, loss: .05 });
+  assert.equal(back.rows[2].doh, null);
+  assert.equal(back.ts, 1793500000000);
+  assert.equal(decode(encode({ ...r, cc: "" }), known).cc, "");
+  assert.equal(decode("2~x~-~alidns_1", known), null, "a later format");
+  assert.equal(decode("1~x~-~alidns_zz!", known), null, "garbage");
+  assert.deepEqual(sharePath("/zh-cn/r/" + code), { slug: "zh-cn", code });
+  assert.deepEqual(sharePath("/r/" + code), { slug: "", code });
+  assert.equal(sharePath("/zh-cn/"), null);
+});

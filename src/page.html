@@ -33,6 +33,7 @@
   </header>
 
   <main>
+    <div class="shared" id="shared" hidden><span id="sharedTxt"></span><button class="btn pri" id="testMine" type="button" data-i="test_mine"></button></div>
     <section class="hero card">
       <h1>{{h1}}</h1>
       <div class="win">
@@ -60,15 +61,8 @@
         <span class="prog-t" id="progTxt">&nbsp;</span>
         <button class="btn sm" id="cliBtn" type="button" aria-haspopup="dialog" aria-controls="cli" data-cli><svg viewBox="0 0 16 16" aria-hidden="true"><rect x="1.5" y="2.5" width="13" height="11" rx="2"/><path d="M4.5 6.5l2 1.5-2 1.5M8.5 10h3"/></svg><span data-i="cli_btn"></span></button>
         <button class="btn sm" id="rulesBtn" type="button" aria-haspopup="dialog" aria-controls="rules"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M2 8h9M8 4.5 11.5 8 8 11.5M14 3v10"/></svg><span data-i="rules_btn"></span></button>
+        <button class="btn sm" id="shareBtn" type="button" aria-haspopup="dialog" aria-controls="shareDlg" disabled><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 10V2M5 5l3-3 3 3M3 9v4.5h10V9"/></svg><span data-i="share"></span></button>
         <button class="btn pri" id="rerun" type="button" disabled><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M13.5 8a5.5 5.5 0 1 1-1.6-3.9M13.5 2v3h-3"/></svg><span data-i="rerun"></span></button>
-      </div>
-    </section>
-
-    <section class="res card">
-      <h2 data-i="h_all"></h2>
-      <div class="tbl" id="tbl">
-        <div class="th"><span>#</span><span data-i="c_dns"></span><span data-i="c_doh"></span><span data-why="{{a:tip_est}}" tabindex="0">{{c_udp}}</span><span data-why="{{a:tip_est}}" tabindex="0">{{c_dot}}</span><span data-why="{{a:tip_unc}}" tabindex="0">{{c_unc}}</span><span data-why="{{a:tip_sec}}" tabindex="0">DNSSEC</span></div>
-        {{rows}}
       </div>
     </section>
 
@@ -78,8 +72,33 @@
       <div class="cli-cmd"><code id="cliCmd">{{cliCmd}}</code><button class="btn sm" type="button" data-copy data-i="copy"></button><button class="btn sm" type="button" data-cli data-i="cli_more"></button><a class="cli-gh" href="https://github.com/yt1988/dns-test-cli" target="_blank" rel="noopener noreferrer"><svg class="gh-ic" viewBox="0 0 16 16" aria-hidden="true"><path d="M8 .2a8 8 0 0 0-2.5 15.6c.4 0 .5-.2.5-.4v-1.5c-2.2.5-2.7-1-2.7-1-.4-.9-.9-1.2-.9-1.2-.7-.5.1-.5.1-.5.8.1 1.2.8 1.2.8.7 1.3 1.9.9 2.4.7 0-.5.3-.9.5-1.1-1.8-.2-3.6-.9-3.6-4 0-.9.3-1.6.8-2.1-.1-.2-.4-1 .1-2.1 0 0 .7-.2 2.2.8a7.4 7.4 0 0 1 4 0c1.5-1 2.2-.8 2.2-.8.4 1.1.2 1.9.1 2.1.5.6.8 1.3.8 2.1 0 3.1-1.9 3.7-3.6 3.9.3.3.6.8.6 1.5v2.2c0 .2.1.5.6.4A8 8 0 0 0 8 .2z"/></svg>GitHub ↗</a></div>
     </section>
 
+    <section class="res card">
+      <div class="res-h"><h2 data-i="h_all"></h2><a class="who" id="whoLink" hidden target="_blank" rel="noopener"><span data-i="who_link"></span> ↗</a></div>
+      <div class="tbl" id="tbl">
+        <div class="th"><span>#</span><span data-i="c_dns"></span><span data-i="c_doh"></span><span data-why="{{a:tip_est}}" tabindex="0">{{c_udp}}</span><span data-why="{{a:tip_est}}" tabindex="0">{{c_dot}}</span><span data-why="{{a:tip_unc}}" tabindex="0">{{c_unc}}</span><span data-why="{{a:tip_sec}}" tabindex="0">DNSSEC</span></div>
+        {{rows}}
+      </div>
+    </section>
+
     <div data-ms-more></div>
   </main>
+</div>
+<div class="scrim" id="shareDlg" hidden>
+  <div class="dialog share" role="dialog" aria-modal="true" aria-labelledby="shareT">
+    <div class="dlg-h"><h2 id="shareT" data-i="share_h"></h2>
+      <button class="icon-btn" data-close type="button" aria-label="{{a:a_close}}"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M4 4l8 8M12 4l-8 8"/></svg></button></div>
+    <div class="share-b">
+      <img id="shareImg" alt="" width="1200" height="760">
+      <div class="share-link"><input id="shareUrl" readonly aria-label="{{a:a_link}}"><button class="btn pri" id="copyLink" type="button" data-i="copy_link"></button></div>
+      <div class="share-acts">
+        <button class="btn" id="copyImg" type="button" data-i="copy_img"></button>
+        <button class="btn" id="dlImg" type="button" data-i="dl_img"></button>
+        <button class="btn" id="nativeShare" type="button" data-i="more_share" hidden></button>
+        <label class="chk"><input type="checkbox" id="shareCc"><span data-i="share_cc"></span></label>
+      </div>
+      <p class="note" data-i="share_note"></p>
+    </div>
+  </div>
 </div>
 <div class="scrim" id="cli" hidden>
   <div class="dialog cli-dlg" role="dialog" aria-modal="true" aria-labelledby="cliT">

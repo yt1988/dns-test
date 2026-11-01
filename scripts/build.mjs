@@ -3,6 +3,8 @@
 //   index.html, <lang>/index.html              the page per language, every resolver's row drawn in it
 //   assets/app.<hash>.js, assets/app.<hash>.css the page's code (with the resolver list) and styles, shared by every language
 //   assets/l.<lang>.<hash>.js                    the strings the browser code needs, per language
+//   assets/qr.<hash>.js                          QR encoder for the share card, loaded only when someone shares
+//   og/<lang>.png                                link preview images: made by scripts/assets.mjs, committed, not here
 //   rules/*                                     direct rules for proxy tools (src/rules.mjs)
 //   resolvers.json                              the list for the command-line tool (github.com/yt1988/dns-test-cli)
 //   sitemap.xml, robots.txt, llms.txt, _headers  SEO and security headers (CSP: every resolver the page asks)
@@ -38,7 +40,7 @@ async function loadI18n() {
 }
 
 // Strings only the build uses (the page already shows them); everything else goes to the browser
-const BUILD_ONLY = new Set(["name", "seo_title", "seo_desc", "seo_kw", "og_sub", "h1", "app_name", "docs", "lang_label", "faq_h", "h_all"]);
+const BUILD_ONLY = new Set(["name", "seo_title", "seo_desc", "seo_kw", "og_sub", "h1", "docs", "lang_label", "faq_h", "h_all"]);
 
 // every origin the page asks: the resolvers' DoH hosts and the addresses used for the estimates
 export const ORIGINS = [...new Set(RESOLVERS.flatMap(r => [r.doh, r.ip].filter(Boolean).map(u => new URL(u).origin)))];
@@ -100,12 +102,16 @@ export async function build({ check = false } = {}) {
   const tpl = await readFile(new URL("page.html", src), "utf8");
 
   const root = fileURLToPath(new URL("..", import.meta.url));
+  // the QR encoder for the share card stays out of the app bundle: only a visitor who shares downloads it
+  const qr = (await bundle({ stdin: { contents: 'import q from "qrcode-generator"; self.QR1MS = q;', resolveDir: root },
+    bundle: true, minify: true, format: "iife", target: "es2020", legalComments: "none", write: false })).outputFiles[0].text;
+  const qrName = `qr.${hash(qr)}.js`;
   const js = (await bundle({ entryPoints: [fileURLToPath(new URL("app.js", src))], bundle: true, minify: true, format: "iife", target: "es2020",
-    legalComments: "none", write: false, absWorkingDir: root })).outputFiles[0].text;
+    legalComments: "none", write: false, absWorkingDir: root, define: { QR_JS: JSON.stringify("/assets/" + qrName) } })).outputFiles[0].text;
   const cssFull = (await Promise.all(["fonts.css", "base.css", "style.css"].map(f => readFile(new URL(f, src), "utf8")))).join("\n");
   const css = (await transform(cssFull, { loader: "css", minify: true, legalComments: "none" })).code;
   const jsName = `app.${hash(js)}.js`, cssName = `app.${hash(css)}.css`;
-  const files = { ["assets/" + jsName]: js, ["assets/" + cssName]: css };
+  const files = { ["assets/" + jsName]: js, ["assets/" + cssName]: css, ["assets/" + qrName]: qr };
 
   const path = slug => "/" + (slug ? slug + "/" : "");
   for (const [lang, slug, locale] of langs) {
@@ -139,7 +145,10 @@ export async function build({ check = false } = {}) {
       ...ORIGINS.slice(0, 6).map(o => `<link rel="preconnect" href="${o}" crossorigin>`),
       `<meta property="og:type" content="website">`, `<meta property="og:site_name" content="1ms.dog">`,
       `<meta property="og:title" content="${esc(T("seo_title"))}">`, `<meta property="og:description" content="${esc(T("og_sub"))}">`, `<meta property="og:url" content="${url}">`,
-      `<meta property="og:locale" content="${locale}">`, `<meta name="twitter:card" content="summary">`,
+      `<meta property="og:locale" content="${locale}">`,
+      `<meta property="og:image" content="${SITE}/og/${lang.toLowerCase()}.png">`, `<meta property="og:image:width" content="1200">`, `<meta property="og:image:height" content="630">`,
+      `<meta property="og:image:alt" content="${esc(T("seo_title"))}">`,
+      `<meta name="twitter:card" content="summary_large_image">`, `<meta name="twitter:image" content="${SITE}/og/${lang.toLowerCase()}.png">`,
       `<meta name="twitter:title" content="${esc(T("seo_title"))}">`, `<meta name="twitter:description" content="${esc(T("og_sub"))}">`,
       `<script type="application/ld+json">${JSON.stringify({ "@context": "https://schema.org", "@graph": graph }).replace(/</g, "\\u003c")}</script>`,
     ].join("\n");
@@ -206,6 +215,8 @@ export async function build({ check = false } = {}) {
   Cache-Control: public, max-age=31536000, immutable
 /icons/*
   Cache-Control: public, max-age=2592000
+/og/*
+  Cache-Control: public, max-age=604800
 /resolvers.json
   Access-Control-Allow-Origin: *
   Cache-Control: public, max-age=3600
@@ -224,7 +235,7 @@ export async function build({ check = false } = {}) {
 `;
 
   // generated files that are no longer produced (old hashes) are stale too
-  const gen = async () => (await readdir(new URL("assets/", pub))).filter(f => /^(app|l)\..+\.(js|css)$/.test(f)).map(f => "assets/" + f);
+  const gen = async () => (await readdir(new URL("assets/", pub))).filter(f => /^(app|l|qr)\..+\.(js|css)$/.test(f)).map(f => "assets/" + f);
   const stale = [];
   for (const [f, body] of Object.entries(files)) {
     let cur = null; try { cur = await readFile(new URL(f, pub), "utf8"); } catch (e) {}

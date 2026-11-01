@@ -4,17 +4,41 @@
 //   /v                    the latest dnstest release, "0.1.0", asked of GitHub and kept for 10 minutes
 //   /dl/<tag>/<file>      a file of that release, fetched from GitHub once and then kept (a tag's files never change);
 //                         <tag> may be "latest", which redirects to the current tag
+//   /r/<code>, /<lang>/r/<code>   a shared result: that language's page with the result's winner in its title and
+//                         description (what chat apps show as the link's preview), not indexed; the page itself
+//                         reads the code and shows the result (src/share.mjs)
 //   anything else         a bare 404; 1ms-shell puts the shared 1ms.dog 404 page in front of it
 // The installer and the tool try these before GitHub, which is often slow or blocked in mainland China.
+
+import { RESOLVERS } from "./resolvers.mjs";
+import { decode, sharePath, fmt } from "./share.mjs";
+import en from "./i18n/en.mjs";
+import zhCN from "./i18n/zh-CN.mjs";
+import zhTW from "./i18n/zh-TW.mjs";
+import ja from "./i18n/ja.mjs";
+import ko from "./i18n/ko.mjs";
+import es from "./i18n/es.mjs";
+import fr from "./i18n/fr.mjs";
+import de from "./i18n/de.mjs";
+import pt from "./i18n/pt.mjs";
+import ru from "./i18n/ru.mjs";
+
+// each language's strings by its folder ("" is English, at the root)
+const STR = { "": en, "zh-cn": zhCN, "zh-tw": zhTW, ja, ko, es, fr, de, pt, ru };
+const KNOWN = new Set(RESOLVERS.map(r => r.id)), NAME = Object.fromEntries(RESOLVERS.map(r => [r.id, r.name]));
+const fill = (s, v) => s.replace(/\{(\w+)\}/g, (m, k) => k in v ? v[k] : m);
 
 const REPO = "yt1988/dns-test-cli";
 const FILE = /^(dnstest-[a-z0-9]+-[a-z0-9]+(\.exe)?|checksums\.txt|install\.sh|install\.ps1)$/;
 const INSTALLER = { "/i": "install.sh", "/i.ps1": "install.ps1" };
 
 export default {
-  async fetch(req, _env, ctx) {
+  async fetch(req, env, ctx) {
     const url = new URL(req.url);
     if (req.method !== "GET" && req.method !== "HEAD") return new Response("Method not allowed\n", { status: 405 });
+
+    const sp = sharePath(url.pathname);
+    if (sp && STR[sp.slug] && env.ASSETS) return shared(req, env, url, sp);
 
     if (url.pathname === "/v" || INSTALLER[url.pathname]) {
       const v = await latest(url, ctx);
@@ -39,6 +63,34 @@ export default {
     });
   },
 };
+
+// A shared result: the language's page as it is, with the title, description and their Open Graph and Twitter copies
+// saying who was fastest. A code this page can't read goes to the language's page instead.
+async function shared(req, env, url, { slug, code }) {
+  const home = "/" + (slug ? slug + "/" : "");
+  const r = decode(code, KNOWN);
+  const won = r && r.rows.filter(x => x.doh != null);
+  if (!won || !won.length) return Response.redirect(new URL(home, url).toString(), 302);
+  const S = STR[slug], [a, b] = won;
+  const title = fill(S.share_title, { name: NAME[a.id], ms: fmt(a.doh) });
+  const desc = fill(b ? S.share_desc : S.share_desc1, { n: r.rows.length, name: NAME[a.id], ms: fmt(a.doh), second: b ? NAME[b.id] : "", ms2: b ? fmt(b.doh) : "" });
+  const page = await env.ASSETS.fetch(new Request(new URL(home, url), { headers: req.headers }));
+  if (!page.ok) return page;
+  const attr = (v, name = "content") => ({ element: e => e.setAttribute(name, v) });
+  const out = new HTMLRewriter()
+    .on("title", { element: e => e.setInnerContent(title) })
+    .on('meta[name="description"]', attr(desc))
+    .on('meta[property="og:title"]', attr(title)).on('meta[name="twitter:title"]', attr(title))
+    .on('meta[property="og:description"]', attr(desc)).on('meta[name="twitter:description"]', attr(desc))
+    .on('meta[property="og:url"]', attr(url.origin + url.pathname))
+    .on('meta[name="robots"]', attr("noindex, follow"))
+    .transform(page);
+  const h = new Headers(out.headers);
+  h.delete("etag");
+  h.set("cache-control", "public, max-age=3600");
+  h.set("x-robots-tag", "noindex");
+  return new Response(req.method === "HEAD" ? null : out.body, { status: 200, headers: h });
+}
 
 // the newest release's version, from the redirect GitHub gives for /releases/latest
 async function latest(url, ctx) {

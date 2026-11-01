@@ -62,6 +62,9 @@ code.copied { background: var(--ink-soft); color: var(--ink); }
 /* every resolver */
 .res { padding: 18px 22px 14px; display: flex; flex-direction: column; gap: 10px; }
 .res h2 { font-size: 16px; letter-spacing: -.01em; }
+.res-h { display: flex; align-items: baseline; justify-content: space-between; gap: 6px 16px; flex-wrap: wrap; }
+.res-h .who { font-size: 12.5px; color: var(--muted); text-decoration: none; }
+.res-h .who:hover { color: var(--ink); text-decoration: underline; }
 .tbl { display: flex; flex-direction: column; }
 .th, .tr { display: grid; grid-template-columns: 26px minmax(0, 1fr) 76px 76px 76px 70px 62px; align-items: center; gap: 8px; }
 .th { height: 30px; font-size: 11.5px; font-weight: 600; color: var(--muted); }
@@ -132,6 +135,17 @@ svg.gh-ic[viewBox] { width: 15px; height: 15px; fill: currentColor; stroke: none
 .help-pick select { flex: 1; min-width: 0; height: 34px; padding: 0 10px; border: 1px solid var(--line); border-radius: 8px; background: var(--panel); color: var(--fg); font: 600 16px var(--f-ui); text-overflow: ellipsis; } /* 16px: iOS zooms into smaller fields */
 .note { font-size: 12.5px; color: var(--muted); line-height: 1.5; margin-top: 2px; }
 .dialog.rules { width: 720px; }
+/* share: the image, the link, and what to do with them (as on the 1ms.dog home page) */
+.dialog.share { width: 640px; }
+.share-b { padding: 16px; overflow: auto; display: flex; flex-direction: column; gap: 12px; }
+#shareImg { display: block; width: 100%; height: auto; border-radius: 10px; border: 1px solid var(--line); background: var(--soft); aspect-ratio: 1200 / 760; object-fit: contain; }
+.share-link { display: flex; gap: 8px; }
+.share-link input { flex: 1; min-width: 0; height: 36px; padding: 0 10px; border: 1px solid var(--line); border-radius: 10px; background: var(--bg); color: var(--fg); font: 13px var(--f-num); outline: none; }
+.share-acts { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+.chk { display: inline-flex; align-items: center; gap: 6px; font-size: 13px; color: var(--muted); margin-left: auto; cursor: pointer; }
+/* a shared result: a banner above the hero, with the way back to one's own test */
+.shared { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; padding: 10px 12px 10px 16px; border-radius: var(--r); background: var(--ink-soft); border: 1px solid color-mix(in srgb, var(--ink) 30%, transparent); font-size: 13.5px; }
+.shared .btn { height: 32px; font-size: 13px; }
 .dialog.cli-dlg { width: 640px; }
 .cmdline { display: flex; align-items: center; gap: 8px; }
 .cmdline code { flex: 1; min-width: 0; font-size: 13px; padding: 7px 10px; white-space: pre-wrap; overflow-wrap: anywhere; }
@@ -161,6 +175,8 @@ details.rblk > summary { cursor: pointer; font-size: 13px; color: var(--ink); }
 @media (max-width: 720px) {
   .hero { padding: 16px 16px 0; gap: 14px; }
   .bar { margin: 0 -16px; padding: 10px 16px 12px; flex-wrap: wrap; row-gap: 8px; }
+  #cliBtn span, #rulesBtn span { display: none; }
+  #cliBtn, #rulesBtn { width: 34px; padding: 0; }
   .prog-t { flex: 1 0 100%; }
   .res { padding: 16px 16px 12px; }
   /* phones: no room beside the name, so the button sits at the right end of the label line above it */

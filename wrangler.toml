@@ -12,3 +12,4 @@ preview_urls = false
 
 [assets]
 directory = "./public"
+binding = "ASSETS"   # the Worker reads a language's page for shared results (/r/<code>)
