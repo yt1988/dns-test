@@ -64,6 +64,7 @@ export default {
   card_sub: "{n} 家公共 DNS 實測 · DoH 實測，UDP 和 DoT 估算",
   who_link: "你的裝置實際在用哪個 DNS？到「你是誰」查 DNS 洩漏",
   speed_link: "DNS 沒問題但還是慢？測一下網速",
+  asn_tip: "在 ASN 查詢中查看 {as}",
   copied: "已複製",
   rules_btn: "直連規則",
   rules_h: "直連規則：測你自己的網路，而不是代理",

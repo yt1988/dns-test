@@ -65,6 +65,7 @@ export default {
   card_sub: "{n} public resolvers measured · DoH, with UDP and DoT estimated",
   who_link: "Which DNS does your device really use? Check for DNS leaks on Who Are You",
   speed_link: "DNS is fine but it's still slow? Test your speed",
+  asn_tip: "Open {as} in ASN Lookup",
   copied: "Copied",
   rules_btn: "Direct rules",
   rules_h: "Direct rules: test your own network, not your proxy",

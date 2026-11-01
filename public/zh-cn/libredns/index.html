@@ -51,7 +51,7 @@
 <meta name="twitter:description" content="在浏览器里从你自己的网络实测 LibreDNS：DoH 实测延迟，UDP、DoT 估算，以及它在 33 家公共 DNS 里排第几。附完整地址和各设备的设置方法。">
 <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebApplication","name":"LibreDNS 测速 · 1ms.dog","url":"https://dns.1ms.dog/zh-cn/libredns/","applicationCategory":"UtilitiesApplication","operatingSystem":"Any","browserRequirements":"Requires JavaScript","description":"在浏览器里从你自己的网络实测 LibreDNS：DoH 实测延迟，UDP、DoT 估算，以及它在 33 家公共 DNS 里排第几。附完整地址和各设备的设置方法。","inLanguage":"zh-CN","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"USD"}},{"@type":"FAQPage","mainEntity":[{"@type":"Question","name":"LibreDNS 是什么？","acceptedAnswer":{"@type":"Answer","text":"LibreDNS 是 LibreOps 运营的免费公共 DNS，运营方在希腊。它只提供加密 DNS（DoT、DoH），没有公开的普通 DNS 地址。它主要在希腊运营：离得近可能是最快的，离得远通常比全球大网络慢。它不验证 DNSSEC。它不做过滤，所有域名照常解析。"}},{"@type":"Question","name":"LibreDNS 的 DNS 服务器地址","acceptedAnswer":{"@type":"Answer","text":"使用 LibreDNS 时填写：DoT / 私人 DNS: dot.libredns.grDoH: https://doh.libredns.gr/dns-query"}},{"@type":"Question","name":"LibreDNS 怎么设置","acceptedAnswer":{"@type":"Answer","text":"Windows 11: Windows 要先有普通 DNS 地址才能用加密 DNS，而 LibreDNS 没有公开这样的地址：可以在浏览器里用（见下文），或者用 dnscrypt-proxy 这类本地 DNS 客户端。macOS: macOS 通过描述文件使用加密 DNS：安装一个指向 https://doh.libredns.gr/dns-query 的 DNS 描述文件。iPhone 和 iPad: 安装一个指向 https://doh.libredns.gr/dns-query 的 DNS 描述文件，再到设置 → 通用 → VPN 与设备管理 → DNS 里启用。安卓: 设置 → 网络和互联网 → 私人 DNS → 私人 DNS 提供商主机名，填 dot.libredns.gr。在所有网络上生效，并且是加密的（DoT）。各品牌菜单位置略有不同，可在设置里搜索「私人 DNS」。路由器: 路由器只能填普通 DNS 地址，而 LibreDNS 没有公开；OpenWrt 可以用 https-dns-proxy 转发到 https://doh.libredns.gr/dns-query。浏览器: Chrome：设置 → 隐私和安全 → 安全 → 使用安全 DNS → 自定义，填 https://doh.libredns.gr/dns-query。Edge 在「隐私、搜索和服务」里有同样的选项。Firefox：设置 → 隐私与安全 → 基于 HTTPS 的 DNS → 最大保护 → 自定义，填 https://doh.libredns.gr/dns-query。"}},{"@type":"Question","name":"LibreDNS 在中国大陆能用吗？","acceptedAnswer":{"@type":"Answer","text":"普通 DNS 一般能应答，但服务器在境外，延迟更高，被封锁网站的应答还可能在途中被伪造。到它的加密 DNS（DoH、DoT）经常被阻断或不稳定。在本页测一下：某一行没有应答，就说明从你的网络连不上它。"}},{"@type":"Question","name":"LibreDNS 和 Quad9 DNS 哪个快？","acceptedAnswer":{"@type":"Answer","text":"没有哪个在所有地方都更快：关键是两家离你最近的服务器有多远、你的运营商怎么走到那里。本页大约 20 秒就能从你自己的网络把两家连同列表里的其他 DNS 都测一遍；页面顶部会显示 LibreDNS 排第几、比最快的慢多少。"}},{"@type":"Question","name":"为什么 LibreDNS 对我来说很慢？","acceptedAnswer":{"@type":"Answer","text":"通常是距离：离你最近的服务器很远，或者运营商绕了远路。开着代理或 VPN 时，查询也走代理，测出来的是代理的线路（加上直连规则就好）。有些网络会限速或阻断加密 DNS。另外，没人查过的域名总是更慢（见「未缓存」一列）。如果列表里有明显更快的 DNS，换成它就好。"}}]},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"DNS 测试","item":"https://dns.1ms.dog/zh-cn/"},{"@type":"ListItem","position":2,"name":"LibreDNS 测速","item":"https://dns.1ms.dog/zh-cn/libredns/"}]}]}</script>
 <link rel="preload" href="/assets/fonts/geist-latin.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="/assets/app.e68bde8038.css">
+<link rel="stylesheet" href="/assets/app.73f783471c.css">
 </head>
 <body>
 <div class="app">
@@ -220,7 +220,7 @@
 </div>
 
 <script type="application/json" id="data">{"lang":"zh-CN","paths":{"en":"/libredns/","zh-CN":"/zh-cn/libredns/","zh-TW":"/zh-tw/libredns/","ja":"/ja/libredns/","ko":"/ko/libredns/","es":"/es/libredns/","fr":"/fr/libredns/","de":"/de/libredns/","pt":"/pt/libredns/","ru":"/ru/libredns/"},"home":"/zh-cn/","focus":"libredns"}</script>
-<script src="/assets/l.zh-cn.761d1b8217.js"></script>
-<script src="/assets/app.ba401a6084.js"></script>
+<script src="/assets/l.zh-cn.e8f42fbe1d.js"></script>
+<script src="/assets/app.725a026a12.js"></script>
 </body>
 </html>

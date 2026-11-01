@@ -48,7 +48,7 @@
 <meta name="twitter:description" content="在瀏覽器裡從你自己的網路實測 Wikimedia DNS：DoH 實測延遲，UDP、DoT 估算，以及它在 33 家公共 DNS 裡排第幾。附完整位址和各裝置的設定方法。">
 <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebApplication","name":"Wikimedia DNS 測速 · 1ms.dog","url":"https://dns.1ms.dog/zh-tw/wikimedia/","applicationCategory":"UtilitiesApplication","operatingSystem":"Any","browserRequirements":"Requires JavaScript","description":"在瀏覽器裡從你自己的網路實測 Wikimedia DNS：DoH 實測延遲，UDP、DoT 估算，以及它在 33 家公共 DNS 裡排第幾。附完整位址和各裝置的設定方法。","inLanguage":"zh-TW","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"USD"}},{"@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Wikimedia DNS 是什麼？","acceptedAnswer":{"@type":"Answer","text":"Wikimedia DNS 是 Wikimedia Foundation 營運的免費公共 DNS，營運方在美國。它只提供加密 DNS（DoT、DoH），沒有公開的一般 DNS 位址。它的伺服器分布在全球多地，查詢會送到離你最近的一台。它驗證 DNSSEC：簽章對不上的回應會被拒絕。它不做過濾，所有網域照常解析。它由非營利機構營運。營運方聲明不保存使用者的 IP 位址。"}},{"@type":"Question","name":"Wikimedia DNS 的 DNS 伺服器位址","acceptedAnswer":{"@type":"Answer","text":"使用 Wikimedia DNS 時填寫：DoT / 私人 DNS: wikimedia-dns.orgDoH: https://wikimedia-dns.org/dns-query"}},{"@type":"Question","name":"Wikimedia DNS 怎麼設定","acceptedAnswer":{"@type":"Answer","text":"Windows 11: Windows 要先有一般 DNS 位址才能用加密 DNS，而 Wikimedia DNS 沒有公開這樣的位址：可以在瀏覽器裡用（見下文），或用 dnscrypt-proxy 這類本機 DNS 用戶端。macOS: macOS 透過描述檔使用加密 DNS：安裝一個指向 https://wikimedia-dns.org/dns-query 的 DNS 描述檔。iPhone 和 iPad: 安裝一個指向 https://wikimedia-dns.org/dns-query 的 DNS 描述檔，再到設定 → 一般 → VPN 與裝置管理 → DNS 裡啟用。Android: 設定 → 網路和網際網路 → 私人 DNS → 私人 DNS 供應商主機名稱，填 wikimedia-dns.org。在所有網路上生效，而且是加密的（DoT）。各品牌選單位置略有不同，可在設定裡搜尋「私人 DNS」。路由器: 路由器只能填一般 DNS 位址，而 Wikimedia DNS 沒有公開；OpenWrt 可以用 https-dns-proxy 轉發到 https://wikimedia-dns.org/dns-query。瀏覽器: Chrome：設定 → 隱私權和安全性 → 安全性 → 使用安全 DNS → 自訂，填 https://wikimedia-dns.org/dns-query。Edge 在「隱私權、搜尋與服務」裡有同樣的選項。Firefox：設定 → 隱私權與安全性 → DNS over HTTPS → 最大保護 → 自訂，填 https://wikimedia-dns.org/dns-query。"}},{"@type":"Question","name":"Wikimedia DNS 在中國大陸能用嗎？","acceptedAnswer":{"@type":"Answer","text":"一般 DNS 通常能回應，但伺服器在中國大陸以外，延遲較高，被封鎖網站的回應還可能在途中被偽造。到它的加密 DNS（DoH、DoT）經常被阻斷或不穩定。在本頁測一下：某一列沒有回應，就表示從你的網路連不上它。"}},{"@type":"Question","name":"Wikimedia DNS 和 Cloudflare DNS 哪個快？","acceptedAnswer":{"@type":"Answer","text":"沒有哪個在所有地方都比較快：關鍵是兩家離你最近的伺服器有多遠、你的網路業者怎麼繞過去。本頁大約 20 秒就能從你自己的網路把兩家連同清單裡的其他 DNS 都測一遍；頁面頂部會顯示 Wikimedia DNS 排第幾、比最快的慢多少。"}},{"@type":"Question","name":"為什麼 Wikimedia DNS 對我來說很慢？","acceptedAnswer":{"@type":"Answer","text":"通常是距離：離你最近的伺服器很遠，或網路業者繞了遠路。開著代理或 VPN 時，查詢也走代理，測出來的是代理的線路（加上直連規則就好）。有些網路會限速或阻斷加密 DNS。另外，沒人查過的網域總是比較慢（見「未快取」一欄）。如果清單裡有明顯更快的 DNS，換成它就好。"}}]},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"DNS 測試","item":"https://dns.1ms.dog/zh-tw/"},{"@type":"ListItem","position":2,"name":"Wikimedia DNS 測速","item":"https://dns.1ms.dog/zh-tw/wikimedia/"}]}]}</script>
 <link rel="preload" href="/assets/fonts/geist-latin.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="/assets/app.e68bde8038.css">
+<link rel="stylesheet" href="/assets/app.73f783471c.css">
 </head>
 <body>
 <div class="app">
@@ -217,7 +217,7 @@
 </div>
 
 <script type="application/json" id="data">{"lang":"zh-TW","paths":{"en":"/wikimedia/","zh-CN":"/zh-cn/wikimedia/","zh-TW":"/zh-tw/wikimedia/","ja":"/ja/wikimedia/","ko":"/ko/wikimedia/","es":"/es/wikimedia/","fr":"/fr/wikimedia/","de":"/de/wikimedia/","pt":"/pt/wikimedia/","ru":"/ru/wikimedia/"},"home":"/zh-tw/","focus":"wikimedia"}</script>
-<script src="/assets/l.zh-tw.40c62853a7.js"></script>
-<script src="/assets/app.ba401a6084.js"></script>
+<script src="/assets/l.zh-tw.4ba18fa977.js"></script>
+<script src="/assets/app.725a026a12.js"></script>
 </body>
 </html>

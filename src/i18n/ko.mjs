@@ -64,6 +64,7 @@ export default {
   card_sub: "공개 DNS {n}곳 실측 · DoH 실측, UDP와 DoT 추정",
   who_link: "기기가 실제로 쓰는 DNS는? '당신은 누구'에서 DNS 유출 확인",
   speed_link: "DNS는 문제없는데 여전히 느리다면? 인터넷 속도 측정",
+  asn_tip: "ASN 조회에서 {as} 보기",
   copied: "복사됨",
   rules_btn: "직접 연결 규칙",
   rules_h: "직접 연결 규칙: 프록시가 아닌 내 네트워크를 측정",
