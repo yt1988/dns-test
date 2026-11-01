@@ -43,7 +43,7 @@
 <meta name="twitter:description" content="18 家公共 DNS，從你的網路實測">
 <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebApplication","name":"DNS 測試 · 1ms.dog","url":"https://dns.1ms.dog/zh-tw/","applicationCategory":"UtilitiesApplication","operatingSystem":"Any","browserRequirements":"Requires JavaScript","description":"在瀏覽器裡從你自己的網路測試 18 家公共 DNS：Cloudflare 1.1.1.1、Google 8.8.8.8、Quad9、AdGuard、NextDNS、阿里 DNS、DNSPod 等。DoH 實測，UDP 和 DoT 依同一台伺服器估算，另有未快取查詢和 DNSSEC 檢查。免費。","inLanguage":"zh-TW","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"USD"}},{"@type":"FAQPage","mainEntity":[{"@type":"Question","name":"測試是怎麼進行的？","acceptedAnswer":{"@type":"Answer","text":"你的瀏覽器直接向每家 DNS 發查詢，不經過本站。先和每家建立連線，把三個熱門網域各查一次，讓它們進入這家 DNS 的快取，這一步不計入結果。接著測 10 輪：每輪把每家各查一次，順序重新打亂，幾家同時進行，所以網路偶爾卡一下，影響的是所有 DNS，而不是剛好在測的那一家。每隔一輪還會查一個根本不存在的隨機網域。 結果取中位數，個別一次慢不會影響數字。時間取自瀏覽器自己記錄的每個請求的網路耗時，頁面腳本拖不慢它。每個請求的網址都是新的，並且繞過所有快取，只有 DNS 本身能回答。"}},{"@type":"Question","name":"為什麼 UDP 和 DoT 是估算？","acceptedAnswer":{"@type":"Answer","text":"瀏覽器只能發 HTTPS 請求，發不了 53 埠的 UDP 查詢，也連不了 853 埠的 TLS（DoT），更不支援 DoQ。任何網站都沒辦法從你的網路測這些。顯示這類數字的網站，不是在它自己的伺服器上測，就是用猜的。 頁面能做的是：向負責 UDP 和 DoT 的同一台伺服器發 DoH（例如 https://1.1.1.1/dns-query）。在已建立的連線上，一次查詢的耗時等於到這台伺服器的一個往返加上解析器的處理時間，UDP 和 DoT 查詢花的也正是這些，HTTP 本身只多不到 1 毫秒，所以標成 ≈。一般 DNS 伺服器不支援 HTTPS 的那幾家顯示 –，不硬給數字。 估算看不到的情況：有的網路會封鎖、限速或竄改 53、853 埠，但不動 HTTPS。"}},{"@type":"Question","name":"結果可靠嗎？","acceptedAnswer":{"@type":"Answer","text":"測量方法見第一則。另外，清單用儲存庫裡的 scripts/verify.mjs 在多個大洲核實過：每個位址都必須對這種查詢回傳真正的 DNS 回應；DNSSEC 是實際測出來的，不是照搬各家的宣傳。 允許讀取回應的幾家（Cloudflare、Google、Quad9、Control D、DNS.SB、DNS4EU、IIJ），頁面還會逐筆檢查回應，只統計真正的回應。其他幾家瀏覽器只能計時，讀不到內容。 建議多測幾次，最好換個時段：晚上最快的，尖峰時段不一定最快。"}},{"@type":"Question","name":"開著代理，測出來的還是我的結果嗎？","acceptedAnswer":{"@type":"Answer","text":"預設不是：開著代理或 VPN 時，瀏覽器經過代理去連各家 DNS，測到的是代理的線路（境外的 DNS 都會顯得和代理伺服器差不多快）。而你在裝置或路由器上設定的 DNS，平時一般是直接連的，所以這不是你實際會得到的速度。 要測自己的網路，加上直連規則（進度條旁邊的按鈕）：只把這個測試連到的位址設成直連，依精確的主機名稱和單一 IP 比對，不影響其他流量。支援 Clash/Mihomo、Surge、Shadowrocket、Quantumult X、Loon、sing-box 和 Xray，多數可以從本站拉取規則集，自動保持最新。"}},{"@type":"Question","name":"「未快取」是什麼意思？","acceptedAnswer":{"@type":"Answer","text":"熱門網域早就在各大 DNS 的快取裡，查起來哪家都快。很久沒人查過的網域，DNS 得先去問網站自己的 DNS 伺服器。測試用的是一個託管在 Cloudflare DNS 上的區域下的隨機網域，Cloudflare 的伺服器除了中國大陸，幾乎遍布全球。 這部分耗時取決於每個網站的 DNS 伺服器在哪，各不相同，所以只顯示，不列入排名。中國大陸的 DNS 在這裡顯得慢，是因為這個區域的伺服器在境外；查大陸網站（DNS 伺服器在大陸）時它們很快。"}},{"@type":"Question","name":"該選哪一個？","acceptedAnswer":{"@type":"Answer","text":"排在最上面的通常就是好選擇。如果幾家差不多（相差幾毫秒），依你在意的其他方面選：Quad9 和 OpenDNS 會攔截已知的惡意和釣魚網站；Mullvad、Quad9 和 Wikimedia 不記錄誰查了什麼；驗證 DNSSEC 的 DNS 會拒絕簽章網域的偽造回應。 如果裝置只能填一般 DNS 伺服器位址（大多數路由器、較舊的系統），看 UDP 那一欄：最快的一般 DNS 如果不是第一名，會寫在第一名下面那行。 不想讓所在網路和電信業者看到你查了什麼，就用 DoT 或 DoH 位址：一般 DNS 是明文傳輸的。"}},{"@type":"Question","name":"怎麼修改 DNS？","acceptedAnswer":{"@type":"Answer","text":"Android 9 以上：設定 → 網路 → 私人 DNS → 填 DoT 主機名稱（例如 one.one.one.one）。 iPhone 和 Mac：在每個 Wi-Fi 網路裡填 DNS 伺服器；要用加密 DNS，從 DNS 官網安裝描述檔。 Windows 11：設定 → 網路 → 目前的連線 → DNS 伺服器指派 → 手動，填入伺服器，並開啟 DNS over HTTPS。 路由器：在 DHCP 或 WAN 設定裡填 DNS 伺服器，網路裡所有裝置都會用上。 只改瀏覽器：Chrome、Edge、Firefox 都有「安全 DNS」設定，選一家或貼上 DoH 位址。 點頁面上任何一個位址即可複製。"}},{"@type":"Question","name":"DNSSEC 是什麼？","acceptedAnswer":{"@type":"Answer","text":"DNSSEC 讓網域替自己的 DNS 記錄簽章。驗證 DNSSEC 的 DNS 會檢查簽章，對不上就拒絕，這樣途中誰也沒辦法給你一個簽章網域的偽造位址。頁面上打 ✓ 的就是會驗證的（用一個故意簽錯的網域 dnssec-failed.org 測試，它們必須拒絕）。只對簽了章的網域有用，但沒有壞處。"}},{"@type":"Question","name":"為什麼沒有 114DNS、百度 DNS？","acceptedAnswer":{"@type":"Answer","text":"它們只提供一般 DNS，伺服器完全不回應 HTTPS，瀏覽器沒有任何辦法連到它們。台灣的 Quad101 也沒收錄：我們核實時，它的 DoH 從境外連不上。"}},{"@type":"Question","name":"ECS 是什麼？為什麼不顯示？","acceptedAnswer":{"@type":"Answer","text":"EDNS Client Subnet：有的 DNS 會把你的部分 IP 位址告訴網站的 DNS 伺服器，這樣 CDN 能依你的位置而不是 DNS 的位置分配伺服器，下載和影片可能更快，代價是隱私上少一點。 表格裡不顯示它，因為它不是固定屬性：我們核實時，同一家 DNS 從某些地方、走某些協定會傳，換個地方、換個協定又不傳，給一個「是」或「否」都會誤導。"}},{"@type":"Question","name":"會收集我的資料嗎？","acceptedAnswer":{"@type":"Answer","text":"不會。查詢從你的瀏覽器直接發給各家 DNS，查的是公開的熱門網站和隨機網域，不含任何你的資訊。本站收不到測試結果。和平時的任何 DNS 查詢一樣，各家 DNS 能看到你的 IP 位址，適用它們各自的隱私權政策。程式碼在 GitHub 上開源。"}}]}]}</script>
 <link rel="preload" href="/assets/fonts/geist-latin.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="/assets/app.3e2c86f7f3.css">
+<link rel="stylesheet" href="/assets/app.195f37f4c5.css">
 </head>
 <body>
 <div class="app">
@@ -78,7 +78,14 @@
       <div class="win">
         <div class="win-l">
           <span class="win-k" id="winK" data-i="best_k">對你最快</span>
-          <div class="win-n"><span class="win-ic" id="winIc"></span><b id="winName"><i class="skl"></i></b></div>
+          <div class="win-n"><span class="win-ic" id="winIc"></span><b id="winName"><i class="skl"></i></b>
+            <span class="use-w">
+              <button class="btn sm" id="useBtn" type="button" aria-expanded="false" aria-controls="use" disabled><svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="2.2"/><path d="M8 1.5v2M8 12.5v2M1.5 8h2M12.5 8h2M3.4 3.4l1.4 1.4M11.2 11.2l1.4 1.4M3.4 12.6l1.4-1.4M11.2 4.8l1.4-1.4"/></svg><span data-i="use_h">怎麼設定</span></button>
+              <ul class="use" id="use" hidden>
+                <li><span></span><code></code></li><li><span></span><code></code></li><li><span></span><code></code></li>
+              </ul>
+            </span>
+          </div>
           <span class="win-s" id="winSub">&nbsp;</span>
           <ul class="win-m">
             <li data-w="doh"><span><span data-i="c_doh">DoH</span> <i data-i="w_real">實測</i></span><b>–</b></li>
@@ -86,12 +93,6 @@
             <li data-w="dot"><span><span data-i="c_dot">DoT ≈</span> <i data-i="w_est">估算</i></span><b>–</b></li>
           </ul>
           <p class="alt" id="alt">&nbsp;</p>
-        </div>
-        <div class="win-r">
-          <span class="win-k" data-i="use_h">怎麼設定</span>
-          <ul class="use" id="use">
-            <li><span></span><code></code></li><li><span></span><code></code></li><li><span></span><code></code></li>
-          </ul>
         </div>
       </div>
       <div class="bar">
@@ -161,6 +162,6 @@
 
 <script type="application/json" id="data">{"lang":"zh-TW","paths":{"en":"/","zh-CN":"/zh-cn/","zh-TW":"/zh-tw/","ja":"/ja/","ko":"/ko/","es":"/es/","fr":"/fr/","de":"/de/","pt":"/pt/","ru":"/ru/"}}</script>
 <script src="/assets/l.zh-tw.6aaf762c75.js"></script>
-<script src="/assets/app.0ecb929742.js"></script>
+<script src="/assets/app.c25c2bcffb.js"></script>
 </body>
 </html>

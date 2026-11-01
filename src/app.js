@@ -71,6 +71,12 @@ import { FORMATS, FORMAT_NAMES, items as ruleItems, inline as ruleInline, remote
       .finally(() => { b.textContent = t("copied"); setTimeout(() => { b.textContent = t("copy"); }, 1200); });
   });
 
+  /* ---------- what to enter: a popover from the button next to the leader's name ---------- */
+  function useOpen(on) { $("#use").hidden = !on; $("#useBtn").setAttribute("aria-expanded", on); }
+  $("#useBtn").onclick = e => { e.stopPropagation(); useOpen($("#use").hidden); };
+  document.addEventListener("click", e => { if (!$("#use").hidden && !e.target.closest(".use-w")) useOpen(false); });
+  document.addEventListener("keydown", e => { if (e.key === "Escape") useOpen(false); });
+
   /* ---------- tooltips (data-why) ---------- */
   let tipEl;
   function showTip(el) {
@@ -150,7 +156,7 @@ import { FORMATS, FORMAT_NAMES, items as ruleItems, inline as ruleInline, remote
     $("#winName").innerHTML = '<i class="skl"></i>'; $("#winIc").removeAttribute("style");
     $("#winSub").innerHTML = "&nbsp;";
     $$(".win-m li").forEach(li => { li.querySelector("b").className = ""; li.querySelector("b").textContent = "–"; });
-    $$("#use li").forEach(li => { li.querySelector("span").textContent = ""; li.querySelector("code").textContent = ""; li.classList.remove("none"); li.classList.add("sk"); });
+    useOpen(false); $("#useBtn").disabled = true;
     $("#winK").textContent = t("lead_k");
     $("#alt").innerHTML = "&nbsp;";
   }
@@ -212,8 +218,8 @@ import { FORMATS, FORMAT_NAMES, items as ruleItems, inline as ruleInline, remote
     }
     // what to enter, by what the device likely supports first
     const use = [win.udp && [t("use_udp"), win.udp.join("  ")], win.dot && [t("use_dot"), win.dot], [t("use_doh"), win.doh]].filter(Boolean).slice(0, 3);
+    $("#useBtn").disabled = false;
     $$("#use li").forEach((li, i) => {
-      li.classList.remove("sk");
       li.querySelector("span").textContent = use[i] ? use[i][0] : "";
       li.querySelector("code").textContent = use[i] ? use[i][1] : "";
       li.classList.toggle("none", !use[i]);
