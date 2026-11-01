@@ -54,6 +54,8 @@ test("every resolver's page, in every language, is its own", async () => {
       assert.ok(h.includes(`<a class="brand" href="${path(slug)}"`), where + ": link to the test of them all");
       assert.ok(h.includes(`href="${path(slug, ABOUT[r.id].vs)}"`), where + ": link to the one it is compared with");
       assert.equal((h.match(/<li><a href="\/[^"]*"/g) || []).length, RESOLVERS.length, where + ": links to every resolver's page");
+      // every image has its size (no shift while it loads) and waits until it is near the screen
+      for (const img of h.match(/<img [^>]*>/g)) assert.ok(/ width="\d+" height="\d+"/.test(img) && img.includes('loading="lazy"'), where + ": " + img);
       if (lang === "ko") assert.ok(!/[가-힣A-Za-z0-9)]\((은|는|이|가|을|를|과|와)\)/.test(h), where + ": particles picked, not 은(는)");
     }
   }

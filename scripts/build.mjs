@@ -111,7 +111,7 @@ function rowsHTML(T, lang, slug, focus) {
     const cell = c => `<span class="v" data-c="${c}"></span>`;
     const page = r.id === focus ? "" : `<a href="${pathOf(slug, r.id)}">${esc(fillL(lang, T("rp_page"), { name: titleOf(r, lang) }))} →</a>`;
     return `<div class="tr wait${r.id === focus ? " me" : ""}" data-r="${r.id}" role="button" tabindex="0" aria-expanded="false"><span class="rk"></span>` +
-      `<span class="nm"><img class="ic" src="/icons/${r.id}.png" width="18" height="18" alt=""><b>${esc(r.name)}</b><span class="pp">${proto(r)}</span></span>` +
+      `<span class="nm"><img class="ic" src="/icons/${r.id}.png" width="18" height="18" alt="" loading="lazy" decoding="async"><b>${esc(r.name)}</b><span class="pp">${proto(r)}</span></span>` +
       cell("doh") + cell("udp") + cell("dot") + cell("unc") + `<span class="v sec">${r.dnssec ? '<b class="ok">✓</b>' : '<span class="m">–</span>'}</span></div>` +
       `<div class="td" data-d="${r.id}" hidden><dl>${d}</dl><span class="td-l">${page}<a class="xl" href="${esc(r.site)}" target="_blank" rel="noopener noreferrer">${esc(T("d_site"))}${EXT}</a></span></div>`;
   }).join("\n");
@@ -120,7 +120,7 @@ function rowsHTML(T, lang, slug, focus) {
 // Every resolver's page, linked from every page under the list: how search engines (and people) find them
 function resNav(T, lang, slug, focus) {
   return `<nav class="rs-nav" aria-labelledby="rsNavH"><h3 id="rsNavH">${esc(T("rp_all_h"))}</h3><ul>` + RESOLVERS.map(r =>
-    `<li><a href="${pathOf(slug, r.id)}"${r.id === focus ? ' aria-current="page"' : ""}><img src="/icons/${r.id}.png" width="14" height="14" alt="" loading="lazy">${esc(titleOf(r, lang))}</a></li>`).join("") + "</ul></nav>";
+    `<li><a href="${pathOf(slug, r.id)}"${r.id === focus ? ' aria-current="page"' : ""}><img src="/icons/${r.id}.png" width="14" height="14" alt="" loading="lazy" decoding="async">${esc(titleOf(r, lang))}</a></li>`).join("") + "</ul></nav>";
 }
 
 // A resolver's own help entries, in front of the general ones: what it is, its addresses, how to set it up on each
