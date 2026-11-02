@@ -225,3 +225,11 @@ details.rblk > summary { cursor: pointer; font-size: 13px; color: var(--ink); }
   .help-nav { display: none; }
   .help-b .help-pick { display: flex; }
 }
+
+/* embedded in the Connection Checkup report (?embed=checkup, app.js): the test and its first rows, nothing else */
+html.embed .app { padding-block: 0; }
+html.embed main { gap: 10px; }
+html.embed .top, html.embed .hero h1, html.embed .use-w, html.embed #cliBtn, html.embed #rulesBtn, html.embed #shareBtn,
+html.embed #rerun, html.embed #shared, html.embed .addr, html.embed .cli, html.embed .res-l, html.embed .rs-nav,
+html.embed [data-ms-more], html.embed .tr.more, html.embed .tr.more + div { display: none; }
+html.embed .hero { padding-top: 14px; gap: 10px; }

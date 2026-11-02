@@ -6,6 +6,7 @@ import { RESOLVERS, NAMES, NXZONE } from "./resolvers.mjs";
 import { targets, run, median, loss, score } from "./measure.mjs";
 import { FORMATS, FORMAT_NAMES, items as ruleItems, inline as ruleInline, remote as ruleRemote } from "./rules.mjs";
 import { encode as encodeShare, decode as decodeShare, sharePath } from "./share.mjs";
+import { ABOUT } from "./about.mjs";
 
 (function () {
   "use strict";
@@ -17,6 +18,22 @@ import { encode as encodeShare, decode as decodeShare, sharePath } from "./share
   const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]);
   const store = { get(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }, set(k, v) { try { localStorage.setItem(k, v); } catch (e) {} } };
   const K = { theme: "dnstest:theme", lang: "dnstest:lang", rules: "dnstest:rules" };
+
+  /* ---------- Connection Checkup (check.1ms.dog): the page embedded in its report ---------- */
+  // ?embed=checkup counts only in a frame of the origin the shell names in <meta name="check">, the only one the
+  // results go to; anywhere else the page is the usual one (1ms-shell docs/checkup.md). Embedded: the test and its
+  // top rows only, no dialogs, started at once.
+  const EMBED = (() => {
+    const m = document.querySelector('meta[name="check"]');
+    if (new URLSearchParams(location.search).get("embed") !== "checkup" || !m || window.parent === window) return "";
+    try { const o = new URL(m.content).origin; return new URL(document.referrer).origin === o ? o : ""; } catch (e) { return ""; }
+  })();
+  const post = msg => { if (EMBED) window.parent.postMessage({ ms: "checkup", v: 1, tool: "dns", ...msg }, EMBED); };
+  if (EMBED) {
+    document.documentElement.classList.add("embed");
+    let h = 0;
+    new ResizeObserver(() => { const n = Math.ceil($(".app").getBoundingClientRect().height); if (n !== h) post({ type: "size", height: h = n }); }).observe($(".app"));
+  }
 
   /* ---------- theme and language (synced across the 1ms.dog tools) ---------- */
   const thBtn = $("#theme"), TH = ["system", "light", "dark"];
@@ -177,10 +194,13 @@ import { encode as encodeShare, decode as decodeShare, sharePath } from "./share
     row.classList.toggle("down", !!doh && doh.up === false);
   }
 
-  let total = 0, done = 0, t0 = 0;
+  let total = 0, done = 0, t0 = 0, sentPc = -1;
   function progress() {
     $("#prog i").style.transform = `scaleX(${total ? done / total : 0})`;
     $("#progTxt").textContent = t("progress", { n: done, of: total });
+    // to the report at most once a percent
+    const pc = total ? Math.floor(done / total * 100) : 0;
+    if (EMBED && pc !== sentPc) { sentPc = pc; post({ type: "progress", done, total, text: $("#progTxt").textContent }); }
   }
 
   function resetHero() {
@@ -200,7 +220,7 @@ import { encode as encodeShare, decode as decodeShare, sharePath } from "./share
     const wait = RESOLVERS.filter(r => !ranked.includes(r) && !ROW[r.id].classList.contains("down"));
     const down = RESOLVERS.filter(r => !ranked.includes(r) && ROW[r.id].classList.contains("down"));
     const next = [...ranked, ...wait, ...down];
-    next.forEach((r, i) => { ROW[r.id].querySelector(".rk").textContent = ranked.includes(r) ? i + 1 : ""; });
+    next.forEach((r, i) => { ROW[r.id].querySelector(".rk").textContent = ranked.includes(r) ? i + 1 : ""; ROW[r.id].classList.toggle("more", i >= 5); });
     if (next.map(r => r.id).join() === order.join()) return;
     order = next.map(r => r.id);
     const els = next.flatMap(r => [ROW[r.id], DET[r.id]]);
@@ -289,6 +309,31 @@ import { encode as encodeShare, decode as decodeShare, sharePath } from "./share
     $("#rerun").disabled = false;
     LAST = snapshot(rs);
     $("#shareBtn").disabled = false;
+    if (EMBED) post(rs.length ? checkup(rs) : { type: "error", text: t("none_up") });
+  }
+
+  // The result for the Checkup report: the hero's sentence, its numbers, what is worth a look, and the facts its
+  // cross-tool rules read (docs/checkup.md, "facts"). No grade: the test ranks resolvers, it doesn't grade the network.
+  function checkup(rs) {
+    const ms = x => x && x.up && x.cached.length ? median(x.cached) : null, val = m => fmt(m) + " ms";   // the UDP and DoT labels say they are estimates
+    const win = rs[0].r, doh = tgt(win.id, "doh"), w = ms(doh), udp = ms(estOf(win, "udp")), dot = ms(estOf(win, "dot"));
+    const second = rs[1] && rs[1].r, w2 = second && ms(tgt(second.id, "doh"));
+    const stats = [{ label: t("c_doh"), value: val(w) }, udp != null && { label: t("c_udp"), value: val(udp) },
+      dot != null && { label: t("c_dot"), value: val(dot) }, second && { label: second.name, value: val(w2) }].filter(Boolean).slice(0, 4);
+    const down = RESOLVERS.filter(r => { const x = tgt(r.id, "doh"); return x && x.up === false; }).length;
+    const plain = RESOLVERS.map(r => ({ r, x: estOf(r, "udp") })).filter(o => ms(o.x) != null).sort((a, b) => score(a.x) - score(b.x))[0];
+    const findings = [
+      doh.rewrites && { level: "warn", text: t("emb_rewrite", { name: win.name }) },
+      !win.dnssec && { level: "warn", text: t("emb_nodnssec", { name: win.name }) },
+      down && { level: "warn", text: t("emb_down", { n: down }) },
+      CC === "CN" && { level: "warn", text: t("cn_note") },
+      second && { level: "ok", text: t("win_sub", { n: rs.length, d: fmt(w2 - w), second: second.name }) },
+      plain && plain.r !== win && { level: "ok", text: t("alt_udp", { name: plain.r.name, ms: fmt(ms(plain.x)), ips: plain.r.udp.join(", ") }) },
+    ].filter(Boolean).slice(0, 4);
+    const cc = (ABOUT[win.id] || {}).hq || win.cc;
+    return { type: "result", lang: D.lang, path: D.home + "r/" + encodeShare({ ...LAST, cc: "" }), grade: null, score: null,
+      headline: t("emb_head", { name: win.name, ms: fmt(w) }), stats, findings,
+      facts: { winner: win.id, winnerMs: Math.round(w * 10) / 10, ...(cc && { winnerCountry: cc }), dnssec: !!win.dnssec } };
   }
 
   // where the visitor is (Cloudflare's own trace, on sites it serves): for the mainland China note, and for the share
@@ -412,5 +457,5 @@ import { encode as encodeShare, decode as decodeShare, sharePath } from "./share
   $("#rerun").onclick = start;
   $("#testMine").onclick = start;
   const SP = sharePath(location.pathname), SHARED = SP && decodeShare(SP.code, new Set(RESOLVERS.map(r => r.id)));
-  if (SHARED) showShared(SHARED); else start();
+  if (SHARED && !EMBED) showShared(SHARED); else start();
 })();
