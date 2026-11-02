@@ -60,6 +60,7 @@ export default {
   card_sub: "{n} resolvedores públicos medidos · DoH medido, UDP e DoT estimados",
   who_link: "Qual DNS seu dispositivo usa de verdade? Veja vazamentos de DNS em Quem é você?",
   speed_link: "O DNS está bem, mas continua lento? Teste sua velocidade",
+  check_link: "Fazer uma verificação completa",
   asn_tip: "Ver {as} na Consulta ASN",
   copied: "Copiado",
   rules_btn: "Regras diretas",

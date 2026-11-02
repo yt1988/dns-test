@@ -48,7 +48,7 @@
 <meta name="twitter:description" content="在瀏覽器裡從你自己的網路實測 Xfinity DNS：DoH 實測延遲，UDP、DoT 估算，以及它在 33 家公共 DNS 裡排第幾。附完整位址和各裝置的設定方法。">
 <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebApplication","name":"Xfinity DNS 測速 · 1ms.dog","url":"https://dns.1ms.dog/zh-tw/xfinity/","applicationCategory":"UtilitiesApplication","operatingSystem":"Any","browserRequirements":"Requires JavaScript","description":"在瀏覽器裡從你自己的網路實測 Xfinity DNS：DoH 實測延遲，UDP、DoT 估算，以及它在 33 家公共 DNS 裡排第幾。附完整位址和各裝置的設定方法。","inLanguage":"zh-TW","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"USD"}},{"@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Xfinity DNS 是什麼？","acceptedAnswer":{"@type":"Answer","text":"Xfinity DNS 是 Comcast 營運的免費公共 DNS，營運方在美國。它只提供加密 DNS（DoH），沒有公開的一般 DNS 位址。它主要在美國營運：離得近可能是最快的，離得遠通常比全球大型網路慢。它驗證 DNSSEC：簽章對不上的回應會被拒絕。它不做過濾，所有網域照常解析。"}},{"@type":"Question","name":"Xfinity DNS 的 DNS 伺服器位址","acceptedAnswer":{"@type":"Answer","text":"使用 Xfinity DNS 時填寫：DoH: https://doh.xfinity.com/dns-query"}},{"@type":"Question","name":"Xfinity DNS 怎麼設定","acceptedAnswer":{"@type":"Answer","text":"Windows 11: Windows 要先有一般 DNS 位址才能用加密 DNS，而 Xfinity DNS 沒有公開這樣的位址：可以在瀏覽器裡用（見下文），或用 dnscrypt-proxy 這類本機 DNS 用戶端。macOS: macOS 透過描述檔使用加密 DNS：安裝一個指向 https://doh.xfinity.com/dns-query 的 DNS 描述檔。iPhone 和 iPad: 安裝一個指向 https://doh.xfinity.com/dns-query 的 DNS 描述檔，再到設定 → 一般 → VPN 與裝置管理 → DNS 裡啟用。Android: Android 沒有能直接設定它的地方：Xfinity DNS 既沒有 DoT 主機名稱，也沒有一般 DNS 位址。請在瀏覽器裡使用。路由器: 路由器只能填一般 DNS 位址，而 Xfinity DNS 沒有公開；OpenWrt 可以用 https-dns-proxy 轉發到 https://doh.xfinity.com/dns-query。瀏覽器: Chrome：設定 → 隱私權和安全性 → 安全性 → 使用安全 DNS → 自訂，填 https://doh.xfinity.com/dns-query。Edge 在「隱私權、搜尋與服務」裡有同樣的選項。Firefox：設定 → 隱私權與安全性 → DNS over HTTPS → 最大保護 → 自訂，填 https://doh.xfinity.com/dns-query。"}},{"@type":"Question","name":"Xfinity DNS 在中國大陸能用嗎？","acceptedAnswer":{"@type":"Answer","text":"一般 DNS 通常能回應，但伺服器在中國大陸以外，延遲較高，被封鎖網站的回應還可能在途中被偽造。到它的加密 DNS（DoH、DoT）經常被阻斷或不穩定。在本頁測一下：某一列沒有回應，就表示從你的網路連不上它。"}},{"@type":"Question","name":"Xfinity DNS 和 Google Public DNS 哪個快？","acceptedAnswer":{"@type":"Answer","text":"沒有哪個在所有地方都比較快：關鍵是兩家離你最近的伺服器有多遠、你的網路業者怎麼繞過去。本頁大約 20 秒就能從你自己的網路把兩家連同清單裡的其他 DNS 都測一遍；頁面頂部會顯示 Xfinity DNS 排第幾、比最快的慢多少。"}},{"@type":"Question","name":"為什麼 Xfinity DNS 對我來說很慢？","acceptedAnswer":{"@type":"Answer","text":"通常是距離：離你最近的伺服器很遠，或網路業者繞了遠路。開著代理或 VPN 時，查詢也走代理，測出來的是代理的線路（加上直連規則就好）。有些網路會限速或阻斷加密 DNS。另外，沒人查過的網域總是比較慢（見「未快取」一欄）。如果清單裡有明顯更快的 DNS，換成它就好。"}}]},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"DNS 測試","item":"https://dns.1ms.dog/zh-tw/"},{"@type":"ListItem","position":2,"name":"Xfinity DNS 測速","item":"https://dns.1ms.dog/zh-tw/xfinity/"}]}]}</script>
 <link rel="preload" href="/assets/fonts/geist-latin.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="/assets/app.4b193b2fc2.css">
+<link rel="stylesheet" href="/assets/app.f0a6ed867c.css">
 </head>
 <body>
 <div class="app">
@@ -96,6 +96,7 @@
             <li data-w="dot"><span><span data-i="c_dot">DoT ≈</span> <i data-i="w_est">估算</i></span><b>–</b></li>
           </ul>
           <p class="alt" id="alt">&nbsp;</p>
+          <a class="chk-l xl" id="checkLink" hidden target="_blank" rel="noopener"><span data-i="check_link">做一次完整體檢</span><svg class="ext" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 2.5h4.5V7M13.5 2.5 7.5 8.5M12 10v3.5H2.5V4H6"/></svg></a>
         </div>
       </div>
       <div class="bar">
@@ -200,7 +201,7 @@
 </div>
 
 <script type="application/json" id="data">{"lang":"zh-TW","paths":{"en":"/xfinity/","zh-CN":"/zh-cn/xfinity/","zh-TW":"/zh-tw/xfinity/","ja":"/ja/xfinity/","ko":"/ko/xfinity/","es":"/es/xfinity/","fr":"/fr/xfinity/","de":"/de/xfinity/","pt":"/pt/xfinity/","ru":"/ru/xfinity/"},"home":"/zh-tw/","focus":"xfinity"}</script>
-<script src="/assets/l.zh-tw.3e5fa1b642.js"></script>
-<script src="/assets/app.f8c5add641.js"></script>
+<script src="/assets/l.zh-tw.47875dc985.js"></script>
+<script src="/assets/app.ffc0cd7954.js"></script>
 </body>
 </html>

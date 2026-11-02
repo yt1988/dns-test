@@ -48,7 +48,7 @@
 <meta name="twitter:description" content="在瀏覽器裡從你自己的網路實測 Cloudflare DNS：DoH 實測延遲，UDP、DoT 估算，以及它在 33 家公共 DNS 裡排第幾。附完整位址和各裝置的設定方法。">
 <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebApplication","name":"Cloudflare DNS 測速 · 1ms.dog","url":"https://dns.1ms.dog/zh-tw/cloudflare/","applicationCategory":"UtilitiesApplication","operatingSystem":"Any","browserRequirements":"Requires JavaScript","description":"在瀏覽器裡從你自己的網路實測 Cloudflare DNS：DoH 實測延遲，UDP、DoT 估算，以及它在 33 家公共 DNS 裡排第幾。附完整位址和各裝置的設定方法。","inLanguage":"zh-TW","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"USD"}},{"@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Cloudflare DNS 是什麼？","acceptedAnswer":{"@type":"Answer","text":"Cloudflare DNS 是 Cloudflare 營運的免費公共 DNS，營運方在美國。一般 DNS 位址是 1.1.1.1、1.0.0.1（IPv6：2606:4700:4700::1111、2606:4700:4700::1001），也支援加密 DNS：DoT、DoH。它的伺服器分布在全球多地，查詢會送到離你最近的一台。它驗證 DNSSEC：簽章對不上的回應會被拒絕。它不做過濾，所有網域照常解析。營運方聲明不保存使用者的 IP 位址。"}},{"@type":"Question","name":"Cloudflare DNS 的 DNS 伺服器位址","acceptedAnswer":{"@type":"Answer","text":"使用 Cloudflare DNS 時填寫：DNS (IPv4): 1.1.1.1、1.0.0.1DNS (IPv6): 2606:4700:4700::1111、2606:4700:4700::1001DoT / 私人 DNS: one.one.one.oneDoH: https://cloudflare-dns.com/dns-query"}},{"@type":"Question","name":"Cloudflare DNS 怎麼設定","acceptedAnswer":{"@type":"Answer","text":"Windows 11: 設定 → 網路和網際網路 → Wi‑Fi 或乙太網路 → 硬體內容 → DNS 伺服器指派 → 編輯 → 手動。開啟 IPv4，填入 1.1.1.1、1.0.0.1。要加密的話，把「DNS over HTTPS」設為「開啟（手動範本）」，範本填 https://cloudflare-dns.com/dns-query。macOS: 系統設定 → 網路 → Wi‑Fi（或乙太網路）→ 詳細資訊 → DNS，按 + 加入 1.1.1.1、1.0.0.1。加密 DNS（https://cloudflare-dns.com/dns-query）需要安裝描述檔。iPhone 和 iPad: 設定 → Wi‑Fi → 網路旁的 ⓘ → 設定 DNS → 手動，加入 1.1.1.1、1.0.0.1。只對這個 Wi‑Fi 生效；想在所有網路上用加密 DNS，安裝一個指向 https://cloudflare-dns.com/dns-query 的 DNS 描述檔。Android: 設定 → 網路和網際網路 → 私人 DNS → 私人 DNS 供應商主機名稱，填 one.one.one.one。在所有網路上生效，而且是加密的（DoT）。各品牌選單位置略有不同，可在設定裡搜尋「私人 DNS」。路由器: 進入路由器管理頁面（WAN 或 DHCP 設定），把 DNS 伺服器改成 1.1.1.1、1.0.0.1：區域網路裡的所有裝置都會用它。瀏覽器: Chrome：設定 → 隱私權和安全性 → 安全性 → 使用安全 DNS → 自訂，填 https://cloudflare-dns.com/dns-query。Edge 在「隱私權、搜尋與服務」裡有同樣的選項。Firefox：設定 → 隱私權與安全性 → DNS over HTTPS → 最大保護 → 自訂，填 https://cloudflare-dns.com/dns-query。Linux: 使用 systemd-resolved 時：在 /etc/systemd/resolved.conf 裡寫 DNS=1.1.1.1 1.0.0.1，再執行 systemctl restart systemd-resolved。要用 DoT，把位址寫成 1.1.1.1#one.one.one.one，並加上 DNSOverTLS=yes。"}},{"@type":"Question","name":"Cloudflare DNS 在中國大陸能用嗎？","acceptedAnswer":{"@type":"Answer","text":"一般 DNS 通常能回應，但伺服器在中國大陸以外，延遲較高，被封鎖網站的回應還可能在途中被偽造。到它的加密 DNS（DoH、DoT）經常被阻斷或不穩定。在本頁測一下：某一列沒有回應，就表示從你的網路連不上它。"}},{"@type":"Question","name":"Cloudflare DNS 和 Google Public DNS 哪個快？","acceptedAnswer":{"@type":"Answer","text":"沒有哪個在所有地方都比較快：關鍵是兩家離你最近的伺服器有多遠、你的網路業者怎麼繞過去。本頁大約 20 秒就能從你自己的網路把兩家連同清單裡的其他 DNS 都測一遍；頁面頂部會顯示 Cloudflare DNS 排第幾、比最快的慢多少。"}},{"@type":"Question","name":"為什麼 Cloudflare DNS 對我來說很慢？","acceptedAnswer":{"@type":"Answer","text":"通常是距離：離你最近的伺服器很遠，或網路業者繞了遠路。開著代理或 VPN 時，查詢也走代理，測出來的是代理的線路（加上直連規則就好）。有些網路會限速或阻斷加密 DNS。另外，沒人查過的網域總是比較慢（見「未快取」一欄）。如果清單裡有明顯更快的 DNS，換成它就好。"}}]},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"DNS 測試","item":"https://dns.1ms.dog/zh-tw/"},{"@type":"ListItem","position":2,"name":"Cloudflare DNS 測速","item":"https://dns.1ms.dog/zh-tw/cloudflare/"}]}]}</script>
 <link rel="preload" href="/assets/fonts/geist-latin.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="/assets/app.4b193b2fc2.css">
+<link rel="stylesheet" href="/assets/app.f0a6ed867c.css">
 </head>
 <body>
 <div class="app">
@@ -96,6 +96,7 @@
             <li data-w="dot"><span><span data-i="c_dot">DoT ≈</span> <i data-i="w_est">估算</i></span><b>–</b></li>
           </ul>
           <p class="alt" id="alt">&nbsp;</p>
+          <a class="chk-l xl" id="checkLink" hidden target="_blank" rel="noopener"><span data-i="check_link">做一次完整體檢</span><svg class="ext" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 2.5h4.5V7M13.5 2.5 7.5 8.5M12 10v3.5H2.5V4H6"/></svg></a>
         </div>
       </div>
       <div class="bar">
@@ -200,7 +201,7 @@
 </div>
 
 <script type="application/json" id="data">{"lang":"zh-TW","paths":{"en":"/cloudflare/","zh-CN":"/zh-cn/cloudflare/","zh-TW":"/zh-tw/cloudflare/","ja":"/ja/cloudflare/","ko":"/ko/cloudflare/","es":"/es/cloudflare/","fr":"/fr/cloudflare/","de":"/de/cloudflare/","pt":"/pt/cloudflare/","ru":"/ru/cloudflare/"},"home":"/zh-tw/","focus":"cloudflare"}</script>
-<script src="/assets/l.zh-tw.3e5fa1b642.js"></script>
-<script src="/assets/app.f8c5add641.js"></script>
+<script src="/assets/l.zh-tw.47875dc985.js"></script>
+<script src="/assets/app.ffc0cd7954.js"></script>
 </body>
 </html>

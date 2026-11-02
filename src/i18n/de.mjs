@@ -60,6 +60,7 @@ export default {
   card_sub: "{n} öffentliche Resolver gemessen · DoH gemessen, UDP und DoT geschätzt",
   who_link: "Welchen DNS nutzt Ihr Gerät wirklich? DNS-Lecks prüfen bei „Wer sind Sie?“",
   speed_link: "DNS ist in Ordnung, aber trotzdem langsam? Geschwindigkeit testen",
+  check_link: "Kompletten Check starten",
   asn_tip: "{as} in der ASN-Abfrage ansehen",
   copied: "Kopiert",
   rules_btn: "Direkt-Regeln",

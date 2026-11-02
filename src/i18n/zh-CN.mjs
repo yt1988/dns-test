@@ -60,6 +60,7 @@ export default {
   card_sub: "{n} 家公共 DNS 实测 · DoH 实测，UDP 和 DoT 估算",
   who_link: "你的设备实际在用哪个 DNS？到「你是谁」查 DNS 泄露",
   speed_link: "DNS 没问题但还是慢？测一下网速",
+  check_link: "做一次完整体检",
   asn_tip: "在 ASN 查询中查看 {as}",
   copied: "已复制",
   rules_btn: "直连规则",

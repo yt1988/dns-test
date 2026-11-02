@@ -60,6 +60,7 @@ export default {
   card_sub: "公開 DNS {n} 件を実測 · DoH は実測、UDP と DoT は推定",
   who_link: "端末が実際に使っている DNS は？「あなたは誰」で DNS 漏れを確認",
   speed_link: "DNS は問題ないのに遅い？回線速度を測る",
+  check_link: "回線をまるごとチェック",
   asn_tip: "ASN 検索で {as} を見る",
   copied: "コピーしました",
   rules_btn: "直接接続ルール",

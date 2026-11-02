@@ -48,7 +48,7 @@
 <meta name="twitter:description" content="ブラウザで、あなた自身のネットワークから DNS4ALL を実測：DoH の実測遅延、UDP と DoT の推定、33 件の公開 DNS の中での順位。アドレスと各端末での設定方法も。">
 <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebApplication","name":"DNS4ALL 速度テスト · 1ms.dog","url":"https://dns.1ms.dog/ja/dns4all/","applicationCategory":"UtilitiesApplication","operatingSystem":"Any","browserRequirements":"Requires JavaScript","description":"ブラウザで、あなた自身のネットワークから DNS4ALL を実測：DoH の実測遅延、UDP と DoT の推定、33 件の公開 DNS の中での順位。アドレスと各端末での設定方法も。","inLanguage":"ja","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"USD"}},{"@type":"FAQPage","mainEntity":[{"@type":"Question","name":"DNS4ALL とは？","acceptedAnswer":{"@type":"Answer","text":"DNS4ALL は DNS4ALL が運営する無料の公開 DNS で、拠点はオランダです。通常の DNS は 194.0.5.3（IPv6：2001:678:8::3）、暗号化 DNS は DoT、DoH に対応しています。主にオランダで運営されています。近ければ最速になり得ますが、遠いと大手のグローバル網より遅いのが普通です。DNSSEC を検証します。署名が合わない応答は拒否されます。フィルタリングはしません。すべての名前がそのまま解決されます。非営利で運営されています。"}},{"@type":"Question","name":"DNS4ALL の DNS サーバーアドレス","acceptedAnswer":{"@type":"Answer","text":"DNS4ALL を使うときに入力するもの：DNS (IPv4): 194.0.5.3DNS (IPv6): 2001:678:8::3DoT / プライベート DNS: dot.dns4all.euDoH: https://doh.dns4all.eu/dns-query"}},{"@type":"Question","name":"DNS4ALL の設定方法","acceptedAnswer":{"@type":"Answer","text":"Windows 11: 設定 → ネットワークとインターネット → Wi‑Fi またはイーサネット → ハードウェアのプロパティ → DNS サーバーの割り当て → 編集 → 手動。IPv4 をオンにして 194.0.5.3 を入力します。暗号化するには「DNS over HTTPS」を「オン（手動テンプレート）」にして、テンプレートに https://doh.dns4all.eu/dns-query を入力します。macOS: システム設定 → ネットワーク → Wi‑Fi（または Ethernet）→ 詳細 → DNS で + を押し、194.0.5.3 を追加します。暗号化 DNS（https://doh.dns4all.eu/dns-query）には構成プロファイルが必要です。iPhone と iPad: 設定 → Wi‑Fi → ネットワーク横の ⓘ → DNSを構成 → 手動 で 194.0.5.3 を追加します。その Wi‑Fi だけに効きます。どのネットワークでも暗号化 DNS を使うには、https://doh.dns4all.eu/dns-query 向けの DNS プロファイルをインストールします。Android: 設定 → ネットワークとインターネット → プライベート DNS → プライベート DNS プロバイダのホスト名 に dot.dns4all.eu を入力します。どのネットワークでも有効で、暗号化されます（DoT）。メニューはメーカーによって少し違うので、設定で「プライベート DNS」を検索してください。ルーター: ルーターの管理画面（WAN または DHCP の設定）で DNS サーバーを 194.0.5.3 にします。ネットワーク内のすべての端末がそれを使います。ブラウザ: Chrome：設定 → プライバシーとセキュリティ → セキュリティ → セキュア DNS を使用する → カスタム に https://doh.dns4all.eu/dns-query。Edge は「プライバシー、検索、サービス」に同じ項目があります。Firefox：設定 → プライバシーとセキュリティ → DNS over HTTPS → 最大保護 → カスタム に https://doh.dns4all.eu/dns-query。Linux: systemd-resolved の場合：/etc/systemd/resolved.conf に DNS=194.0.5.3 と書き、systemctl restart systemd-resolved を実行します。DoT を使うには、アドレスを 194.0.5.3#dot.dns4all.eu と書き、DNSOverTLS=yes を加えます。"}},{"@type":"Question","name":"DNS4ALL は中国本土で使えますか？","acceptedAnswer":{"@type":"Answer","text":"通常の DNS はたいてい応答しますが、サーバーが中国本土の外にあるため遅く、ブロックされたサイトへの応答は途中で偽造されることがあります。暗号化 DNS（DoH、DoT）はしばしば遮断されるか不安定です。このページで測ってみてください。応答のない行は、あなたのネットワークから届かないということです。"}},{"@type":"Question","name":"DNS4ALL と Quad9 DNS、どちらが速い？","acceptedAnswer":{"@type":"Answer","text":"どこでも速いほうはありません。決め手は、それぞれの最寄りのサーバーがどれだけ遠いか、プロバイダーがどんな経路でそこへ行くかです。このページは約 20 秒で、両方と一覧の他の DNS をあなたのネットワークから測ります。ページ上部に DNS4ALL の順位と最速との差が出ます。"}},{"@type":"Question","name":"DNS4ALL が遅いのはなぜ？","acceptedAnswer":{"@type":"Answer","text":"たいていは距離です。最寄りのサーバーが遠いか、プロバイダーが遠回りしています。プロキシや VPN を通すとクエリもそこを通り、測っているのはプロキシの経路になります（直接接続ルールで解決します）。暗号化 DNS を遅くしたり遮断したりするネットワークもあります。まだ誰も問い合わせていない名前は常に時間がかかります（「キャッシュなし」列）。一覧にはっきり速い DNS があれば、そちらに切り替えましょう。"}}]},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"DNS テスト","item":"https://dns.1ms.dog/ja/"},{"@type":"ListItem","position":2,"name":"DNS4ALL 速度テスト","item":"https://dns.1ms.dog/ja/dns4all/"}]}]}</script>
 <link rel="preload" href="/assets/fonts/geist-latin.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="/assets/app.4b193b2fc2.css">
+<link rel="stylesheet" href="/assets/app.f0a6ed867c.css">
 </head>
 <body>
 <div class="app">
@@ -96,6 +96,7 @@
             <li data-w="dot"><span><span data-i="c_dot">DoT ≈</span> <i data-i="w_est">推定</i></span><b>–</b></li>
           </ul>
           <p class="alt" id="alt">&nbsp;</p>
+          <a class="chk-l xl" id="checkLink" hidden target="_blank" rel="noopener"><span data-i="check_link">回線をまるごとチェック</span><svg class="ext" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 2.5h4.5V7M13.5 2.5 7.5 8.5M12 10v3.5H2.5V4H6"/></svg></a>
         </div>
       </div>
       <div class="bar">
@@ -200,7 +201,7 @@
 </div>
 
 <script type="application/json" id="data">{"lang":"ja","paths":{"en":"/dns4all/","zh-CN":"/zh-cn/dns4all/","zh-TW":"/zh-tw/dns4all/","ja":"/ja/dns4all/","ko":"/ko/dns4all/","es":"/es/dns4all/","fr":"/fr/dns4all/","de":"/de/dns4all/","pt":"/pt/dns4all/","ru":"/ru/dns4all/"},"home":"/ja/","focus":"dns4all"}</script>
-<script src="/assets/l.ja.3a3cdb5361.js"></script>
-<script src="/assets/app.f8c5add641.js"></script>
+<script src="/assets/l.ja.e41eec9225.js"></script>
+<script src="/assets/app.ffc0cd7954.js"></script>
 </body>
 </html>

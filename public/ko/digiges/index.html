@@ -48,7 +48,7 @@
 <meta name="twitter:description" content="브라우저에서 내 네트워크 기준으로 Digitale Gesellschaft DNS를 실측: DoH 실측 지연, UDP·DoT 추정, 공용 DNS 33곳 중 순위. 주소와 기기별 설정 방법도 함께.">
 <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebApplication","name":"Digitale Gesellschaft DNS 속도 테스트 · 1ms.dog","url":"https://dns.1ms.dog/ko/digiges/","applicationCategory":"UtilitiesApplication","operatingSystem":"Any","browserRequirements":"Requires JavaScript","description":"브라우저에서 내 네트워크 기준으로 Digitale Gesellschaft DNS를 실측: DoH 실측 지연, UDP·DoT 추정, 공용 DNS 33곳 중 순위. 주소와 기기별 설정 방법도 함께.","inLanguage":"ko","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"USD"}},{"@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Digitale Gesellschaft DNS는 어떤 DNS인가요?","acceptedAnswer":{"@type":"Answer","text":"Digitale Gesellschaft DNS는 스위스의 Digitale Gesellschaft가 운영하는 무료 공용 DNS입니다. 암호화 DNS(DoT, DoH)만 제공하며, 공개된 일반 DNS 주소는 없습니다. 주로 스위스에서 운영됩니다. 가까우면 가장 빠를 수 있지만, 멀면 대개 대형 글로벌 네트워크보다 느립니다. DNSSEC를 검증합니다. 서명이 맞지 않는 응답은 거부됩니다. 필터링하지 않습니다. 모든 이름이 그대로 조회됩니다. 비영리로 운영됩니다. 운영사는 사용자의 IP 주소를 저장하지 않는다고 밝힙니다."}},{"@type":"Question","name":"Digitale Gesellschaft DNS DNS 서버 주소","acceptedAnswer":{"@type":"Answer","text":"Digitale Gesellschaft DNS를 쓸 때 입력할 값: DoT / 개인 DNS: dns.digitale-gesellschaft.ch DoH: https://dns.digitale-gesellschaft.ch/dns-query"}},{"@type":"Question","name":"Digitale Gesellschaft DNS 설정 방법","acceptedAnswer":{"@type":"Answer","text":"Windows 11: Windows에서 암호화 DNS를 쓰려면 일반 DNS 주소가 필요한데, Digitale Gesellschaft DNS는 이를 공개하지 않습니다. 브라우저(아래)나 dnscrypt-proxy 같은 로컬 DNS 클라이언트로 사용하세요. macOS: macOS는 구성 프로파일로 암호화 DNS를 씁니다. https://dns.digitale-gesellschaft.ch/dns-query용 DNS 프로파일을 설치하세요. iPhone과 iPad: https://dns.digitale-gesellschaft.ch/dns-query용 DNS 프로파일을 설치한 뒤, 설정 → 일반 → VPN 및 기기 관리 → DNS에서 켭니다. Android: 설정 → 네트워크 및 인터넷 → 개인 DNS → 개인 DNS 제공업체 호스트 이름에 다음을 입력합니다: dns.digitale-gesellschaft.ch. 모든 네트워크에서 적용되고 암호화됩니다(DoT). 제조사마다 메뉴가 조금 다르니 설정에서 '개인 DNS'를 검색하세요. 공유기: 공유기에는 일반 DNS 주소만 넣을 수 있는데 Digitale Gesellschaft DNS는 이를 공개하지 않습니다. OpenWrt라면 https-dns-proxy로 https://dns.digitale-gesellschaft.ch/dns-query에 전달할 수 있습니다. 브라우저: Chrome: 설정 → 개인 정보 보호 및 보안 → 보안 → 보안 DNS 사용 → 맞춤설정에 https://dns.digitale-gesellschaft.ch/dns-query. Edge는 '개인 정보, 검색 및 서비스'에 같은 항목이 있습니다. Firefox: 설정 → 개인 정보 및 보안 → DNS over HTTPS → 최대 보호 → 사용자 지정에 https://dns.digitale-gesellschaft.ch/dns-query."}},{"@type":"Question","name":"Digitale Gesellschaft DNS를 중국 본토에서 쓸 수 있나요?","acceptedAnswer":{"@type":"Answer","text":"일반 DNS는 대개 응답하지만 서버가 중국 본토 밖에 있어 느리고, 차단된 사이트에 대한 응답은 도중에 위조될 수 있습니다. 암호화 DNS(DoH, DoT)는 자주 차단되거나 불안정합니다. 이 페이지에서 측정해 보세요. 응답이 없는 행은 내 네트워크에서 닿지 않는다는 뜻입니다."}},{"@type":"Question","name":"Digitale Gesellschaft DNS와 Quad9 DNS, 어느 쪽이 빠른가요?","acceptedAnswer":{"@type":"Answer","text":"어디서나 더 빠른 쪽은 없습니다. 각자의 가장 가까운 서버가 얼마나 먼지, 통신사가 어떤 경로로 가는지가 결정합니다. 이 페이지는 약 20초 만에 둘과 목록의 다른 DNS를 내 네트워크에서 모두 측정하고, 위쪽에 Digitale Gesellschaft DNS의 순위와 가장 빠른 곳과의 차이를 보여 줍니다."}},{"@type":"Question","name":"Digitale Gesellschaft DNS가 느린 이유는?","acceptedAnswer":{"@type":"Answer","text":"대개 거리 때문입니다. 가장 가까운 서버가 멀거나 통신사가 멀리 돌아갑니다. 프록시나 VPN을 쓰면 조회도 그쪽을 거쳐서 프록시 경로를 재게 됩니다(직접 연결 규칙으로 해결). 암호화 DNS를 느리게 하거나 막는 네트워크도 있습니다. 아직 아무도 묻지 않은 이름은 늘 더 오래 걸립니다('캐시 없음' 열). 목록에 확실히 더 빠른 DNS가 있으면 그쪽으로 바꾸세요."}}]},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"DNS 테스트","item":"https://dns.1ms.dog/ko/"},{"@type":"ListItem","position":2,"name":"Digitale Gesellschaft DNS 속도 테스트","item":"https://dns.1ms.dog/ko/digiges/"}]}]}</script>
 <link rel="preload" href="/assets/fonts/geist-latin.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="/assets/app.4b193b2fc2.css">
+<link rel="stylesheet" href="/assets/app.f0a6ed867c.css">
 </head>
 <body>
 <div class="app">
@@ -96,6 +96,7 @@
             <li data-w="dot"><span><span data-i="c_dot">DoT ≈</span> <i data-i="w_est">추정</i></span><b>–</b></li>
           </ul>
           <p class="alt" id="alt">&nbsp;</p>
+          <a class="chk-l xl" id="checkLink" hidden target="_blank" rel="noopener"><span data-i="check_link">전체 점검 실행</span><svg class="ext" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 2.5h4.5V7M13.5 2.5 7.5 8.5M12 10v3.5H2.5V4H6"/></svg></a>
         </div>
       </div>
       <div class="bar">
@@ -200,7 +201,7 @@
 </div>
 
 <script type="application/json" id="data">{"lang":"ko","paths":{"en":"/digiges/","zh-CN":"/zh-cn/digiges/","zh-TW":"/zh-tw/digiges/","ja":"/ja/digiges/","ko":"/ko/digiges/","es":"/es/digiges/","fr":"/fr/digiges/","de":"/de/digiges/","pt":"/pt/digiges/","ru":"/ru/digiges/"},"home":"/ko/","focus":"digiges"}</script>
-<script src="/assets/l.ko.09a3cc2bd7.js"></script>
-<script src="/assets/app.f8c5add641.js"></script>
+<script src="/assets/l.ko.852b13ed56.js"></script>
+<script src="/assets/app.ffc0cd7954.js"></script>
 </body>
 </html>

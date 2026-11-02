@@ -48,7 +48,7 @@
 <meta name="twitter:description" content="브라우저에서 내 네트워크 기준으로 Hurricane Electric DNS를 실측: DoH 실측 지연, UDP·DoT 추정, 공용 DNS 33곳 중 순위. 주소와 기기별 설정 방법도 함께.">
 <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebApplication","name":"Hurricane Electric DNS 속도 테스트 · 1ms.dog","url":"https://dns.1ms.dog/ko/he/","applicationCategory":"UtilitiesApplication","operatingSystem":"Any","browserRequirements":"Requires JavaScript","description":"브라우저에서 내 네트워크 기준으로 Hurricane Electric DNS를 실측: DoH 실측 지연, UDP·DoT 추정, 공용 DNS 33곳 중 순위. 주소와 기기별 설정 방법도 함께.","inLanguage":"ko","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"USD"}},{"@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Hurricane Electric DNS는 어떤 DNS인가요?","acceptedAnswer":{"@type":"Answer","text":"Hurricane Electric DNS는 미국의 Hurricane Electric이 운영하는 무료 공용 DNS입니다. 일반 DNS 주소는 74.82.42.42(IPv6: 2001:470:20::2)이고, 암호화 DNS도 지원합니다: DoT, DoH. 서버가 전 세계 여러 곳에 있어, 조회는 가장 가까운 서버로 갑니다. DNSSEC를 검증합니다. 서명이 맞지 않는 응답은 거부됩니다. 필터링하지 않습니다. 모든 이름이 그대로 조회됩니다."}},{"@type":"Question","name":"Hurricane Electric DNS DNS 서버 주소","acceptedAnswer":{"@type":"Answer","text":"Hurricane Electric DNS를 쓸 때 입력할 값: DNS (IPv4): 74.82.42.42 DNS (IPv6): 2001:470:20::2 DoT / 개인 DNS: ordns.he.net DoH: https://ordns.he.net/dns-query"}},{"@type":"Question","name":"Hurricane Electric DNS 설정 방법","acceptedAnswer":{"@type":"Answer","text":"Windows 11: 설정 → 네트워크 및 인터넷 → Wi‑Fi 또는 이더넷 → 하드웨어 속성 → DNS 서버 할당 → 편집 → 수동. IPv4를 켜고 다음 주소를 입력합니다: 74.82.42.42. 암호화하려면 'DNS over HTTPS'를 '켜기(수동 템플릿)'로 하고 템플릿에 다음을 입력합니다: https://ordns.he.net/dns-query. macOS: 시스템 설정 → 네트워크 → Wi‑Fi(또는 이더넷) → 세부사항 → DNS에서 +를 눌러 다음 주소를 추가합니다: 74.82.42.42. 암호화 DNS(https://ordns.he.net/dns-query)는 구성 프로파일이 필요합니다. iPhone과 iPad: 설정 → Wi‑Fi → 네트워크 옆 ⓘ → DNS 구성 → 수동에서 다음 주소를 추가합니다: 74.82.42.42. 해당 Wi‑Fi에만 적용됩니다. 모든 네트워크에서 암호화 DNS를 쓰려면 https://ordns.he.net/dns-query용 DNS 프로파일을 설치하세요. Android: 설정 → 네트워크 및 인터넷 → 개인 DNS → 개인 DNS 제공업체 호스트 이름에 다음을 입력합니다: ordns.he.net. 모든 네트워크에서 적용되고 암호화됩니다(DoT). 제조사마다 메뉴가 조금 다르니 설정에서 '개인 DNS'를 검색하세요. 공유기: 공유기 관리 페이지(WAN 또는 DHCP 설정)에서 DNS 서버를 다음으로 바꿉니다: 74.82.42.42. 네트워크의 모든 기기가 이를 사용합니다. 브라우저: Chrome: 설정 → 개인 정보 보호 및 보안 → 보안 → 보안 DNS 사용 → 맞춤설정에 https://ordns.he.net/dns-query. Edge는 '개인 정보, 검색 및 서비스'에 같은 항목이 있습니다. Firefox: 설정 → 개인 정보 및 보안 → DNS over HTTPS → 최대 보호 → 사용자 지정에 https://ordns.he.net/dns-query. Linux: systemd-resolved: /etc/systemd/resolved.conf에 DNS=74.82.42.42 줄을 적고 systemctl restart systemd-resolved를 실행합니다. DoT를 쓰려면 주소를 74.82.42.42#ordns.he.net 형식으로 적고 DNSOverTLS=yes를 추가합니다."}},{"@type":"Question","name":"Hurricane Electric DNS를 중국 본토에서 쓸 수 있나요?","acceptedAnswer":{"@type":"Answer","text":"일반 DNS는 대개 응답하지만 서버가 중국 본토 밖에 있어 느리고, 차단된 사이트에 대한 응답은 도중에 위조될 수 있습니다. 암호화 DNS(DoH, DoT)는 자주 차단되거나 불안정합니다. 이 페이지에서 측정해 보세요. 응답이 없는 행은 내 네트워크에서 닿지 않는다는 뜻입니다."}},{"@type":"Question","name":"Hurricane Electric DNS와 Google Public DNS, 어느 쪽이 빠른가요?","acceptedAnswer":{"@type":"Answer","text":"어디서나 더 빠른 쪽은 없습니다. 각자의 가장 가까운 서버가 얼마나 먼지, 통신사가 어떤 경로로 가는지가 결정합니다. 이 페이지는 약 20초 만에 둘과 목록의 다른 DNS를 내 네트워크에서 모두 측정하고, 위쪽에 Hurricane Electric DNS의 순위와 가장 빠른 곳과의 차이를 보여 줍니다."}},{"@type":"Question","name":"Hurricane Electric DNS가 느린 이유는?","acceptedAnswer":{"@type":"Answer","text":"대개 거리 때문입니다. 가장 가까운 서버가 멀거나 통신사가 멀리 돌아갑니다. 프록시나 VPN을 쓰면 조회도 그쪽을 거쳐서 프록시 경로를 재게 됩니다(직접 연결 규칙으로 해결). 암호화 DNS를 느리게 하거나 막는 네트워크도 있습니다. 아직 아무도 묻지 않은 이름은 늘 더 오래 걸립니다('캐시 없음' 열). 목록에 확실히 더 빠른 DNS가 있으면 그쪽으로 바꾸세요."}}]},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"DNS 테스트","item":"https://dns.1ms.dog/ko/"},{"@type":"ListItem","position":2,"name":"Hurricane Electric DNS 속도 테스트","item":"https://dns.1ms.dog/ko/he/"}]}]}</script>
 <link rel="preload" href="/assets/fonts/geist-latin.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="/assets/app.4b193b2fc2.css">
+<link rel="stylesheet" href="/assets/app.f0a6ed867c.css">
 </head>
 <body>
 <div class="app">
@@ -96,6 +96,7 @@
             <li data-w="dot"><span><span data-i="c_dot">DoT ≈</span> <i data-i="w_est">추정</i></span><b>–</b></li>
           </ul>
           <p class="alt" id="alt">&nbsp;</p>
+          <a class="chk-l xl" id="checkLink" hidden target="_blank" rel="noopener"><span data-i="check_link">전체 점검 실행</span><svg class="ext" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 2.5h4.5V7M13.5 2.5 7.5 8.5M12 10v3.5H2.5V4H6"/></svg></a>
         </div>
       </div>
       <div class="bar">
@@ -200,7 +201,7 @@
 </div>
 
 <script type="application/json" id="data">{"lang":"ko","paths":{"en":"/he/","zh-CN":"/zh-cn/he/","zh-TW":"/zh-tw/he/","ja":"/ja/he/","ko":"/ko/he/","es":"/es/he/","fr":"/fr/he/","de":"/de/he/","pt":"/pt/he/","ru":"/ru/he/"},"home":"/ko/","focus":"he"}</script>
-<script src="/assets/l.ko.09a3cc2bd7.js"></script>
-<script src="/assets/app.f8c5add641.js"></script>
+<script src="/assets/l.ko.852b13ed56.js"></script>
+<script src="/assets/app.ffc0cd7954.js"></script>
 </body>
 </html>

@@ -51,7 +51,7 @@
 <meta name="twitter:description" content="在浏览器里从你自己的网络实测 360 安全 DNS：DoH 实测延迟，UDP、DoT 估算，以及它在 33 家公共 DNS 里排第几。附完整地址和各设备的设置方法。">
 <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebApplication","name":"360 安全 DNS 测速 · 1ms.dog","url":"https://dns.1ms.dog/zh-cn/360/","applicationCategory":"UtilitiesApplication","operatingSystem":"Any","browserRequirements":"Requires JavaScript","description":"在浏览器里从你自己的网络实测 360 安全 DNS：DoH 实测延迟，UDP、DoT 估算，以及它在 33 家公共 DNS 里排第几。附完整地址和各设备的设置方法。","inLanguage":"zh-CN","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"USD"}},{"@type":"FAQPage","mainEntity":[{"@type":"Question","name":"360 安全 DNS 是什么？","acceptedAnswer":{"@type":"Answer","text":"360 安全 DNS 是奇虎 360 运营的免费公共 DNS，运营方在中国。普通 DNS 地址是 101.226.4.6、218.30.118.6，也支持加密 DNS：DoT、DoH。它的服务器在中国大陆：在国内快，在境外慢。它不验证 DNSSEC。它不做过滤，所有域名照常解析。"}},{"@type":"Question","name":"360 安全 DNS 的 DNS 服务器地址","acceptedAnswer":{"@type":"Answer","text":"使用 360 安全 DNS 时填写：DNS (IPv4): 101.226.4.6、218.30.118.6DoT / 私人 DNS: dot.360.cnDoH: https://doh.360.cn/dns-query"}},{"@type":"Question","name":"360 安全 DNS 怎么设置","acceptedAnswer":{"@type":"Answer","text":"Windows 11: 设置 → 网络和 Internet → WLAN 或以太网 → 硬件属性 → DNS 服务器分配 → 编辑 → 手动。打开 IPv4，填入 101.226.4.6、218.30.118.6。要加密的话，把「DNS over HTTPS」设为「开（手动模板）」，模板填 https://doh.360.cn/dns-query。macOS: 系统设置 → 网络 → Wi‑Fi（或以太网）→ 详细信息 → DNS，点 + 添加 101.226.4.6、218.30.118.6。加密 DNS（https://doh.360.cn/dns-query）需要安装描述文件。iPhone 和 iPad: 设置 → 无线局域网 → 网络旁的 ⓘ → 配置 DNS → 手动，添加 101.226.4.6、218.30.118.6。只对这个 Wi‑Fi 生效；想在所有网络上用加密 DNS，安装一个指向 https://doh.360.cn/dns-query 的 DNS 描述文件。安卓: 设置 → 网络和互联网 → 私人 DNS → 私人 DNS 提供商主机名，填 dot.360.cn。在所有网络上生效，并且是加密的（DoT）。各品牌菜单位置略有不同，可在设置里搜索「私人 DNS」。路由器: 进入路由器管理页面（WAN 或 DHCP 设置），把 DNS 服务器改成 101.226.4.6、218.30.118.6：局域网里的所有设备都会用它。浏览器: Chrome：设置 → 隐私和安全 → 安全 → 使用安全 DNS → 自定义，填 https://doh.360.cn/dns-query。Edge 在「隐私、搜索和服务」里有同样的选项。Firefox：设置 → 隐私与安全 → 基于 HTTPS 的 DNS → 最大保护 → 自定义，填 https://doh.360.cn/dns-query。Linux: 使用 systemd-resolved 时：在 /etc/systemd/resolved.conf 里写 DNS=101.226.4.6 218.30.118.6，再运行 systemctl restart systemd-resolved。要用 DoT，把地址写成 101.226.4.6#dot.360.cn，并加上 DNSOverTLS=yes。"}},{"@type":"Question","name":"360 安全 DNS 在中国大陆能用吗？","acceptedAnswer":{"@type":"Answer","text":"能：它的服务器在中国大陆，是国内常用的公共 DNS 之一。普通 DNS、DoT、DoH 都能用。"}},{"@type":"Question","name":"360 安全 DNS 和阿里 DNS 哪个快？","acceptedAnswer":{"@type":"Answer","text":"没有哪个在所有地方都更快：关键是两家离你最近的服务器有多远、你的运营商怎么走到那里。本页大约 20 秒就能从你自己的网络把两家连同列表里的其他 DNS 都测一遍；页面顶部会显示 360 安全 DNS 排第几、比最快的慢多少。"}},{"@type":"Question","name":"为什么 360 安全 DNS 对我来说很慢？","acceptedAnswer":{"@type":"Answer","text":"通常是距离：离你最近的服务器很远，或者运营商绕了远路。开着代理或 VPN 时，查询也走代理，测出来的是代理的线路（加上直连规则就好）。有些网络会限速或阻断加密 DNS。另外，没人查过的域名总是更慢（见「未缓存」一列）。如果列表里有明显更快的 DNS，换成它就好。"}}]},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"DNS 测试","item":"https://dns.1ms.dog/zh-cn/"},{"@type":"ListItem","position":2,"name":"360 安全 DNS 测速","item":"https://dns.1ms.dog/zh-cn/360/"}]}]}</script>
 <link rel="preload" href="/assets/fonts/geist-latin.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="/assets/app.4b193b2fc2.css">
+<link rel="stylesheet" href="/assets/app.f0a6ed867c.css">
 </head>
 <body>
 <div class="app">
@@ -99,6 +99,7 @@
             <li data-w="dot"><span><span data-i="c_dot">DoT ≈</span> <i data-i="w_est">估算</i></span><b>–</b></li>
           </ul>
           <p class="alt" id="alt">&nbsp;</p>
+          <a class="chk-l xl" id="checkLink" hidden target="_blank" rel="noopener"><span data-i="check_link">做一次完整体检</span><svg class="ext" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 2.5h4.5V7M13.5 2.5 7.5 8.5M12 10v3.5H2.5V4H6"/></svg></a>
         </div>
       </div>
       <div class="bar">
@@ -203,7 +204,7 @@
 </div>
 
 <script type="application/json" id="data">{"lang":"zh-CN","paths":{"en":"/360/","zh-CN":"/zh-cn/360/","zh-TW":"/zh-tw/360/","ja":"/ja/360/","ko":"/ko/360/","es":"/es/360/","fr":"/fr/360/","de":"/de/360/","pt":"/pt/360/","ru":"/ru/360/"},"home":"/zh-cn/","focus":"360"}</script>
-<script src="/assets/l.zh-cn.2fb34a74b1.js"></script>
-<script src="/assets/app.f8c5add641.js"></script>
+<script src="/assets/l.zh-cn.d95adae27b.js"></script>
+<script src="/assets/app.ffc0cd7954.js"></script>
 </body>
 </html>

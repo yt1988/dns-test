@@ -36,6 +36,8 @@ code.copied { background: var(--ink-soft); color: var(--ink); }
 .win-m b { display: block; font: 600 22px/30px var(--f-num); font-variant-numeric: tabular-nums; white-space: nowrap; }
 .win-m b.na { color: var(--muted); font-weight: 400; cursor: help; }
 .alt { font-size: 13px; color: var(--muted); margin-top: 6px; }
+.chk-l { font-size: 13px; color: var(--ink); text-decoration: none; margin-top: 2px; }
+.chk-l:hover { text-decoration: underline; }
 .alt b { color: var(--fg); font-weight: 600; }
 /* shown when the test is over; until then it keeps its place, so the name doesn't move when it appears */
 .use-w { position: absolute; left: calc(100% + 16px); top: 50%; transform: translateY(-50%); visibility: hidden; }
@@ -231,5 +233,5 @@ html.embed .app { padding-block: 0; }
 html.embed main { gap: 10px; }
 html.embed .top, html.embed .hero h1, html.embed .use-w, html.embed #cliBtn, html.embed #rulesBtn, html.embed #shareBtn,
 html.embed #rerun, html.embed #shared, html.embed .addr, html.embed .cli, html.embed .res-l, html.embed .rs-nav,
-html.embed [data-ms-more], html.embed .tr.more, html.embed .tr.more + div { display: none; }
+html.embed [data-ms-more], html.embed #checkLink, html.embed .tr.more, html.embed .tr.more + div { display: none; }
 html.embed .hero { padding-top: 14px; gap: 10px; }
