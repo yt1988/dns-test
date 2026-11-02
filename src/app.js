@@ -122,8 +122,9 @@ import { ABOUT } from "./about.mjs";
   document.addEventListener("click", e => {
     const b = e.target.closest && e.target.closest("[data-copy]");
     if (!b || !navigator.clipboard) return;
-    navigator.clipboard.writeText(b.parentNode.querySelector("code").textContent).then(() => {
-      b.textContent = t("copied"); setTimeout(() => { b.textContent = t("copy"); }, 1200);
+    navigator.clipboard.writeText(b.querySelector("code").textContent).then(() => {
+      b.classList.add("done"); b.title = t("copied");
+      setTimeout(() => { b.classList.remove("done"); b.title = t("copy"); }, 1200);
     }, () => {});
   });
   $$("[data-cli]").forEach(b => { b.onclick = () => openDlg("cli"); });
@@ -155,7 +156,7 @@ import { ABOUT } from "./about.mjs";
   // copy an address: click any code in the hero or the details
   document.addEventListener("click", e => {
     const c = e.target.closest && e.target.closest("code");
-    if (!c || !navigator.clipboard) return;
+    if (!c || c.closest("[data-copy]") || !navigator.clipboard) return;
     e.stopPropagation();
     navigator.clipboard.writeText(c.textContent).then(() => { c.classList.add("copied"); c.dataset.why = t("copied"); showTip(c); setTimeout(() => { c.classList.remove("copied"); delete c.dataset.why; tipEl && tipEl.classList.remove("on"); }, 1200); }, () => {});
   }, true);

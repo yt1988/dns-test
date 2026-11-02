@@ -73,9 +73,9 @@ const fillL = (lang, s, v) => tidy(fill(lang === "ko" ? josa(s, v) : s, v), lang
 // every origin the page asks: the resolvers' DoH hosts and the addresses used for the estimates
 export const ORIGINS = [...new Set(RESOLVERS.flatMap(r => [r.doh, r.ip].filter(Boolean).map(u => new URL(u).origin)))];
 
-// the command-line dialog: how to install and run dnstest, every command with its copy button
+// the command-line dialog: how to install and run dnstest, every command a button that copies it
 function cliDlg(T) {
-  const line = (cmd, note) => `<div class="cmdline"><code>${esc(cmd)}</code><button class="btn sm" type="button" data-copy>${esc(T("copy"))}</button></div>` + (note ? `<span class="note">${esc(note)}</span>` : "");
+  const line = (cmd, note) => `<button class="cmdline" type="button" data-copy title="${esc(T("copy"))}"><code>${esc(cmd)}</code><svg class="cp" viewBox="0 0 16 16" aria-hidden="true"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 5.5V4A1.5 1.5 0 0 0 9 2.5H4A1.5 1.5 0 0 0 2.5 4v5A1.5 1.5 0 0 0 4 10.5h1.5"/></svg><svg class="ok" viewBox="0 0 16 16" aria-hidden="true"><path d="M3.5 8.5l3 3 6-7"/></svg></button>` + (note ? `<span class="note">${esc(note)}</span>` : "");
   const sec = (h, body) => `<section class="rblk"><b>${esc(T(h))}</b>${body}</section>`;
   const win = `${SITE}/dl/latest/dnstest-windows-amd64.exe`;
   return [

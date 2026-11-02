@@ -111,12 +111,9 @@ a.val:hover { color: var(--ink); }
 
 /* the command-line tool: UDP, DoT and DoQ measured for real on a server */
 /* the command line: what it is on the left, the command on the right (copy beside it, more and the source under it) */
-.cli { padding: 16px 22px; display: grid; grid-template-columns: auto minmax(0, 1fr) minmax(0, 1.25fr); gap: 10px 14px; align-items: center; }
-.cli-ic { width: 28px; height: 28px; color: var(--ink); }
-.cli-t h2 { font-size: 15px; }
-.cli-t p { color: var(--muted); font-size: 13px; margin-top: 2px; }
-.cli-cmd { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
-.cli-cmd .cmdline code { white-space: normal; }
+.cli { padding: 12px 18px; display: grid; grid-template-columns: auto auto minmax(0, 1fr) auto; gap: 10px 14px; align-items: center; }
+.cli-ic { width: 24px; height: 24px; color: var(--ink); }
+.cli-t { font-size: 15px; white-space: nowrap; }
 .cli-links { display: flex; justify-content: flex-end; align-items: center; gap: 16px; padding-right: 2px; }
 .lnk { border: 0; background: none; padding: 0; font: inherit; font-size: 12.5px; color: var(--muted); cursor: pointer; }
 .lnk:hover, .lnk:focus-visible { color: var(--ink); }
@@ -175,9 +172,16 @@ svg.gh-ic[viewBox] { width: 15px; height: 15px; fill: currentColor; stroke: none
 .shared { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; padding: 10px 12px 10px 16px; border-radius: var(--r); background: var(--ink-soft); border: 1px solid color-mix(in srgb, var(--ink) 30%, transparent); font-size: 13.5px; }
 .shared .btn { height: 32px; font-size: 13px; }
 .dialog.cli-dlg { width: 640px; }
-.cmdline { display: flex; align-items: center; gap: 8px; }
-.cmdline code { flex: 1; min-width: 0; font-size: 13px; padding: 7px 10px; white-space: pre-wrap; overflow-wrap: anywhere; }
-.cmdline .btn.sm { height: 30px; padding: 0 12px; font-size: 12.5px; flex: none; }
+/* a command line is its own copy button: a copy mark at its end on hover (always on touch), a tick once copied */
+.cmdline { position: relative; display: flex; align-items: center; width: 100%; min-width: 0; border: 0; border-radius: 8px; background: var(--soft); color: var(--fg); padding: 8px 36px 8px 12px; text-align: left; cursor: copy; transition: background .15s; }
+.cmdline:hover { background: color-mix(in srgb, var(--fg) 7%, var(--soft)); }
+.cmdline code { flex: 1; min-width: 0; font: 13px var(--f-num); background: none; border-radius: 0; padding: 0; white-space: pre-wrap; overflow-wrap: anywhere; cursor: inherit; }
+.cli > .cmdline code { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.cmdline svg { position: absolute; right: 11px; top: 50%; width: 15px; height: 15px; margin-top: -7.5px; fill: none; stroke: currentColor; stroke-width: 1.4; stroke-linecap: round; stroke-linejoin: round; color: var(--muted); transition: opacity .15s; }
+.cmdline .ok { display: none; color: var(--t1); stroke-width: 1.8; }
+.cmdline.done .cp { display: none; }
+.cmdline.done .ok { display: block; }
+@media (hover: hover) { .cmdline:not(:hover):not(:focus-visible) .cp { opacity: 0; } }
 .rblk .cmdline + .note { margin: -2px 0 4px; }
 .dlg-b .dl { color: var(--ink); font: 13px var(--f-num); text-decoration: none; }
 .dlg-b .dl:hover { text-decoration: underline; }
@@ -215,10 +219,9 @@ details.rblk > summary { cursor: pointer; font-size: 13px; color: var(--ink); }
   .win-m li { padding: 0 10px; }
   .win-m b { font-size: 18px; }
   /* phones: rank, name, DoH, UDP ≈; the rest is in the row's details and the hero */
-  .cli { padding: 14px 16px; }
-  .cli { grid-template-columns: auto minmax(0, 1fr); }
-  .cli-cmd { grid-column: 1 / -1; }
-  .cli-cmd .cmdline code { white-space: pre-wrap; }
+  .cli { padding: 14px 16px; grid-template-columns: auto minmax(0, 1fr); }
+  .cli > .cmdline, .cli-links { grid-column: 1 / -1; }
+  .cli > .cmdline code { white-space: pre-wrap; }
   .th, .tr { grid-template-columns: 20px minmax(0, 1fr) 62px 62px; }
   .th > :nth-child(n+5), .tr > :nth-child(n+5) { display: none; }
   .td { padding-left: 12px; }
