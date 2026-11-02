@@ -55,6 +55,7 @@ export default {
   emb_down: "{n} of the resolvers didn't answer from your network",
   emb_nodnssec: "{name} doesn't check DNSSEC signatures",
   emb_rewrite: "{name} answers names that don't exist with an address (usually an ad page)",
+  emb_fail: "No DNS resolver answered: an ad blocker or firewall may be blocking DNS over HTTPS requests",
   share_desc: "{n} public DNS resolvers measured from one network: {name} {ms} ms, then {second} {ms2} ms. Find the fastest for yours.",
   share_desc1: "{n} public DNS resolvers measured from one network: {name} {ms} ms. Find the fastest for yours.",
   card_head: "Fastest DNS for me",

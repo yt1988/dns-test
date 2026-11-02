@@ -339,10 +339,13 @@ import { ABOUT } from "./about.mjs";
       facts: { winner: win.id, winnerMs: Math.round(w * 10) / 10, ...(cc && { winnerCountry: cc }), dnssec: !!win.dnssec } };
   }
 
-  // where the visitor is (Cloudflare's own trace, on sites it serves): for the mainland China note, and for the share
-  // card when the visitor ticks "show my country"
+  // where the visitor is: for the mainland China note, and for the share card when the visitor ticks "show my country".
+  // The shell's /_ms/me on 1ms.dog; elsewhere (self-hosted, local) Cloudflare's own trace, on sites it serves.
   let CC = "";
-  fetch("/cdn-cgi/trace", { cache: "no-store" }).then(r => r.ok ? r.text() : "").then(s => { const m = /\bloc=([A-Z]{2})/.exec(s); if (m) CC = m[1]; }).catch(() => {});
+  const cc2 = s => /^[A-Z]{2}$/.test(s || "") ? s : "";
+  fetch("/_ms/me", { cache: "no-store" }).then(r => { if (!r.ok) throw r; return r.json(); }).then(j => { CC = cc2(j.country); })
+    .catch(() => fetch("/cdn-cgi/trace", { cache: "no-store" }).then(r => r.ok ? r.text() : "").then(s => { CC = cc2((/\bloc=([A-Z]{2})/.exec(s) || [])[1]); }))
+    .catch(() => {});
   const country = cc => { try { return new Intl.DisplayNames([D.lang], { type: "region" }).of(cc); } catch (e) { return cc; } };
 
   /* ---------- share: the shared 1ms.dog dialog (/assets/share/, copied from 1ms-shell) with this result in it ---------- */
@@ -452,6 +455,12 @@ import { ABOUT } from "./about.mjs";
       done = Math.min(total, done + 1); progress(); fillRow(x.r.id); heroSoon(); sortLive();
       // a target that didn't answer the warm-up skips the rounds
       if (x.up === false) { done += 10; progress(); }
+      // embedded: when no DoH request gets through (an ad blocker stopping them all is the usual cause), the report
+      // hears it at once, once half the resolvers have failed, rather than after every one has timed out
+      if (EMBED && x.kind === "doh" && x.up === false && !ctl.signal.aborted) {
+        const doh = TS.filter(y => y.kind === "doh"), failed = doh.filter(y => y.up === false).length;
+        if (!doh.some(y => y.up) && failed * 2 >= doh.length) { post({ type: "error", text: t("emb_fail") }); ctl.abort(); }
+      }
     } });
     if (ctl.signal.aborted) return;
     RUN = null;

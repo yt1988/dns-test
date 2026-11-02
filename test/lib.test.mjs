@@ -83,3 +83,12 @@ test("a shared result survives the link, unknown resolvers are skipped, other fo
   assert.deepEqual(sharePath("/r/" + code), { slug: "", code });
   assert.equal(sharePath("/zh-cn/"), null);
 });
+
+test("a result link whose code can't be read is not found, never sent home", async () => {
+  const { default: worker } = await import("../src/worker.js");
+  const env = { ASSETS: { fetch: () => { throw new Error("no page for an unreadable code"); } } };
+  for (const p of ["/r/zz", "/zh-cn/r/zz", "/r/1~tntea0~-~nosuch_2c____", "/r/2~x~-~cloudflare_2c____"]) {
+    const res = await worker.fetch(new Request("https://dns.1ms.dog" + p), env, {});
+    assert.equal(res.status, 404, p);
+  }
+});

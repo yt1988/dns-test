@@ -54,6 +54,7 @@ export default {
   emb_down: "{n} des résolveurs n’ont pas répondu depuis votre réseau",
   emb_nodnssec: "{name} ne vérifie pas les signatures DNSSEC",
   emb_rewrite: "{name} répond aux noms inexistants par une adresse (souvent une page de pub)",
+  emb_fail: "Aucun DNS n’a répondu : un bloqueur de pub ou un pare-feu bloque peut-être les requêtes DNS over HTTPS",
   share_desc: "{n} résolveurs DNS publics mesurés depuis un réseau : {name} {ms} ms, puis {second} {ms2} ms. Trouvez le plus rapide pour le vôtre.",
   share_desc1: "{n} résolveurs DNS publics mesurés depuis un réseau : {name} {ms} ms. Trouvez le plus rapide pour le vôtre.",
   card_head: "Mon DNS le plus rapide",

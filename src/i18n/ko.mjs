@@ -54,6 +54,7 @@ export default {
   emb_down: "DNS {n}곳이 내 네트워크에서 응답하지 않았습니다",
   emb_nodnssec: "{name}: DNSSEC 서명 검증 안 함",
   emb_rewrite: "{name}: 존재하지 않는 이름에 주소(대개 광고 페이지)를 돌려줌",
+  emb_fail: "응답한 DNS가 없습니다. 광고 차단 확장 프로그램이나 방화벽이 DoH 요청을 막고 있을 수 있습니다",
   share_desc: "공개 DNS {n}곳 실측: {name} {ms} ms, 2위 {second} {ms2} ms. 내 네트워크에서 가장 빠른 곳은?",
   share_desc1: "공개 DNS {n}곳 실측: {name} {ms} ms. 내 네트워크에서 가장 빠른 곳은?",
   card_head: "나에게 가장 빠른 DNS",

@@ -7,6 +7,7 @@
 //   /r/<code>, /<lang>/r/<code>   a shared result: that language's page with the result's winner in its title and
 //                         description (what chat apps show as the link's preview), not indexed; the page itself
 //                         reads the code and shows the result (src/share.mjs)
+//                         (a code it can't read: 404)
 //   anything else         a bare 404; 1ms-shell puts the shared 1ms.dog 404 page in front of it
 // The installer and the tool try these before GitHub, which is often slow or blocked in mainland China.
 
@@ -57,20 +58,22 @@ export default {
       return release(m[1], m[2], req, ctx);
     }
 
-    return new Response(req.method === "HEAD" ? null : "Not found\n", {
-      status: 404,
-      headers: { "content-type": "text/plain; charset=utf-8", "cache-control": "public, max-age=0, must-revalidate" },
-    });
+    return notFound(req);
   },
 };
 
+const notFound = req => new Response(req.method === "HEAD" ? null : "Not found\n", {
+  status: 404,
+  headers: { "content-type": "text/plain; charset=utf-8", "cache-control": "public, max-age=0, must-revalidate" },
+});
+
 // A shared result: the language's page as it is, with the title, description and their Open Graph and Twitter copies
-// saying who was fastest. A code this page can't read goes to the language's page instead.
+// saying who was fastest. A code this page can't read is not found (the shell shows the 1ms.dog 404 page).
 async function shared(req, env, url, { slug, code }) {
   const home = "/" + (slug ? slug + "/" : "");
   const r = decode(code, KNOWN);
   const won = r && r.rows.filter(x => x.doh != null);
-  if (!won || !won.length) return Response.redirect(new URL(home, url).toString(), 302);
+  if (!won || !won.length) return notFound(req);
   const S = STR[slug], [a, b] = won;
   const title = fill(S.share_title, { name: NAME[a.id], ms: fmt(a.doh) });
   const desc = fill(b ? S.share_desc : S.share_desc1, { n: r.rows.length, name: NAME[a.id], ms: fmt(a.doh), second: b ? NAME[b.id] : "", ms2: b ? fmt(b.doh) : "" });

@@ -54,6 +54,7 @@ export default {
   emb_down: "{n} der Resolver haben aus Ihrem Netz nicht geantwortet",
   emb_nodnssec: "{name} prüft keine DNSSEC-Signaturen",
   emb_rewrite: "{name} beantwortet nicht existierende Namen mit einer Adresse (meist eine Werbeseite)",
+  emb_fail: "Kein DNS hat geantwortet: Ein Werbeblocker oder eine Firewall blockiert womöglich DNS-over-HTTPS-Anfragen",
   share_desc: "{n} öffentliche DNS-Resolver aus einem Netz gemessen: {name} {ms} ms, dann {second} {ms2} ms. Finden Sie den schnellsten für Ihres.",
   share_desc1: "{n} öffentliche DNS-Resolver aus einem Netz gemessen: {name} {ms} ms. Finden Sie den schnellsten für Ihres.",
   card_head: "Mein schnellster DNS",

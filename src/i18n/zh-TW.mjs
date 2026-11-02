@@ -54,6 +54,7 @@ export default {
   emb_down: "有 {n} 家 DNS 從你的網路連不上",
   emb_nodnssec: "{name} 不驗證 DNSSEC 簽章",
   emb_rewrite: "{name} 會為不存在的網域回傳位址（通常是廣告頁）",
+  emb_fail: "沒有任何 DNS 回應：可能是廣告攔截擴充功能或防火牆擋下了 DoH 請求",
   share_desc: "{n} 家公共 DNS 實測：{name} {ms} 毫秒，第二是 {second} {ms2} 毫秒。測測你的網路哪個最快。",
   share_desc1: "{n} 家公共 DNS 實測：{name} {ms} 毫秒。測測你的網路哪個最快。",
   card_head: "對我最快的 DNS",

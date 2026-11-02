@@ -54,6 +54,7 @@ export default {
   emb_down: "{n} 件の DNS があなたのネットワークから応答しませんでした",
   emb_nodnssec: "{name} は DNSSEC の署名を検証しません",
   emb_rewrite: "{name} は存在しない名前にアドレス（多くは広告ページ）を返します",
+  emb_fail: "どの DNS も応答しませんでした。広告ブロッカーやファイアウォールが DoH の通信を止めている可能性があります",
   share_desc: "公開 DNS {n} 件を実測：{name} {ms} ms、2 位は {second} {ms2} ms。あなたの回線で一番速いのは？",
   share_desc1: "公開 DNS {n} 件を実測：{name} {ms} ms。あなたの回線で一番速いのは？",
   card_head: "私に一番速い DNS",

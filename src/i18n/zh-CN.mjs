@@ -54,6 +54,7 @@ export default {
   emb_down: "有 {n} 家 DNS 从你的网络连不上",
   emb_nodnssec: "{name} 不验证 DNSSEC 签名",
   emb_rewrite: "{name} 会给不存在的域名返回地址（通常是广告页）",
+  emb_fail: "没有任何 DNS 应答：可能是广告拦截扩展或防火墙拦下了 DoH 请求",
   share_desc: "{n} 家公共 DNS 实测：{name} {ms} 毫秒，第二是 {second} {ms2} 毫秒。测测你的网络哪个最快。",
   share_desc1: "{n} 家公共 DNS 实测：{name} {ms} 毫秒。测测你的网络哪个最快。",
   card_head: "对我最快的 DNS",
