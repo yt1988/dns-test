@@ -48,7 +48,7 @@
 <meta name="twitter:description" content="Test Njalla DNS from your own network in the browser: real DoH latency, UDP and DoT estimates, and where it ranks among 33 public DNS. With its addresses and how to set it up on every device.">
 <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebApplication","name":"Njalla DNS speed test · 1ms.dog","url":"https://dns.1ms.dog/njalla/","applicationCategory":"UtilitiesApplication","operatingSystem":"Any","browserRequirements":"Requires JavaScript","description":"Test Njalla DNS from your own network in the browser: real DoH latency, UDP and DoT estimates, and where it ranks among 33 public DNS. With its addresses and how to set it up on every device.","inLanguage":"en","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"USD"}},{"@type":"FAQPage","mainEntity":[{"@type":"Question","name":"What is Njalla DNS?","acceptedAnswer":{"@type":"Answer","text":"Njalla DNS is a free public DNS service run by Njalla (Sweden). It answers plain DNS on 95.215.19.53 (IPv6: 2001:67c:2354:2::53), and encrypted DNS: DoT, DoH. It mainly serves one region (Sweden): close by it can be the fastest, from far away it is usually slower than the big global networks. It validates DNSSEC: answers whose signatures don't check out are refused. It doesn't filter: every name resolves as it is. Its operator states that it doesn't keep your IP address."}},{"@type":"Question","name":"Njalla DNS DNS server addresses","acceptedAnswer":{"@type":"Answer","text":"What to enter to use Njalla DNS: DNS (IPv4): 95.215.19.53 DNS (IPv6): 2001:67c:2354:2::53 DoT / Private DNS: dns.njal.la DoH: https://dns.njal.la/dns-query"}},{"@type":"Question","name":"How to set up Njalla DNS","acceptedAnswer":{"@type":"Answer","text":"Windows 11: Settings → Network & internet → Wi‑Fi or Ethernet → Hardware properties → DNS server assignment → Edit → Manual. Turn on IPv4 and enter 95.215.19.53. To encrypt, set DNS over HTTPS to On (manual template) with https://dns.njal.la/dns-query. macOS: System Settings → Network → Wi‑Fi (or Ethernet) → Details → DNS: press + and add 95.215.19.53. Encrypted DNS (https://dns.njal.la/dns-query) needs a configuration profile. iPhone and iPad: Settings → Wi‑Fi → ⓘ next to the network → Configure DNS → Manual, and add 95.215.19.53. This is for that Wi‑Fi only; for encrypted DNS on every network, install a DNS profile for https://dns.njal.la/dns-query. Android: Settings → Network & internet → Private DNS → Private DNS provider hostname: dns.njal.la. It works on every network and is encrypted (DoT). The menu differs a little by brand: search Settings for “Private DNS”. Router: In the router's admin page (WAN or DHCP settings), set the DNS servers to 95.215.19.53: every device on the network then uses it. Browser: Chrome: Settings → Privacy and security → Security → Use secure DNS → Custom: https://dns.njal.la/dns-query. Edge has the same under Privacy, search, and services. Firefox: Settings → Privacy & Security → DNS over HTTPS → Max Protection → Custom: https://dns.njal.la/dns-query. Linux: With systemd-resolved: put DNS=95.215.19.53 in /etc/systemd/resolved.conf, then run systemctl restart systemd-resolved. For DoT, write the address as 95.215.19.53#dns.njal.la and add DNSOverTLS=yes."}},{"@type":"Question","name":"Can Njalla DNS be used in mainland China?","acceptedAnswer":{"@type":"Answer","text":"Its plain DNS usually answers, but more slowly, since the servers are outside mainland China, and answers for blocked sites can be forged on the way. Encrypted DNS (DoH, DoT) to it is often blocked or unstable. Run the test on this page: a row with no answer means it isn't reachable from your network."}},{"@type":"Question","name":"Njalla DNS or Mullvad DNS: which is faster?","acceptedAnswer":{"@type":"Answer","text":"Neither is faster everywhere: what counts is how far each one's nearest server is from you and how your provider routes there. This page times both, and every other DNS in the list, from your own network in about 20 seconds; the top of the page shows where Njalla DNS ranks and how far it is behind the fastest."}},{"@type":"Question","name":"Why is Njalla DNS slow for me?","acceptedAnswer":{"@type":"Answer","text":"Usually distance: its nearest server is far away, or your provider routes there the long way. A proxy or VPN carries the queries too, and then the test measures the proxy's route (the direct rules fix that). Some networks slow down or block encrypted DNS. And a name nobody has asked it for yet always takes longer (the Uncached column). If another DNS in the list is clearly faster, switch to it."}}]},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"DNS Test","item":"https://dns.1ms.dog/"},{"@type":"ListItem","position":2,"name":"Njalla DNS speed test","item":"https://dns.1ms.dog/njalla/"}]}]}</script>
 <link rel="preload" href="/assets/fonts/geist-latin.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="/assets/app.04ccc8613c.css">
+<link rel="stylesheet" href="/assets/app.eb92073031.css">
 </head>
 <body>
 <div class="app">
@@ -75,7 +75,6 @@
   </header>
 
   <main>
-    <div class="shared" id="shared" hidden><span id="sharedTxt"></span><button class="btn pri" id="testMine" type="button" data-i="test_mine">Test my network</button></div>
     <section class="hero card">
       <h1>Njalla DNS speed test</h1>
       <div class="win">
@@ -96,7 +95,10 @@
             <li data-w="dot"><span><span data-i="c_dot">DoT ≈</span> <i data-i="w_est">estimated</i></span><b>–</b></li>
           </ul>
           <p class="alt" id="alt">&nbsp;</p>
-          <a class="chk-l xl" id="checkLink" hidden target="_blank" rel="noopener"><span data-i="check_link">Run a full checkup</span><svg class="ext" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 2.5h4.5V7M13.5 2.5 7.5 8.5M12 10v3.5H2.5V4H6"/></svg></a>
+          <div class="win-a">
+            <button class="btn out" id="shareBtn" type="button" aria-haspopup="dialog" hidden><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 10V2M5 5l3-3 3 3M3 9v4.5h10V9"/></svg><span data-i="share">Share</span></button>
+            <a class="chk-l xl" id="checkLink" hidden target="_blank" rel="noopener"><span data-i="check_link">Run a full checkup</span><svg class="ext" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 2.5h4.5V7M13.5 2.5 7.5 8.5M12 10v3.5H2.5V4H6"/></svg></a>
+          </div>
         </div>
       </div>
       <div class="bar">
@@ -104,7 +106,6 @@
         <span class="prog-t" id="progTxt">&nbsp;</span>
         <button class="btn sm" id="cliBtn" type="button" aria-haspopup="dialog" aria-controls="cli" data-cli><svg viewBox="0 0 16 16" aria-hidden="true"><rect x="1.5" y="2.5" width="13" height="11" rx="2"/><path d="M4.5 6.5l2 1.5-2 1.5M8.5 10h3"/></svg><span data-i="cli_btn">Command line</span></button>
         <button class="btn sm" id="rulesBtn" type="button" aria-haspopup="dialog" aria-controls="rules"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M2 8h9M8 4.5 11.5 8 8 11.5M14 3v10"/></svg><span data-i="rules_btn">Direct rules</span></button>
-        <button class="btn sm" id="shareBtn" type="button" aria-haspopup="dialog" disabled><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 10V2M5 5l3-3 3 3M3 9v4.5h10V9"/></svg><span data-i="share">Share</span></button>
         <button class="btn pri" id="rerun" type="button" disabled><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M13.5 8a5.5 5.5 0 1 1-1.6-3.9M13.5 2v3h-3"/></svg><span data-i="rerun">Test again</span></button>
       </div>
     </section>
@@ -201,7 +202,7 @@
 </div>
 
 <script type="application/json" id="data">{"lang":"en","paths":{"en":"/njalla/","zh-CN":"/zh-cn/njalla/","zh-TW":"/zh-tw/njalla/","ja":"/ja/njalla/","ko":"/ko/njalla/","es":"/es/njalla/","fr":"/fr/njalla/","de":"/de/njalla/","pt":"/pt/njalla/","ru":"/ru/njalla/"},"home":"/","focus":"njalla"}</script>
-<script src="/assets/l.en.b981d1d2b5.js"></script>
-<script src="/assets/app.2d15e8bf5a.js"></script>
+<script src="/assets/l.en.f2cde34a74.js"></script>
+<script src="/assets/app.e40c28236f.js"></script>
 </body>
 </html>

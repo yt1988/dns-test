@@ -312,7 +312,7 @@ import { ABOUT } from "./about.mjs";
     $("#progTxt").textContent = t("done", { s: ((performance.now() - t0) / 1000).toFixed(0), names: names.join(", ") });
     $("#rerun").disabled = false;
     LAST = snapshot(rs);
-    $("#shareBtn").disabled = false;
+    $("#shareBtn").hidden = false;
     if (EMBED) post(rs.length ? checkup(rs) : { type: "error", text: t("none_up") });
   }
 
@@ -364,7 +364,7 @@ import { ABOUT } from "./about.mjs";
   $("#shareBtn").onclick = async () => {
     if (!LAST) return;
     const S = LAST, rows = S.rows.filter(r => r.doh != null), w = rows[0];
-    const { share } = await import("/assets/share/share.js");
+    const { share } = await import("/assets/share/share.js?v=3");
     share({
       lang: D.lang, name: t("app_name"), file: "dns-test",
       // the country only when the visitor ticks it; never the address, city or network
@@ -372,14 +372,15 @@ import { ABOUT } from "./about.mjs";
       link: show => location.origin + D.home + "r/" + encodeShare({ ...S, cc: show ? S.cc : "" }),
       home: location.origin + D.home,
       text: () => t("share_text", { name: w ? byId(w.id).name : "", ms: w ? fmt(w.doh) : "–" }),
-      height: 830, draw: (x, kit) => drawCard(x, kit, rows),
+      height: 860, draw: (x, kit) => drawCard(x, kit, rows),
       foot: show => [t("card_sub", { n: rows.length }), show && S.cc && country(S.cc)],
       ts: S.ts,
     }).open();
   };
 
   // The card's middle: the winner with its three times, the next resolvers on a speed scale; in the page's own theme.
-  // The dialog draws the frame (logo, QR code, the date) around it.
+  // The dialog draws the frame (logo, QR code, the date) around it. The card is also the link's preview, shrunk into
+  // 1200×630, so the winner and its times are drawn big enough to read there.
   const pos = ms => Math.max(0, Math.min(1, Math.log10(Math.max(1, ms)) / 3));    // 1 ms … 1 s, log scale
   async function drawCard(x, { W, P, top, F, M, v, clip, img }, rows) {
     const C = { line: v("line"), fg: v("fg"), muted: v("muted"), t1: v("t1"), t2: v("t2"), t3: v("t3"), t4: v("t4"), t5: v("t5") };
@@ -390,14 +391,14 @@ import { ABOUT } from "./about.mjs";
     const w = rows[0];
     x.fillStyle = C.muted; x.font = `600 26px ${F}`; x.fillText(t("card_head"), P, y);
     if (icons[0]) x.drawImage(icons[0], P, y + 24, 60, 60);
-    x.fillStyle = C.fg; x.font = `750 64px ${F}`; x.fillText(clip(x, byId(w.id).name, W - P * 2 - 80), P + 80, y + 78);
+    x.fillStyle = C.fg; x.font = `750 72px ${F}`; x.fillText(clip(x, byId(w.id).name, W - P * 2 - 80), P + 80, y + 82);
     const cell = (label, ms, at, est) => {
-      x.fillStyle = C.muted; x.font = `500 22px ${F}`; x.fillText(label, at, y + 134);
-      x.fillStyle = ms == null ? C.muted : C[tier(ms)]; x.font = `600 40px ${M}`; x.fillText(ms == null ? "–" : (est ? "≈ " : "") + fmt(ms) + " ms", at, y + 180);
+      x.fillStyle = C.muted; x.font = `500 24px ${F}`; x.fillText(label, at, y + 140);
+      x.fillStyle = ms == null ? C.muted : C[tier(ms)]; x.font = `650 56px ${M}`; x.fillText(ms == null ? "–" : (est ? "≈ " : "") + fmt(ms) + " ms", at, y + 204);
     };
-    cell(t("c_doh"), w.doh, P); cell(t("c_udp"), w.udp, P + 290, true); cell(t("c_dot"), w.dot, P + 580, true);
+    cell(t("c_doh"), w.doh, P); cell(t("c_udp"), w.udp, P + 340, true); cell(t("c_dot"), w.dot, P + 680, true);
     // the next ones, each on the same speed scale
-    const y0 = y + 234, RH = 38, l0 = P + 300, l1 = W - P - 110;
+    const y0 = y + 264, RH = 38, l0 = P + 300, l1 = W - P - 110;
     x.fillStyle = C.line; x.fillRect(P, y0 - 22, W - P * 2, 2);
     rows.slice(1, 9).forEach((r, i) => {
       const ry = y0 + 22 + i * RH, k = C[tier(r.doh)];
@@ -429,20 +430,25 @@ import { ABOUT } from "./about.mjs";
     for (const id in ROW) fillRow(id);
     const rs = hero(true);
     sortRows(rs.map(x => x.r));
-    $("#sharedTxt").textContent = t("shared_on", { where: S.cc ? t("shared_where", { where: country(S.cc) }) : "", date: new Date(S.ts).toLocaleString(D.lang, { dateStyle: "medium", timeStyle: "short" }) });
-    $("#shared").hidden = false;
+    // the shared banner above it (/assets/share/), with the way to the visitor's own test
+    VIEWING = true;
+    import("/assets/share/share.js?v=3").then(({ received }) => {
+      if (VIEWING) BANNER = received({ lang: D.lang, ts: S.ts, at: $(".hero"), test: start });
+    }, () => {});
     $("#prog").classList.add("end"); $("#progTxt").innerHTML = "&nbsp;";
     $("#rerun").disabled = false;
-    LAST = S; $("#shareBtn").disabled = false;
+    LAST = S; $("#shareBtn").hidden = false;
   }
+  let VIEWING = false, BANNER = null;
 
   async function start() {
-    // a shared result gives way to the visitor's own test, on the language's page
-    if (!$("#shared").hidden) { $("#shared").hidden = true; history.replaceState(null, "", D.paths[D.lang]); }
+    // a shared result gives way to the visitor's own test, on the language's page, and its banner with it (no compare
+    // mode here: their own result replaces the shared one)
+    if (VIEWING) { VIEWING = false; if (BANNER) BANNER.remove(); BANNER = null; history.replaceState(null, "", D.paths[D.lang]); }
     if (RUN) RUN.abort();
     const ctl = RUN = new AbortController();
     TS = targets(RESOLVERS);
-    LAST = null; $("#shareBtn").disabled = true;
+    LAST = null; $("#shareBtn").hidden = true;
     // the order the list has until the test ends
     sortRows([]);
     for (const id in ROW) { DET[id].hidden = true; ROW[id].setAttribute("aria-expanded", "false"); fillRow(id); }
@@ -468,7 +474,6 @@ import { ABOUT } from "./about.mjs";
     finish(res.names);
   }
   $("#rerun").onclick = start;
-  $("#testMine").onclick = start;
   const SP = sharePath(location.pathname), SHARED = SP && decodeShare(SP.code, new Set(RESOLVERS.map(r => r.id)));
   if (SHARED && !EMBED) showShared(SHARED); else start();
 })();

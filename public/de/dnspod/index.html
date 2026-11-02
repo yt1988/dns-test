@@ -48,7 +48,7 @@
 <meta name="twitter:description" content="DNSPod Public DNS aus Ihrem eigenen Netz im Browser messen: echte DoH-Latenz, Schätzung für UDP und DoT, und sein Rang unter 33 öffentlichen DNS. Mit Adressen und Einrichtung für jedes Gerät.">
 <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebApplication","name":"DNSPod Public DNS Speedtest · 1ms.dog","url":"https://dns.1ms.dog/de/dnspod/","applicationCategory":"UtilitiesApplication","operatingSystem":"Any","browserRequirements":"Requires JavaScript","description":"DNSPod Public DNS aus Ihrem eigenen Netz im Browser messen: echte DoH-Latenz, Schätzung für UDP und DoT, und sein Rang unter 33 öffentlichen DNS. Mit Adressen und Einrichtung für jedes Gerät.","inLanguage":"de","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"USD"}},{"@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Was ist DNSPod Public DNS?","acceptedAnswer":{"@type":"Answer","text":"DNSPod Public DNS ist ein kostenloser öffentlicher DNS-Dienst von Tencent Cloud (China). Er beantwortet normales DNS unter 119.29.29.29 (IPv6: 2402:4e00::) und verschlüsseltes DNS: DoT, DoH. Seine Server stehen in Festlandchina: dort schnell, von anderswo langsam. Er prüft DNSSEC nicht. Er filtert nicht: Jeder Name wird so aufgelöst, wie er ist."}},{"@type":"Question","name":"DNS-Server-Adressen von DNSPod Public DNS","acceptedAnswer":{"@type":"Answer","text":"Das tragen Sie ein, um DNSPod Public DNS zu nutzen: DNS (IPv4): 119.29.29.29 DNS (IPv6): 2402:4e00:: DoT / Privates DNS: dot.pub DoH: https://doh.pub/dns-query"}},{"@type":"Question","name":"DNSPod Public DNS einrichten","acceptedAnswer":{"@type":"Answer","text":"Windows 11: Einstellungen → Netzwerk und Internet → WLAN oder Ethernet → Hardwareeigenschaften → DNS-Serverzuweisung → Bearbeiten → Manuell. IPv4 einschalten und 119.29.29.29 eintragen. Zum Verschlüsseln DNS über HTTPS auf Ein (manuelle Vorlage) stellen, Vorlage: https://doh.pub/dns-query. macOS: Systemeinstellungen → Netzwerk → WLAN (oder Ethernet) → Details → DNS: auf + klicken und 119.29.29.29 hinzufügen. Verschlüsseltes DNS (https://doh.pub/dns-query) braucht ein Konfigurationsprofil. iPhone und iPad: Einstellungen → WLAN → ⓘ neben dem Netz → DNS konfigurieren → Manuell, dann 119.29.29.29 hinzufügen. Das gilt nur für dieses WLAN; für verschlüsseltes DNS in jedem Netz ein DNS-Profil für https://doh.pub/dns-query installieren. Android: Einstellungen → Netzwerk & Internet → Privates DNS → Hostname des privaten DNS-Anbieters: dot.pub. Gilt in jedem Netz und ist verschlüsselt (DoT). Das Menü unterscheidet sich je nach Hersteller etwas: in den Einstellungen nach „Privates DNS“ suchen. Router: In der Router-Oberfläche (WAN- oder DHCP-Einstellungen) die DNS-Server auf 119.29.29.29 setzen: Dann nutzt ihn jedes Gerät im Netz. Browser: Chrome: Einstellungen → Datenschutz und Sicherheit → Sicherheit → Sicheres DNS verwenden → Benutzerdefiniert: https://doh.pub/dns-query. Edge hat dasselbe unter Datenschutz, Suche und Dienste. Firefox: Einstellungen → Datenschutz & Sicherheit → DNS über HTTPS → Maximaler Schutz → Benutzerdefiniert: https://doh.pub/dns-query. Linux: Mit systemd-resolved: DNS=119.29.29.29 in /etc/systemd/resolved.conf eintragen, dann systemctl restart systemd-resolved ausführen. Für DoT die Adresse als 119.29.29.29#dot.pub schreiben und DNSOverTLS=yes ergänzen."}},{"@type":"Question","name":"Lässt sich DNSPod Public DNS in Festlandchina nutzen?","acceptedAnswer":{"@type":"Answer","text":"Ja: Seine Server stehen in Festlandchina, und er ist dort eine der üblichen Wahlen. Normales DNS, DoT und DoH funktionieren."}},{"@type":"Question","name":"DNSPod Public DNS oder AliDNS: Welcher ist schneller?","acceptedAnswer":{"@type":"Answer","text":"Keiner ist überall schneller: Entscheidend ist, wie weit der jeweils nächste Server von Ihnen entfernt ist und wie Ihr Anbieter dorthin routet. Diese Seite misst beide und alle anderen DNS der Liste aus Ihrem eigenen Netz in etwa 20 Sekunden; oben steht, auf welchem Platz DNSPod Public DNS landet und wie weit er hinter dem schnellsten liegt."}},{"@type":"Question","name":"Warum ist DNSPod Public DNS bei mir langsam?","acceptedAnswer":{"@type":"Answer","text":"Meist die Entfernung: Sein nächster Server ist weit weg, oder Ihr Anbieter nimmt einen Umweg. Ein Proxy oder VPN transportiert die Anfragen ebenfalls, dann misst der Test die Route des Proxys (die Direkt-Regeln beheben das). Manche Netze bremsen oder sperren verschlüsseltes DNS. Und ein Name, nach dem ihn noch niemand gefragt hat, dauert immer länger (Spalte Ohne Cache). Ist ein anderer DNS der Liste deutlich schneller, wechseln Sie zu ihm."}}]},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"DNS-Test","item":"https://dns.1ms.dog/de/"},{"@type":"ListItem","position":2,"name":"DNSPod Public DNS Speedtest","item":"https://dns.1ms.dog/de/dnspod/"}]}]}</script>
 <link rel="preload" href="/assets/fonts/geist-latin.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="/assets/app.04ccc8613c.css">
+<link rel="stylesheet" href="/assets/app.eb92073031.css">
 </head>
 <body>
 <div class="app">
@@ -75,7 +75,6 @@
   </header>
 
   <main>
-    <div class="shared" id="shared" hidden><span id="sharedTxt"></span><button class="btn pri" id="testMine" type="button" data-i="test_mine">Meine Verbindung testen</button></div>
     <section class="hero card">
       <h1>DNSPod Public DNS Speedtest</h1>
       <div class="win">
@@ -96,7 +95,10 @@
             <li data-w="dot"><span><span data-i="c_dot">DoT ≈</span> <i data-i="w_est">geschätzt</i></span><b>–</b></li>
           </ul>
           <p class="alt" id="alt">&nbsp;</p>
-          <a class="chk-l xl" id="checkLink" hidden target="_blank" rel="noopener"><span data-i="check_link">Kompletten Check starten</span><svg class="ext" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 2.5h4.5V7M13.5 2.5 7.5 8.5M12 10v3.5H2.5V4H6"/></svg></a>
+          <div class="win-a">
+            <button class="btn out" id="shareBtn" type="button" aria-haspopup="dialog" hidden><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 10V2M5 5l3-3 3 3M3 9v4.5h10V9"/></svg><span data-i="share">Teilen</span></button>
+            <a class="chk-l xl" id="checkLink" hidden target="_blank" rel="noopener"><span data-i="check_link">Kompletten Check starten</span><svg class="ext" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 2.5h4.5V7M13.5 2.5 7.5 8.5M12 10v3.5H2.5V4H6"/></svg></a>
+          </div>
         </div>
       </div>
       <div class="bar">
@@ -104,7 +106,6 @@
         <span class="prog-t" id="progTxt">&nbsp;</span>
         <button class="btn sm" id="cliBtn" type="button" aria-haspopup="dialog" aria-controls="cli" data-cli><svg viewBox="0 0 16 16" aria-hidden="true"><rect x="1.5" y="2.5" width="13" height="11" rx="2"/><path d="M4.5 6.5l2 1.5-2 1.5M8.5 10h3"/></svg><span data-i="cli_btn">Kommandozeile</span></button>
         <button class="btn sm" id="rulesBtn" type="button" aria-haspopup="dialog" aria-controls="rules"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M2 8h9M8 4.5 11.5 8 8 11.5M14 3v10"/></svg><span data-i="rules_btn">Direkt-Regeln</span></button>
-        <button class="btn sm" id="shareBtn" type="button" aria-haspopup="dialog" disabled><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 10V2M5 5l3-3 3 3M3 9v4.5h10V9"/></svg><span data-i="share">Teilen</span></button>
         <button class="btn pri" id="rerun" type="button" disabled><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M13.5 8a5.5 5.5 0 1 1-1.6-3.9M13.5 2v3h-3"/></svg><span data-i="rerun">Erneut testen</span></button>
       </div>
     </section>
@@ -201,7 +202,7 @@
 </div>
 
 <script type="application/json" id="data">{"lang":"de","paths":{"en":"/dnspod/","zh-CN":"/zh-cn/dnspod/","zh-TW":"/zh-tw/dnspod/","ja":"/ja/dnspod/","ko":"/ko/dnspod/","es":"/es/dnspod/","fr":"/fr/dnspod/","de":"/de/dnspod/","pt":"/pt/dnspod/","ru":"/ru/dnspod/"},"home":"/de/","focus":"dnspod"}</script>
-<script src="/assets/l.de.0c3f8c544e.js"></script>
-<script src="/assets/app.2d15e8bf5a.js"></script>
+<script src="/assets/l.de.bf82ae6835.js"></script>
+<script src="/assets/app.e40c28236f.js"></script>
 </body>
 </html>

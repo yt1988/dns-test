@@ -48,7 +48,7 @@
 <meta name="twitter:description" content="Mide Rethink DNS desde tu propia red en el navegador: latencia DoH real, estimación de UDP y DoT, y su puesto entre 33 DNS públicos. Con sus direcciones y cómo configurarlo en cada dispositivo.">
 <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebApplication","name":"Test de velocidad de Rethink DNS · 1ms.dog","url":"https://dns.1ms.dog/es/rethink/","applicationCategory":"UtilitiesApplication","operatingSystem":"Any","browserRequirements":"Requires JavaScript","description":"Mide Rethink DNS desde tu propia red en el navegador: latencia DoH real, estimación de UDP y DoT, y su puesto entre 33 DNS públicos. Con sus direcciones y cómo configurarlo en cada dispositivo.","inLanguage":"es","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"USD"}},{"@type":"FAQPage","mainEntity":[{"@type":"Question","name":"¿Qué es Rethink DNS?","acceptedAnswer":{"@type":"Answer","text":"Rethink DNS es un servicio de DNS público y gratuito operado por Celzero (Rethink). Solo ofrece DNS cifrado (DoT, DoH); no tiene dirección pública de DNS normal. Tiene servidores en muchos lugares del mundo y tus consultas van al más cercano. Valida DNSSEC: rechaza las respuestas cuya firma no cuadra. No filtra: todos los nombres se resuelven tal cual. Con una cuenta gratuita puedes poner tus propias listas de bloqueo y ver un registro de consultas; la dirección pública funciona sin cuenta."}},{"@type":"Question","name":"Direcciones de los servidores DNS de Rethink DNS","acceptedAnswer":{"@type":"Answer","text":"Qué introducir para usar Rethink DNS: DoT / DNS privado: max.rethinkdns.com DoH: https://sky.rethinkdns.com/dns-query"}},{"@type":"Question","name":"Cómo configurar Rethink DNS","acceptedAnswer":{"@type":"Answer","text":"Windows 11: Windows necesita una dirección de DNS normal para usar DNS cifrado, y Rethink DNS no publica ninguna: úsalo en el navegador (abajo) o con un cliente DNS local como dnscrypt-proxy. macOS: macOS usa DNS cifrado mediante un perfil de configuración: instala un perfil DNS para https://sky.rethinkdns.com/dns-query. iPhone y iPad: Instala un perfil DNS para https://sky.rethinkdns.com/dns-query y actívalo en Ajustes → General → VPN y gestión de dispositivos → DNS. Android: Ajustes → Redes e Internet → DNS privado → Nombre de host del proveedor de DNS privado: max.rethinkdns.com. Funciona en cualquier red y va cifrado (DoT). El menú cambia un poco según la marca: busca «DNS privado» en Ajustes. Router: Los routers solo aceptan direcciones de DNS normal, que Rethink DNS no publica; en OpenWrt, https-dns-proxy puede reenviar a https://sky.rethinkdns.com/dns-query. Navegador: Chrome: Configuración → Privacidad y seguridad → Seguridad → Usar DNS seguro → Personalizado: https://sky.rethinkdns.com/dns-query. Edge lo tiene en Privacidad, búsqueda y servicios. Firefox: Ajustes → Privacidad y seguridad → DNS sobre HTTPS → Protección máxima → Personalizado: https://sky.rethinkdns.com/dns-query."}},{"@type":"Question","name":"¿Se puede usar Rethink DNS en China continental?","acceptedAnswer":{"@type":"Answer","text":"Su DNS normal suele responder, pero más lento, porque los servidores están fuera de China continental, y las respuestas para sitios bloqueados pueden falsificarse por el camino. El DNS cifrado (DoH, DoT) hacia él suele estar bloqueado o ser inestable. Haz la prueba en esta página: una fila sin respuesta significa que no es accesible desde tu red."}},{"@type":"Question","name":"¿Rethink DNS o NextDNS: cuál es más rápido?","acceptedAnswer":{"@type":"Answer","text":"Ninguno es más rápido en todas partes: cuenta lo lejos que está el servidor más cercano de cada uno y cómo enruta tu proveedor hasta allí. Esta página mide los dos, y todos los demás DNS de la lista, desde tu propia red en unos 20 segundos; arriba verás en qué puesto queda Rethink DNS y cuánto le saca el más rápido."}},{"@type":"Question","name":"¿Por qué Rethink DNS va lento para mí?","acceptedAnswer":{"@type":"Answer","text":"Casi siempre por distancia: su servidor más cercano está lejos o tu proveedor da un rodeo. Un proxy o VPN también lleva las consultas, y entonces la prueba mide la ruta del proxy (las reglas directas lo arreglan). Algunas redes ralentizan o bloquean el DNS cifrado. Y un nombre que nadie le ha pedido aún siempre tarda más (columna Sin caché). Si otro DNS de la lista es claramente más rápido, cámbiate a él."}}]},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Test de DNS","item":"https://dns.1ms.dog/es/"},{"@type":"ListItem","position":2,"name":"Test de velocidad de Rethink DNS","item":"https://dns.1ms.dog/es/rethink/"}]}]}</script>
 <link rel="preload" href="/assets/fonts/geist-latin.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="/assets/app.04ccc8613c.css">
+<link rel="stylesheet" href="/assets/app.eb92073031.css">
 </head>
 <body>
 <div class="app">
@@ -75,7 +75,6 @@
   </header>
 
   <main>
-    <div class="shared" id="shared" hidden><span id="sharedTxt"></span><button class="btn pri" id="testMine" type="button" data-i="test_mine">Medir mi red</button></div>
     <section class="hero card">
       <h1>Test de velocidad de Rethink DNS</h1>
       <div class="win">
@@ -96,7 +95,10 @@
             <li data-w="dot"><span><span data-i="c_dot">DoT ≈</span> <i data-i="w_est">estimado</i></span><b>–</b></li>
           </ul>
           <p class="alt" id="alt">&nbsp;</p>
-          <a class="chk-l xl" id="checkLink" hidden target="_blank" rel="noopener"><span data-i="check_link">Haz una revisión completa</span><svg class="ext" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 2.5h4.5V7M13.5 2.5 7.5 8.5M12 10v3.5H2.5V4H6"/></svg></a>
+          <div class="win-a">
+            <button class="btn out" id="shareBtn" type="button" aria-haspopup="dialog" hidden><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 10V2M5 5l3-3 3 3M3 9v4.5h10V9"/></svg><span data-i="share">Compartir</span></button>
+            <a class="chk-l xl" id="checkLink" hidden target="_blank" rel="noopener"><span data-i="check_link">Haz una revisión completa</span><svg class="ext" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 2.5h4.5V7M13.5 2.5 7.5 8.5M12 10v3.5H2.5V4H6"/></svg></a>
+          </div>
         </div>
       </div>
       <div class="bar">
@@ -104,7 +106,6 @@
         <span class="prog-t" id="progTxt">&nbsp;</span>
         <button class="btn sm" id="cliBtn" type="button" aria-haspopup="dialog" aria-controls="cli" data-cli><svg viewBox="0 0 16 16" aria-hidden="true"><rect x="1.5" y="2.5" width="13" height="11" rx="2"/><path d="M4.5 6.5l2 1.5-2 1.5M8.5 10h3"/></svg><span data-i="cli_btn">Línea de comandos</span></button>
         <button class="btn sm" id="rulesBtn" type="button" aria-haspopup="dialog" aria-controls="rules"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M2 8h9M8 4.5 11.5 8 8 11.5M14 3v10"/></svg><span data-i="rules_btn">Reglas directas</span></button>
-        <button class="btn sm" id="shareBtn" type="button" aria-haspopup="dialog" disabled><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 10V2M5 5l3-3 3 3M3 9v4.5h10V9"/></svg><span data-i="share">Compartir</span></button>
         <button class="btn pri" id="rerun" type="button" disabled><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M13.5 8a5.5 5.5 0 1 1-1.6-3.9M13.5 2v3h-3"/></svg><span data-i="rerun">Probar de nuevo</span></button>
       </div>
     </section>
@@ -201,7 +202,7 @@
 </div>
 
 <script type="application/json" id="data">{"lang":"es","paths":{"en":"/rethink/","zh-CN":"/zh-cn/rethink/","zh-TW":"/zh-tw/rethink/","ja":"/ja/rethink/","ko":"/ko/rethink/","es":"/es/rethink/","fr":"/fr/rethink/","de":"/de/rethink/","pt":"/pt/rethink/","ru":"/ru/rethink/"},"home":"/es/","focus":"rethink"}</script>
-<script src="/assets/l.es.df2c0b63fc.js"></script>
-<script src="/assets/app.2d15e8bf5a.js"></script>
+<script src="/assets/l.es.1fe94f5d31.js"></script>
+<script src="/assets/app.e40c28236f.js"></script>
 </body>
 </html>

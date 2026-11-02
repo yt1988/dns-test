@@ -51,7 +51,7 @@
 <meta name="twitter:description" content="在浏览器里从你自己的网络实测腾讯 DNSPod：DoH 实测延迟，UDP、DoT 估算，以及它在 33 家公共 DNS 里排第几。附完整地址和各设备的设置方法。">
 <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebApplication","name":"腾讯 DNSPod 测速 · 1ms.dog","url":"https://dns.1ms.dog/zh-cn/dnspod/","applicationCategory":"UtilitiesApplication","operatingSystem":"Any","browserRequirements":"Requires JavaScript","description":"在浏览器里从你自己的网络实测腾讯 DNSPod：DoH 实测延迟，UDP、DoT 估算，以及它在 33 家公共 DNS 里排第几。附完整地址和各设备的设置方法。","inLanguage":"zh-CN","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"USD"}},{"@type":"FAQPage","mainEntity":[{"@type":"Question","name":"腾讯 DNSPod 是什么？","acceptedAnswer":{"@type":"Answer","text":"腾讯 DNSPod 是腾讯云运营的免费公共 DNS，运营方在中国。普通 DNS 地址是 119.29.29.29（IPv6：2402:4e00::），也支持加密 DNS：DoT、DoH。它的服务器在中国大陆：在国内快，在境外慢。它不验证 DNSSEC。它不做过滤，所有域名照常解析。"}},{"@type":"Question","name":"腾讯 DNSPod 的 DNS 服务器地址","acceptedAnswer":{"@type":"Answer","text":"使用腾讯 DNSPod 时填写：DNS (IPv4): 119.29.29.29DNS (IPv6): 2402:4e00::DoT / 私人 DNS: dot.pubDoH: https://doh.pub/dns-query"}},{"@type":"Question","name":"腾讯 DNSPod 怎么设置","acceptedAnswer":{"@type":"Answer","text":"Windows 11: 设置 → 网络和 Internet → WLAN 或以太网 → 硬件属性 → DNS 服务器分配 → 编辑 → 手动。打开 IPv4，填入 119.29.29.29。要加密的话，把「DNS over HTTPS」设为「开（手动模板）」，模板填 https://doh.pub/dns-query。macOS: 系统设置 → 网络 → Wi‑Fi（或以太网）→ 详细信息 → DNS，点 + 添加 119.29.29.29。加密 DNS（https://doh.pub/dns-query）需要安装描述文件。iPhone 和 iPad: 设置 → 无线局域网 → 网络旁的 ⓘ → 配置 DNS → 手动，添加 119.29.29.29。只对这个 Wi‑Fi 生效；想在所有网络上用加密 DNS，安装一个指向 https://doh.pub/dns-query 的 DNS 描述文件。安卓: 设置 → 网络和互联网 → 私人 DNS → 私人 DNS 提供商主机名，填 dot.pub。在所有网络上生效，并且是加密的（DoT）。各品牌菜单位置略有不同，可在设置里搜索「私人 DNS」。路由器: 进入路由器管理页面（WAN 或 DHCP 设置），把 DNS 服务器改成 119.29.29.29：局域网里的所有设备都会用它。浏览器: Chrome：设置 → 隐私和安全 → 安全 → 使用安全 DNS → 自定义，填 https://doh.pub/dns-query。Edge 在「隐私、搜索和服务」里有同样的选项。Firefox：设置 → 隐私与安全 → 基于 HTTPS 的 DNS → 最大保护 → 自定义，填 https://doh.pub/dns-query。Linux: 使用 systemd-resolved 时：在 /etc/systemd/resolved.conf 里写 DNS=119.29.29.29，再运行 systemctl restart systemd-resolved。要用 DoT，把地址写成 119.29.29.29#dot.pub，并加上 DNSOverTLS=yes。"}},{"@type":"Question","name":"腾讯 DNSPod 在中国大陆能用吗？","acceptedAnswer":{"@type":"Answer","text":"能：它的服务器在中国大陆，是国内常用的公共 DNS 之一。普通 DNS、DoT、DoH 都能用。"}},{"@type":"Question","name":"腾讯 DNSPod 和阿里 DNS 哪个快？","acceptedAnswer":{"@type":"Answer","text":"没有哪个在所有地方都更快：关键是两家离你最近的服务器有多远、你的运营商怎么走到那里。本页大约 20 秒就能从你自己的网络把两家连同列表里的其他 DNS 都测一遍；页面顶部会显示腾讯 DNSPod 排第几、比最快的慢多少。"}},{"@type":"Question","name":"为什么腾讯 DNSPod 对我来说很慢？","acceptedAnswer":{"@type":"Answer","text":"通常是距离：离你最近的服务器很远，或者运营商绕了远路。开着代理或 VPN 时，查询也走代理，测出来的是代理的线路（加上直连规则就好）。有些网络会限速或阻断加密 DNS。另外，没人查过的域名总是更慢（见「未缓存」一列）。如果列表里有明显更快的 DNS，换成它就好。"}}]},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"DNS 测试","item":"https://dns.1ms.dog/zh-cn/"},{"@type":"ListItem","position":2,"name":"腾讯 DNSPod 测速","item":"https://dns.1ms.dog/zh-cn/dnspod/"}]}]}</script>
 <link rel="preload" href="/assets/fonts/geist-latin.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="/assets/app.04ccc8613c.css">
+<link rel="stylesheet" href="/assets/app.eb92073031.css">
 </head>
 <body>
 <div class="app">
@@ -78,7 +78,6 @@
   </header>
 
   <main>
-    <div class="shared" id="shared" hidden><span id="sharedTxt"></span><button class="btn pri" id="testMine" type="button" data-i="test_mine">测我自己的网络</button></div>
     <section class="hero card">
       <h1>腾讯 DNSPod 测速</h1>
       <div class="win">
@@ -99,7 +98,10 @@
             <li data-w="dot"><span><span data-i="c_dot">DoT ≈</span> <i data-i="w_est">估算</i></span><b>–</b></li>
           </ul>
           <p class="alt" id="alt">&nbsp;</p>
-          <a class="chk-l xl" id="checkLink" hidden target="_blank" rel="noopener"><span data-i="check_link">做一次完整体检</span><svg class="ext" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 2.5h4.5V7M13.5 2.5 7.5 8.5M12 10v3.5H2.5V4H6"/></svg></a>
+          <div class="win-a">
+            <button class="btn out" id="shareBtn" type="button" aria-haspopup="dialog" hidden><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 10V2M5 5l3-3 3 3M3 9v4.5h10V9"/></svg><span data-i="share">分享</span></button>
+            <a class="chk-l xl" id="checkLink" hidden target="_blank" rel="noopener"><span data-i="check_link">做一次完整体检</span><svg class="ext" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 2.5h4.5V7M13.5 2.5 7.5 8.5M12 10v3.5H2.5V4H6"/></svg></a>
+          </div>
         </div>
       </div>
       <div class="bar">
@@ -107,7 +109,6 @@
         <span class="prog-t" id="progTxt">&nbsp;</span>
         <button class="btn sm" id="cliBtn" type="button" aria-haspopup="dialog" aria-controls="cli" data-cli><svg viewBox="0 0 16 16" aria-hidden="true"><rect x="1.5" y="2.5" width="13" height="11" rx="2"/><path d="M4.5 6.5l2 1.5-2 1.5M8.5 10h3"/></svg><span data-i="cli_btn">命令行</span></button>
         <button class="btn sm" id="rulesBtn" type="button" aria-haspopup="dialog" aria-controls="rules"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M2 8h9M8 4.5 11.5 8 8 11.5M14 3v10"/></svg><span data-i="rules_btn">直连规则</span></button>
-        <button class="btn sm" id="shareBtn" type="button" aria-haspopup="dialog" disabled><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 10V2M5 5l3-3 3 3M3 9v4.5h10V9"/></svg><span data-i="share">分享</span></button>
         <button class="btn pri" id="rerun" type="button" disabled><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M13.5 8a5.5 5.5 0 1 1-1.6-3.9M13.5 2v3h-3"/></svg><span data-i="rerun">重新测试</span></button>
       </div>
     </section>
@@ -204,7 +205,7 @@
 </div>
 
 <script type="application/json" id="data">{"lang":"zh-CN","paths":{"en":"/dnspod/","zh-CN":"/zh-cn/dnspod/","zh-TW":"/zh-tw/dnspod/","ja":"/ja/dnspod/","ko":"/ko/dnspod/","es":"/es/dnspod/","fr":"/fr/dnspod/","de":"/de/dnspod/","pt":"/pt/dnspod/","ru":"/ru/dnspod/"},"home":"/zh-cn/","focus":"dnspod"}</script>
-<script src="/assets/l.zh-cn.20bdea8e2a.js"></script>
-<script src="/assets/app.2d15e8bf5a.js"></script>
+<script src="/assets/l.zh-cn.7b8e5c47f1.js"></script>
+<script src="/assets/app.e40c28236f.js"></script>
 </body>
 </html>

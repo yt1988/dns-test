@@ -48,7 +48,7 @@
 <meta name="twitter:description" content="ブラウザで、あなた自身のネットワークから Xfinity DNS を実測：DoH の実測遅延、UDP と DoT の推定、33 件の公開 DNS の中での順位。アドレスと各端末での設定方法も。">
 <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebApplication","name":"Xfinity DNS 速度テスト · 1ms.dog","url":"https://dns.1ms.dog/ja/xfinity/","applicationCategory":"UtilitiesApplication","operatingSystem":"Any","browserRequirements":"Requires JavaScript","description":"ブラウザで、あなた自身のネットワークから Xfinity DNS を実測：DoH の実測遅延、UDP と DoT の推定、33 件の公開 DNS の中での順位。アドレスと各端末での設定方法も。","inLanguage":"ja","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"USD"}},{"@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Xfinity DNS とは？","acceptedAnswer":{"@type":"Answer","text":"Xfinity DNS は Comcast が運営する無料の公開 DNS で、拠点はアメリカ合衆国です。暗号化 DNS（DoH）だけを提供していて、公開の通常 DNS アドレスはありません。主にアメリカ合衆国で運営されています。近ければ最速になり得ますが、遠いと大手のグローバル網より遅いのが普通です。DNSSEC を検証します。署名が合わない応答は拒否されます。フィルタリングはしません。すべての名前がそのまま解決されます。"}},{"@type":"Question","name":"Xfinity DNS の DNS サーバーアドレス","acceptedAnswer":{"@type":"Answer","text":"Xfinity DNS を使うときに入力するもの：DoH: https://doh.xfinity.com/dns-query"}},{"@type":"Question","name":"Xfinity DNS の設定方法","acceptedAnswer":{"@type":"Answer","text":"Windows 11: Windows で暗号化 DNS を使うには通常の DNS アドレスが必要ですが、Xfinity DNS は公開していません。ブラウザ（下記）か、dnscrypt-proxy などのローカル DNS クライアントで使ってください。macOS: macOS では構成プロファイルで暗号化 DNS を使います。https://doh.xfinity.com/dns-query 向けの DNS プロファイルをインストールしてください。iPhone と iPad: https://doh.xfinity.com/dns-query 向けの DNS プロファイルをインストールし、設定 → 一般 → VPNとデバイス管理 → DNS でオンにします。Android: Android には設定する場所がありません。Xfinity DNS には DoT ホスト名も通常の DNS アドレスもないので、ブラウザで使ってください。ルーター: ルーターには通常の DNS アドレスしか入力できず、Xfinity DNS はそれを公開していません。OpenWrt なら https-dns-proxy で https://doh.xfinity.com/dns-query に転送できます。ブラウザ: Chrome：設定 → プライバシーとセキュリティ → セキュリティ → セキュア DNS を使用する → カスタム に https://doh.xfinity.com/dns-query。Edge は「プライバシー、検索、サービス」に同じ項目があります。Firefox：設定 → プライバシーとセキュリティ → DNS over HTTPS → 最大保護 → カスタム に https://doh.xfinity.com/dns-query。"}},{"@type":"Question","name":"Xfinity DNS は中国本土で使えますか？","acceptedAnswer":{"@type":"Answer","text":"通常の DNS はたいてい応答しますが、サーバーが中国本土の外にあるため遅く、ブロックされたサイトへの応答は途中で偽造されることがあります。暗号化 DNS（DoH、DoT）はしばしば遮断されるか不安定です。このページで測ってみてください。応答のない行は、あなたのネットワークから届かないということです。"}},{"@type":"Question","name":"Xfinity DNS と Google Public DNS、どちらが速い？","acceptedAnswer":{"@type":"Answer","text":"どこでも速いほうはありません。決め手は、それぞれの最寄りのサーバーがどれだけ遠いか、プロバイダーがどんな経路でそこへ行くかです。このページは約 20 秒で、両方と一覧の他の DNS をあなたのネットワークから測ります。ページ上部に Xfinity DNS の順位と最速との差が出ます。"}},{"@type":"Question","name":"Xfinity DNS が遅いのはなぜ？","acceptedAnswer":{"@type":"Answer","text":"たいていは距離です。最寄りのサーバーが遠いか、プロバイダーが遠回りしています。プロキシや VPN を通すとクエリもそこを通り、測っているのはプロキシの経路になります（直接接続ルールで解決します）。暗号化 DNS を遅くしたり遮断したりするネットワークもあります。まだ誰も問い合わせていない名前は常に時間がかかります（「キャッシュなし」列）。一覧にはっきり速い DNS があれば、そちらに切り替えましょう。"}}]},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"DNS テスト","item":"https://dns.1ms.dog/ja/"},{"@type":"ListItem","position":2,"name":"Xfinity DNS 速度テスト","item":"https://dns.1ms.dog/ja/xfinity/"}]}]}</script>
 <link rel="preload" href="/assets/fonts/geist-latin.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="/assets/app.04ccc8613c.css">
+<link rel="stylesheet" href="/assets/app.eb92073031.css">
 </head>
 <body>
 <div class="app">
@@ -75,7 +75,6 @@
   </header>
 
   <main>
-    <div class="shared" id="shared" hidden><span id="sharedTxt"></span><button class="btn pri" id="testMine" type="button" data-i="test_mine">自分の回線を測る</button></div>
     <section class="hero card">
       <h1>Xfinity DNS 速度テスト</h1>
       <div class="win">
@@ -96,7 +95,10 @@
             <li data-w="dot"><span><span data-i="c_dot">DoT ≈</span> <i data-i="w_est">推定</i></span><b>–</b></li>
           </ul>
           <p class="alt" id="alt">&nbsp;</p>
-          <a class="chk-l xl" id="checkLink" hidden target="_blank" rel="noopener"><span data-i="check_link">回線をまるごとチェック</span><svg class="ext" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 2.5h4.5V7M13.5 2.5 7.5 8.5M12 10v3.5H2.5V4H6"/></svg></a>
+          <div class="win-a">
+            <button class="btn out" id="shareBtn" type="button" aria-haspopup="dialog" hidden><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 10V2M5 5l3-3 3 3M3 9v4.5h10V9"/></svg><span data-i="share">シェア</span></button>
+            <a class="chk-l xl" id="checkLink" hidden target="_blank" rel="noopener"><span data-i="check_link">回線をまるごとチェック</span><svg class="ext" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 2.5h4.5V7M13.5 2.5 7.5 8.5M12 10v3.5H2.5V4H6"/></svg></a>
+          </div>
         </div>
       </div>
       <div class="bar">
@@ -104,7 +106,6 @@
         <span class="prog-t" id="progTxt">&nbsp;</span>
         <button class="btn sm" id="cliBtn" type="button" aria-haspopup="dialog" aria-controls="cli" data-cli><svg viewBox="0 0 16 16" aria-hidden="true"><rect x="1.5" y="2.5" width="13" height="11" rx="2"/><path d="M4.5 6.5l2 1.5-2 1.5M8.5 10h3"/></svg><span data-i="cli_btn">コマンドライン</span></button>
         <button class="btn sm" id="rulesBtn" type="button" aria-haspopup="dialog" aria-controls="rules"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M2 8h9M8 4.5 11.5 8 8 11.5M14 3v10"/></svg><span data-i="rules_btn">直接接続ルール</span></button>
-        <button class="btn sm" id="shareBtn" type="button" aria-haspopup="dialog" disabled><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 10V2M5 5l3-3 3 3M3 9v4.5h10V9"/></svg><span data-i="share">シェア</span></button>
         <button class="btn pri" id="rerun" type="button" disabled><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M13.5 8a5.5 5.5 0 1 1-1.6-3.9M13.5 2v3h-3"/></svg><span data-i="rerun">もう一度テスト</span></button>
       </div>
     </section>
@@ -201,7 +202,7 @@
 </div>
 
 <script type="application/json" id="data">{"lang":"ja","paths":{"en":"/xfinity/","zh-CN":"/zh-cn/xfinity/","zh-TW":"/zh-tw/xfinity/","ja":"/ja/xfinity/","ko":"/ko/xfinity/","es":"/es/xfinity/","fr":"/fr/xfinity/","de":"/de/xfinity/","pt":"/pt/xfinity/","ru":"/ru/xfinity/"},"home":"/ja/","focus":"xfinity"}</script>
-<script src="/assets/l.ja.bc95e1fa81.js"></script>
-<script src="/assets/app.2d15e8bf5a.js"></script>
+<script src="/assets/l.ja.666aa31bae.js"></script>
+<script src="/assets/app.e40c28236f.js"></script>
 </body>
 </html>

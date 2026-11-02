@@ -48,7 +48,7 @@
 <meta name="twitter:description" content="Проверьте IIJ Public DNS из своей сети прямо в браузере: реальная задержка DoH, оценка UDP и DoT и его место среди 33 публичных DNS. С адресами и настройкой на каждом устройстве.">
 <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebApplication","name":"Тест скорости IIJ Public DNS · 1ms.dog","url":"https://dns.1ms.dog/ru/iij/","applicationCategory":"UtilitiesApplication","operatingSystem":"Any","browserRequirements":"Requires JavaScript","description":"Проверьте IIJ Public DNS из своей сети прямо в браузере: реальная задержка DoH, оценка UDP и DoT и его место среди 33 публичных DNS. С адресами и настройкой на каждом устройстве.","inLanguage":"ru","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"USD"}},{"@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Что такое IIJ Public DNS?","acceptedAnswer":{"@type":"Answer","text":"IIJ Public DNS — бесплатный публичный DNS, его оператор — IIJ (Япония). Предлагает только шифрованный DNS (DoT, DoH); публичного адреса обычного DNS нет. Работает в основном в регионе: Япония. Рядом может быть самым быстрым, издалека обычно медленнее крупных глобальных сетей. Проверяет DNSSEC: ответы с неверной подписью отбрасываются. Ничего не фильтрует: все имена разрешаются как есть."}},{"@type":"Question","name":"Адреса DNS-серверов IIJ Public DNS","acceptedAnswer":{"@type":"Answer","text":"Что вписать, чтобы пользоваться IIJ Public DNS: DoT / Частный DNS: public.dns.iij.jp DoH: https://public.dns.iij.jp/dns-query"}},{"@type":"Question","name":"Как настроить IIJ Public DNS","acceptedAnswer":{"@type":"Answer","text":"Windows 11: Windows нужен адрес обычного DNS, чтобы включить шифрованный, а IIJ Public DNS его не публикует: используйте его в браузере (ниже) или через локальный DNS-клиент вроде dnscrypt-proxy. macOS: macOS включает шифрованный DNS через профиль конфигурации: установите DNS-профиль для https://public.dns.iij.jp/dns-query. iPhone и iPad: Установите DNS-профиль для https://public.dns.iij.jp/dns-query и включите его в Настройки → Основные → VPN и управление устройством → DNS. Android: Настройки → Сеть и интернет → Персональный DNS-сервер → Имя хоста поставщика: public.dns.iij.jp. Работает в любой сети и шифруется (DoT). Меню немного отличается у разных производителей: найдите в настройках «Персональный DNS». Роутер: Роутеры принимают адреса обычного DNS, а IIJ Public DNS их не публикует; в OpenWrt https-dns-proxy может пересылать на https://public.dns.iij.jp/dns-query. Браузер: Chrome: Настройки → Конфиденциальность и безопасность → Безопасность → Использовать безопасный DNS → Другой: https://public.dns.iij.jp/dns-query. В Edge то же самое в разделе «Конфиденциальность, поиск и службы». Firefox: Настройки → Приватность и защита → DNS через HTTPS → Максимальная защита → Другой: https://public.dns.iij.jp/dns-query."}},{"@type":"Question","name":"Работает ли IIJ Public DNS в материковом Китае?","acceptedAnswer":{"@type":"Answer","text":"Обычный DNS как правило отвечает, но медленнее, потому что серверы за пределами материкового Китая, а ответы для заблокированных сайтов могут подделываться по пути. Шифрованный DNS (DoH, DoT) к нему часто блокируется или работает нестабильно. Проверьте на этой странице: строка без ответа значит, что из вашей сети он недоступен."}},{"@type":"Question","name":"IIJ Public DNS или Google Public DNS: что быстрее?","acceptedAnswer":{"@type":"Answer","text":"Ни один не быстрее везде: важно, насколько далеко ближайший сервер каждого и каким маршрутом туда идёт ваш провайдер. Эта страница примерно за 20 секунд замеряет оба и все остальные DNS из списка из вашей сети; вверху видно, какое место занял IIJ Public DNS и насколько он отстаёт от самого быстрого."}},{"@type":"Question","name":"Почему IIJ Public DNS у меня медленный?","acceptedAnswer":{"@type":"Answer","text":"Обычно дело в расстоянии: ближайший сервер далеко или провайдер ведёт трафик в обход. Прокси или VPN тоже пропускают через себя запросы, и тогда тест меряет маршрут прокси (это исправляют прямые правила). Некоторые сети замедляют или блокируют шифрованный DNS. А имя, о котором его ещё никто не спрашивал, всегда разрешается дольше (столбец «Без кеша»). Если другой DNS в списке заметно быстрее, переходите на него."}}]},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Тест DNS","item":"https://dns.1ms.dog/ru/"},{"@type":"ListItem","position":2,"name":"Тест скорости IIJ Public DNS","item":"https://dns.1ms.dog/ru/iij/"}]}]}</script>
 <link rel="preload" href="/assets/fonts/geist-latin.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="/assets/app.04ccc8613c.css">
+<link rel="stylesheet" href="/assets/app.eb92073031.css">
 </head>
 <body>
 <div class="app">
@@ -75,7 +75,6 @@
   </header>
 
   <main>
-    <div class="shared" id="shared" hidden><span id="sharedTxt"></span><button class="btn pri" id="testMine" type="button" data-i="test_mine">Проверить мою сеть</button></div>
     <section class="hero card">
       <h1>Тест скорости IIJ Public DNS</h1>
       <div class="win">
@@ -96,7 +95,10 @@
             <li data-w="dot"><span><span data-i="c_dot">DoT ≈</span> <i data-i="w_est">оценка</i></span><b>–</b></li>
           </ul>
           <p class="alt" id="alt">&nbsp;</p>
-          <a class="chk-l xl" id="checkLink" hidden target="_blank" rel="noopener"><span data-i="check_link">Пройти полную проверку</span><svg class="ext" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 2.5h4.5V7M13.5 2.5 7.5 8.5M12 10v3.5H2.5V4H6"/></svg></a>
+          <div class="win-a">
+            <button class="btn out" id="shareBtn" type="button" aria-haspopup="dialog" hidden><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 10V2M5 5l3-3 3 3M3 9v4.5h10V9"/></svg><span data-i="share">Поделиться</span></button>
+            <a class="chk-l xl" id="checkLink" hidden target="_blank" rel="noopener"><span data-i="check_link">Пройти полную проверку</span><svg class="ext" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 2.5h4.5V7M13.5 2.5 7.5 8.5M12 10v3.5H2.5V4H6"/></svg></a>
+          </div>
         </div>
       </div>
       <div class="bar">
@@ -104,7 +106,6 @@
         <span class="prog-t" id="progTxt">&nbsp;</span>
         <button class="btn sm" id="cliBtn" type="button" aria-haspopup="dialog" aria-controls="cli" data-cli><svg viewBox="0 0 16 16" aria-hidden="true"><rect x="1.5" y="2.5" width="13" height="11" rx="2"/><path d="M4.5 6.5l2 1.5-2 1.5M8.5 10h3"/></svg><span data-i="cli_btn">Командная строка</span></button>
         <button class="btn sm" id="rulesBtn" type="button" aria-haspopup="dialog" aria-controls="rules"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M2 8h9M8 4.5 11.5 8 8 11.5M14 3v10"/></svg><span data-i="rules_btn">Прямые правила</span></button>
-        <button class="btn sm" id="shareBtn" type="button" aria-haspopup="dialog" disabled><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 10V2M5 5l3-3 3 3M3 9v4.5h10V9"/></svg><span data-i="share">Поделиться</span></button>
         <button class="btn pri" id="rerun" type="button" disabled><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M13.5 8a5.5 5.5 0 1 1-1.6-3.9M13.5 2v3h-3"/></svg><span data-i="rerun">Проверить снова</span></button>
       </div>
     </section>
@@ -201,7 +202,7 @@
 </div>
 
 <script type="application/json" id="data">{"lang":"ru","paths":{"en":"/iij/","zh-CN":"/zh-cn/iij/","zh-TW":"/zh-tw/iij/","ja":"/ja/iij/","ko":"/ko/iij/","es":"/es/iij/","fr":"/fr/iij/","de":"/de/iij/","pt":"/pt/iij/","ru":"/ru/iij/"},"home":"/ru/","focus":"iij"}</script>
-<script src="/assets/l.ru.33f549c909.js"></script>
-<script src="/assets/app.2d15e8bf5a.js"></script>
+<script src="/assets/l.ru.da3c60fd85.js"></script>
+<script src="/assets/app.e40c28236f.js"></script>
 </body>
 </html>

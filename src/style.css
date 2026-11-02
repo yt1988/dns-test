@@ -36,7 +36,12 @@ code.copied { background: var(--ink-soft); color: var(--ink); }
 .win-m b { display: block; font: 600 22px/30px var(--f-num); font-variant-numeric: tabular-nums; white-space: nowrap; }
 .win-m b.na { color: var(--muted); font-weight: 400; cursor: help; }
 .alt { font-size: 13px; color: var(--muted); margin-top: 6px; }
-.chk-l { font-size: 13px; color: var(--ink); text-decoration: none; margin-top: 2px; }
+/* under the answer: share it, or go on to the full checkup */
+.win-a { display: flex; align-items: center; justify-content: center; flex-wrap: wrap; gap: 8px 18px; min-height: 34px; margin-top: 4px; }
+.btn.out { height: 34px; border-color: var(--ink); color: var(--ink); background: transparent; font-weight: 600; }
+.btn.out:hover { background: var(--ink-soft); }
+.btn.out[hidden] { display: none; }
+.chk-l { font-size: 13px; color: var(--ink); text-decoration: none; }
 .chk-l:hover { text-decoration: underline; }
 .alt b { color: var(--fg); font-weight: 600; }
 /* shown when the test is over; until then it keeps its place, so the name doesn't move when it appears */
@@ -168,9 +173,6 @@ svg.gh-ic[viewBox] { width: 15px; height: 15px; fill: currentColor; stroke: none
 .help-pick select { flex: 1; min-width: 0; height: 34px; padding: 0 10px; border: 1px solid var(--line); border-radius: 8px; background: var(--panel); color: var(--fg); font: 600 16px var(--f-ui); text-overflow: ellipsis; } /* 16px: iOS zooms into smaller fields */
 .note { font-size: 12.5px; color: var(--muted); line-height: 1.5; margin-top: 2px; }
 .dialog.rules { width: 720px; }
-/* a shared result: a banner above the hero, with the way back to one's own test */
-.shared { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; padding: 10px 12px 10px 16px; border-radius: var(--r); background: var(--ink-soft); border: 1px solid color-mix(in srgb, var(--ink) 30%, transparent); font-size: 13.5px; }
-.shared .btn { height: 32px; font-size: 13px; }
 .dialog.cli-dlg { width: 640px; }
 /* a command line is its own copy button: a copy mark at its end on hover (always on touch), a tick once copied */
 .cmdline { position: relative; display: flex; align-items: center; width: 100%; min-width: 0; border: 0; border-radius: 8px; background: var(--soft); color: var(--fg); padding: 8px 36px 8px 12px; text-align: left; cursor: copy; transition: background .15s; }
@@ -235,6 +237,6 @@ details.rblk > summary { cursor: pointer; font-size: 13px; color: var(--ink); }
 html.embed .app { padding-block: 0; }
 html.embed main { gap: 10px; }
 html.embed .top, html.embed .hero h1, html.embed .use-w, html.embed #cliBtn, html.embed #rulesBtn, html.embed #shareBtn,
-html.embed #rerun, html.embed #shared, html.embed .addr, html.embed .cli, html.embed .res-l, html.embed .rs-nav,
+html.embed #rerun, html.embed .addr, html.embed .cli, html.embed .res-l, html.embed .rs-nav,
 html.embed [data-ms-more], html.embed #checkLink, html.embed .tr.more, html.embed .tr.more + div { display: none; }
 html.embed .hero { padding-top: 14px; gap: 10px; }
