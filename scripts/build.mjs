@@ -167,7 +167,8 @@ function resolverDocs(r, T, lang, slug) {
   const doc = (q, ps) => ({ q, h: ps.map(p => p.block ? p.h : `<p>${p.h}</p>`).join(""), t: ps.map(p => p.t).filter(Boolean).join(sp) });
   return [
     doc(fillL(lang, T("rp_q_what"), { name }), what),
-    doc(fillL(lang, T("rp_q_addr"), { name }), addr),
+    // a name that already ends in DNS ("Google Public DNS") doesn't get a second one
+    doc(fillL(lang, T(/DNS$/.test(name) ? "rp_q_addr_dns" : "rp_q_addr"), { name }), addr),
     doc(fillL(lang, T("rp_q_setup"), { name }), setup),
     doc(fillL(lang, T("rp_q_cn"), { name }), [P(r.group === "cn" ? "rp_a_cn_in" : "rp_a_cn_out")]),
     doc(fillL(lang, T("rp_q_vs"), { name, other: otherName }), vs),

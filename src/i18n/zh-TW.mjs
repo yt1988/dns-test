@@ -118,6 +118,7 @@ export default {
   rp_a_cnsite: "伺服器在中國大陸：在當地很快，從其他地方連線則較慢。",
   rp_a_region: "它主要服務{region}：離得近時可能是最快的，離得遠通常不如全球性的大型服務。",
   rp_q_addr: "{name} DNS 伺服器位址",
+  rp_q_addr_dns: "{name} 伺服器位址",
   rp_a_addr: "使用 {name} 時，請填入：",
   rp_q_setup: "{name} 設定方式",
   rp_h_win: "Windows 11",

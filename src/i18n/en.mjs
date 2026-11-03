@@ -119,6 +119,7 @@ export default {
   rp_a_cnsite: "Its servers are in mainland China: fast there, slow from elsewhere.",
   rp_a_region: "It mainly serves {region}: nearby it can be the fastest, but from far away it's usually slower than the big global services.",
   rp_q_addr: "{name} DNS server addresses",
+  rp_q_addr_dns: "{name} server addresses",
   rp_a_addr: "To use {name}, enter:",
   rp_q_setup: "How to set up {name}",
   rp_h_win: "Windows 11",
