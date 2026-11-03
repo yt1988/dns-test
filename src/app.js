@@ -7,6 +7,7 @@ import { targets, run, median, loss, score } from "./measure.mjs";
 import { FORMATS, FORMAT_NAMES, items as ruleItems, inline as ruleInline, remote as ruleRemote } from "./rules.mjs";
 import { encode as encodeShare, decode as decodeShare, sharePath } from "./share.mjs";
 import { ABOUT } from "./about.mjs";
+import { regionName } from "./region.mjs";
 
 (function () {
   "use strict";
@@ -347,7 +348,7 @@ import { ABOUT } from "./about.mjs";
   fetch("/_ms/me", { cache: "no-store" }).then(r => { if (!r.ok) throw r; return r.json(); }).then(j => { CC = cc2(j.country); })
     .catch(() => fetch("/cdn-cgi/trace", { cache: "no-store" }).then(r => r.ok ? r.text() : "").then(s => { CC = cc2((/\bloc=([A-Z]{2})/.exec(s) || [])[1]); }))
     .catch(() => {});
-  const country = cc => { try { return new Intl.DisplayNames([D.lang], { type: "region" }).of(cc); } catch (e) { return cc; } };
+  const country = cc => { try { return regionName(cc, D.lang); } catch (e) { return cc; } };
 
   /* ---------- share: the shared 1ms.dog dialog (/assets/share/, copied from 1ms-shell) with this result in it ---------- */
   // The result as the link carries it (src/share.mjs): every resolver in rank order, its times, nothing about the visitor

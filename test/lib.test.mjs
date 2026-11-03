@@ -92,3 +92,13 @@ test("a result link whose code can't be read is not found, never sent home", asy
     assert.equal(res.status, 404, p);
   }
 });
+
+test("Taiwan: fixed name in every language and the cn flag (1ms-shell tool-contract §5)", async () => {
+  const { regionName, flagCode } = await import("../src/region.mjs");
+  assert.equal(regionName("TW", "zh-CN"), "中国台湾");
+  assert.equal(regionName("TW", "en"), "Taiwan, China");
+  assert.equal(regionName("TW", "ru"), "Тайвань, Китай");
+  assert.equal(flagCode("TW"), "cn");
+  assert.equal(regionName("HK", "en"), new Intl.DisplayNames(["en"], { type: "region" }).of("HK"));
+  assert.equal(flagCode("HK"), "hk");
+});

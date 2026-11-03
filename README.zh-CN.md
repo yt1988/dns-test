@@ -44,7 +44,7 @@
 - **只算真应答。** 返回 CORS 头的几家，逐条读取应答，只统计真正的应答（热门域名必须是 NOERROR；不存在的域名如果返回了地址，就标记为篡改 NXDOMAIN）。其他几家只能计时，由 `scripts/verify.mjs` 核实它们对这种查询返回的确实是 DNS 应答。
 - **开着代理？** 「直连规则」按钮给出 Clash/Mihomo、Surge、Shadowrocket、Quantumult X、Loon、sing-box、Xray 的规则，只把测试用到的主机名和 IP 设成直连，测到的就是你自己的网络而不是代理。远程规则集：`/rules/clash.yaml`、`surge.list`、`loon.list`、`quanx.list`、`singbox.json`。
 
-没有收录：114DNS、百度 DNS、CNNIC（只有普通 DNS，服务器不支持 HTTPS，浏览器连不到）；Quad101（台湾）、Kakao（韩国）、火山引擎、Shecan（伊朗），我们从德国、美国和中国核实时它们的 DoH 都连不上。
+没有收录：114DNS、百度 DNS、CNNIC（只有普通 DNS，服务器不支持 HTTPS，浏览器连不到）；Quad101（中国台湾）、Kakao（韩国）、火山引擎、Shecan（伊朗），我们从德国、美国和中国核实时它们的 DoH 都连不上。
 
 ## 文件
 

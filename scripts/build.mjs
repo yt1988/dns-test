@@ -20,6 +20,7 @@ import { build as bundle, transform } from "esbuild";
 import { RESOLVERS, NAMES, NXZONE, CHECKS } from "../src/resolvers.mjs";
 import { ruleSets } from "../src/rules.mjs";
 import { ABOUT, local, titleOf } from "../src/about.mjs";
+import { regionName } from "../src/region.mjs";
 
 const SITE = (process.env.SITE_URL || "https://dns.1ms.dog").replace(/\/+$/, "");
 const pub = new URL("../public/", import.meta.url), src = new URL("../src/", import.meta.url);
@@ -128,7 +129,7 @@ function resNav(T, lang, slug, focus) {
 // text for the FAQ data. A value given as a list is drawn as <code>s, joined the language's way.
 function resolverDocs(r, T, lang, slug) {
   const a = ABOUT[r.id], name = titleOf(r, lang), J = T("v_join"), sp = /^(zh|ja)/.test(lang) ? "" : " ";
-  const country = cc => cc ? new Intl.DisplayNames([lang], { type: "region" }).of(cc) : "";
+  const country = cc => cc ? regionName(cc, lang) : "";
   const V = v => v && v.h != null ? v : Array.isArray(v) ? { h: v.map(x => `<code>${esc(x)}</code>`).join(esc(J)), t: v.join(J) } : { h: esc(v), t: v };
   const P = (k, vars = {}) => {
     const s = lang === "ko" ? josa(T(k), vars) : T(k), sub = (str, f) => tidy(str.replace(/\{(\w+)\}/g, (m, n) => n in vars ? V(vars[n])[f] : m), lang);
@@ -183,7 +184,7 @@ function addrCard(r, T, lang) {
   const a = ABOUT[r.id], hq = a.hq || r.cc, name = titleOf(r, lang);
   const facts = [
     [T("rp_k_org"), local(a.org, lang)],
-    hq && [T("rp_k_hq"), new Intl.DisplayNames([lang], { type: "region" }).of(hq)],
+    hq && [T("rp_k_hq"), regionName(hq, lang)],
     a.as && [T("rp_k_as"), `<span data-asn="${a.as}">AS${a.as}</span>`, true],
     ["DNSSEC", r.dnssec ? "✓" : "–"],
     [T("d_blocks"), r.blocks ? T("blocks_" + r.blocks) : T("rp_none")],
