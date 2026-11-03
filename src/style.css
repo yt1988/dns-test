@@ -19,7 +19,7 @@ code.copied { background: var(--ink-soft); color: var(--ink); }
 /* the answer, read top to bottom: who, how fast, the fastest plain DNS. What to enter opens from the button next to
    the name. It keeps its height from the first paint, so a new leader only changes text. */
 .win-l { display: flex; flex-direction: column; align-items: center; gap: 6px; min-width: 0; text-align: center; }
-.win-k { font-size: 11.5px; font-weight: 600; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); }
+.win-k { font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); }
 .win-n { position: relative; display: flex; align-items: center; justify-content: center; height: 52px; width: 100%; }
 /* icon and name, centered on their own: the setup button hangs off to the side and takes no room */
 .win-id { position: relative; display: flex; align-items: center; gap: 12px; min-width: 0; max-width: 100%; }
@@ -81,7 +81,7 @@ a.val { color: inherit; text-decoration: underline dotted; text-underline-offset
 a.val:hover { color: var(--ink); }
 .tbl { display: flex; flex-direction: column; }
 .th, .tr { display: grid; grid-template-columns: 26px minmax(0, 1fr) 76px 76px 76px 70px 62px; align-items: center; gap: 8px; }
-.th { height: 30px; font-size: 11.5px; font-weight: 600; color: var(--muted); }
+.th { height: 30px; font-size: 12px; font-weight: 600; color: var(--muted); }
 .th > span:nth-child(n+3) { text-align: right; }
 .th [data-why] { cursor: help; text-decoration: underline dotted; text-underline-offset: 3px; outline: none; }
 .tr { height: 44px; border-top: 1px solid var(--line); font-size: 13px; cursor: pointer; outline: none; }
@@ -209,8 +209,10 @@ details.rblk > summary { cursor: pointer; font-size: 13px; color: var(--ink); }
 @media (max-width: 720px) {
   .hero { padding: 16px 16px 0; gap: 14px; }
   .bar { margin: 0 -16px; padding: 10px 16px 12px; flex-wrap: wrap; row-gap: 8px; }
-  #cliBtn span, #rulesBtn span { display: none; }
+  /* phones: these buttons show their icon only; the words stay for screen readers */
+  #cliBtn span, #rulesBtn span, #useBtn span { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
   #cliBtn, #rulesBtn { width: 34px; padding: 0; }
+  .use-w #useBtn { width: 30px; padding: 0; }
   .prog-t { flex: 1 0 100%; }
   .res { padding: 16px 16px 12px; }
   /* phones: no room beside the name, so the button sits at the right end of the label line above it */
@@ -222,6 +224,7 @@ details.rblk > summary { cursor: pointer; font-size: 13px; color: var(--ink); }
   .win-m b { font-size: 18px; }
   /* phones: rank, name, DoH, UDP ≈; the rest is in the row's details and the hero */
   .cli { padding: 14px 16px; grid-template-columns: auto minmax(0, 1fr); }
+  .cli-t { white-space: normal; }
   .cli > .cmdline, .cli-links { grid-column: 1 / -1; }
   .cli > .cmdline code { white-space: pre-wrap; }
   .th, .tr { grid-template-columns: 20px minmax(0, 1fr) 62px 62px; }
@@ -240,3 +243,8 @@ html.embed .top, html.embed .hero h1, html.embed .use-w, html.embed #cliBtn, htm
 html.embed #rerun, html.embed .addr, html.embed .cli, html.embed .res-l, html.embed .rs-nav,
 html.embed [data-ms-more], html.embed #checkLink, html.embed .tr.more, html.embed .tr.more + div { display: none; }
 html.embed .hero { padding-top: 14px; gap: 10px; }
+/* touch: the standalone links get a finger-sized target, looking the same */
+@media (pointer: coarse) {
+  .chk-l, .res-h .who, .cli .lnk, .cli-gh { display: inline-flex; align-items: center; min-height: 32px; }
+  .cli-gh { min-width: 32px; justify-content: center; }
+}
