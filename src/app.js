@@ -14,6 +14,8 @@ import { regionName } from "./region.mjs";
   const $ = s => document.querySelector(s), $$ = s => [...document.querySelectorAll(s)];
   const D = JSON.parse($("#data").textContent);
   const FOCUS = D.focus ? RESOLVERS.find(r => r.id === D.focus) : null;
+  // what this page tests: a resolver's page only that one (the home page tests them all), the others aren't asked
+  const LIST = FOCUS ? [FOCUS] : RESOLVERS;
   const L = window.L1MS || {};
   const t = (k, v) => { let s = L[k] ?? k; if (v) for (const x in v) s = s.split("{" + x + "}").join(v[x]); return s; };
   const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]);
@@ -168,7 +170,7 @@ import { regionName } from "./region.mjs";
   const num = (ms, extra = "") => `<b class="n ${tier(ms)}">${fmt(ms)}</b>${extra}`;
 
   /* ---------- the test ---------- */
-  let TS = [], RUN = null, PHASE = 1;
+  let TS = [], RUN = null;
   const byR = id => TS.filter(x => x.r.id === id);
   const tgt = (id, kind) => TS.find(x => x.r.id === id && x.kind === kind);
 
@@ -185,6 +187,7 @@ import { regionName } from "./region.mjs";
   const estOf = (r, k) => r.est[k] === "doh" ? tgt(r.id, "doh") : r.est[k] === "ip" ? tgt(r.id, "ip") : null;
   function fillRow(id) {
     const r = RESOLVERS.find(x => x.id === id), row = ROW[id], doh = tgt(id, "doh");
+    if (!row) return;
     row.querySelector('[data-c="doh"]').innerHTML = cellOf(doh);
     for (const k of ["udp", "dot"]) {
       const c = row.querySelector(`[data-c="${k}"]`);
@@ -222,6 +225,7 @@ import { regionName } from "./region.mjs";
   let order = RESOLVERS.map(r => r.id);
   function sortRows(ranked) {
     const tbl = $("#tbl");
+    if (!tbl) return;
     const wait = RESOLVERS.filter(r => !ranked.includes(r) && !ROW[r.id].classList.contains("down"));
     const down = RESOLVERS.filter(r => !ranked.includes(r) && ROW[r.id].classList.contains("down"));
     const next = [...ranked, ...wait, ...down];
@@ -264,19 +268,16 @@ import { regionName } from "./region.mjs";
   // page shows its answer from the first seconds; at the end, the result.
   function hero(final) {
     const val = final ? x => score(x) : soFar, ms = final ? x => x && x.up ? median(x.cached) : null : msSoFar;
-    const rs = RESOLVERS.map(r => ({ r, s: val(tgt(r.id, "doh")) })).filter(x => x.s != null).sort((a, b) => a.s - b.s);
+    const rs = LIST.map(r => ({ r, s: val(tgt(r.id, "doh")) })).filter(x => x.s != null).sort((a, b) => a.s - b.s);
     $("#winK").textContent = t(FOCUS ? (final ? "f_done" : "f_run") : final ? "best_k" : "lead_k");
     if (!rs.length && !FOCUS) { if (final) $("#winName").textContent = t("none_up"); return rs; }
     const win = FOCUS || rs[0].r, doh = tgt(win.id, "doh");
     if ($("#winName").textContent !== win.name) { $("#winName").textContent = win.name; $("#winIc").style.backgroundImage = `url(/icons/${win.id}.png)`; }
     if (FOCUS) {
-      // its rank so far, then where it ended and who beat it (that one's page a click away)
-      const i = rs.findIndex(x => x.r === FOCUS), self = !final && PHASE === 0, gap = j => fmt(ms(tgt(rs[j].r.id, "doh")) - ms(tgt(rs[0].r.id, "doh")));
-      $("#winSub").innerHTML = self ? esc(t(doh && doh.up === false ? "f_down" : "f_self", { n: RESOLVERS.length - 1 }))
-        : i < 0 ? esc(t(doh && doh.up === false ? "f_down" : "f_wait"))
-        : !final ? esc(t("f_sub_run", { n: rs.length, of: RESOLVERS.length, rank: i + 1 }))
-        : i === 0 ? (rs[1] ? esc(t("f_first", { n: rs.length, d: gap(1), second: rs[1].r.name })) : "&nbsp;")
-        : esc(t("f_rank", { rank: i + 1, n: rs.length, d: gap(i), best: "@@best@@" })).replace("@@best@@", `<a href="${D.home + rs[0].r.id}/">${esc(rs[0].r.name)}</a>`);
+      // its own numbers only; at the end, how long a name it hasn't cached takes (or that it rewrites missing names)
+      const u = doh && doh.up && doh.uncached.length ? median(doh.uncached) : null;
+      $("#winSub").textContent = doh && doh.up === false ? t("f_down") : !rs.length ? t("f_wait")
+        : !final ? " " : doh.rewrites ? t("tip_rewrite") : u != null ? t("f_sub", { unc: fmt(u) }) : " ";
     } else $("#winSub").textContent = !final ? t("lead_sub", { n: rs.length, of: RESOLVERS.length })
       : rs[1] ? t("win_sub", { n: rs.length, d: fmt(ms(tgt(rs[1].r.id, "doh")) - ms(doh)), second: rs[1].r.name }) : "";
     const w = { doh: doh, udp: estOf(win, "udp"), dot: estOf(win, "dot") };
@@ -298,7 +299,7 @@ import { regionName } from "./region.mjs";
     // the fastest plain DNS, when it isn't the winner, for whoever can only set plain DNS servers
     const udp = RESOLVERS.map(r => ({ r, x: estOf(r, "udp") })).filter(o => o.x && val(o.x) != null).sort((a, b) => val(a.x) - val(b.x))[0];
     const lines = [];
-    if (udp && udp.r !== win) lines.push(t("alt_udp", { name: `<b>${esc(udp.r.name)}</b>`, ms: fmt(ms(udp.x)), ips: esc(udp.r.udp.join(", ")) }));
+    if (udp && udp.r !== win && !FOCUS) lines.push(t("alt_udp", { name: `<b>${esc(udp.r.name)}</b>`, ms: fmt(ms(udp.x)), ips: esc(udp.r.udp.join(", ")) }));
     if (final && CC === "CN") lines.push(t("cn_note"));
     $("#alt").innerHTML = lines.join(" ") || "&nbsp;";
     return rs;
@@ -313,7 +314,7 @@ import { regionName } from "./region.mjs";
     $("#progTxt").textContent = t("done", { s: ((performance.now() - t0) / 1000).toFixed(0), names: names.join(", ") });
     $("#rerun").disabled = false;
     LAST = snapshot(rs);
-    $("#shareBtn").hidden = false;
+    $("#shareBtn").hidden = !rs.length;   // nothing to share when nothing answered
     if (EMBED) post(rs.length ? checkup(rs) : { type: "error", text: t("none_up") });
   }
 
@@ -354,7 +355,7 @@ import { regionName } from "./region.mjs";
   // The result as the link carries it (src/share.mjs): every resolver in rank order, its times, nothing about the visitor
   let LAST = null;
   function snapshot(rs) {
-    const ranked = rs.map(x => x.r), rest = RESOLVERS.filter(r => !ranked.includes(r));
+    const ranked = rs.map(x => x.r), rest = LIST.filter(r => !ranked.includes(r));
     const m = x => x && x.up && x.cached.length ? median(x.cached) : null;
     return { ts: Date.now(), cc: CC, rows: [...ranked, ...rest].map(r => {
       const d = tgt(r.id, "doh");
@@ -370,11 +371,12 @@ import { regionName } from "./region.mjs";
       lang: D.lang, name: t("app_name"), file: "dns-test",
       // the country only when the visitor ticks it; never the address, city or network
       show: ["country"], never: ["ip", "city", "isp"], canShow: !!S.cc,
-      link: show => location.origin + D.home + "r/" + encodeShare({ ...S, cc: show ? S.cc : "" }),
+      // a resolver's page shares that one's result, opened on its page
+      link: show => location.origin + D.home + (FOCUS ? FOCUS.id + "/" : "") + "r/" + encodeShare({ ...S, cc: show ? S.cc : "" }),
       home: location.origin + D.home,
-      text: () => t("share_text", { name: w ? byId(w.id).name : "", ms: w ? fmt(w.doh) : "–" }),
-      height: 860, draw: (x, kit) => drawCard(x, kit, rows),
-      foot: show => [t("card_sub", { n: rows.length }), show && S.cc && country(S.cc)],
+      text: () => t(FOCUS ? "share_text_one" : "share_text", { name: w ? byId(w.id).name : "", ms: w ? fmt(w.doh) : "–" }),
+      height: FOCUS ? 520 : 860, draw: (x, kit) => drawCard(x, kit, rows),
+      foot: show => [FOCUS ? t("card_sub_one") : t("card_sub", { n: rows.length }), show && S.cc && country(S.cc)],
       ts: S.ts,
     }).open();
   };
@@ -390,7 +392,7 @@ import { regionName } from "./region.mjs";
     x.textBaseline = "alphabetic";
     // the winner
     const w = rows[0];
-    x.fillStyle = C.muted; x.font = `600 26px ${F}`; x.fillText(t("card_head"), P, y);
+    x.fillStyle = C.muted; x.font = `600 26px ${F}`; x.fillText(t(FOCUS ? "card_head_one" : "card_head"), P, y);
     if (icons[0]) x.drawImage(icons[0], P, y + 24, 60, 60);
     // the name whole, smaller if it has to be (no "…" on the card: 1ms-shell docs/tool-contract.md)
     x.fillStyle = C.fg; fit(x, byId(w.id).name, W - P * 2 - 80, 72, 48, 750); x.fillText(clip(x, byId(w.id).name, W - P * 2 - 80), P + 80, y + 82);
@@ -399,7 +401,8 @@ import { regionName } from "./region.mjs";
       x.fillStyle = ms == null ? C.muted : C[tier(ms)]; x.font = `650 56px ${M}`; x.fillText(ms == null ? "–" : (est ? "≈ " : "") + fmt(ms) + " ms", at, y + 204);
     };
     cell(t("c_doh"), w.doh, P); cell(t("c_udp"), w.udp, P + 340, true); cell(t("c_dot"), w.dot, P + 680, true);
-    // the next ones, each on the same speed scale
+    // the next ones, each on the same speed scale (none on a resolver's page)
+    if (FOCUS) return;
     const y0 = y + 264, RH = 38, l0 = P + 300, l1 = W - P - 110;
     x.fillStyle = C.line; x.fillRect(P, y0 - 22, W - P * 2, 2);
     rows.slice(1, 9).forEach((r, i) => {
@@ -422,8 +425,8 @@ import { regionName } from "./region.mjs";
   /* ---------- a shared result ---------- */
   // Opening /r/<code> shows that result, as the test would have drawn it, and doesn't test until the visitor asks
   function showShared(S) {
-    TS = targets(RESOLVERS);
-    for (const r of RESOLVERS) {
+    TS = targets(LIST);
+    for (const r of LIST) {
       const row = S.rows.find(x => x.id === r.id), set = (x, ms, unc, l) => {
         if (!x) return;
         x.up = ms != null; x.err = "fail"; x.cached = ms != null ? [ms] : []; x.uncached = unc != null ? [unc] : [];
@@ -453,7 +456,7 @@ import { regionName } from "./region.mjs";
     if (VIEWING) { VIEWING = false; if (BANNER) BANNER.remove(); BANNER = null; history.replaceState(null, "", D.paths[D.lang]); }
     if (RUN) RUN.abort();
     const ctl = RUN = new AbortController();
-    TS = targets(RESOLVERS);
+    TS = targets(LIST);
     LAST = null; $("#shareBtn").hidden = true;
     // the order the list has until the test ends
     sortRows([]);
@@ -461,10 +464,8 @@ import { regionName } from "./region.mjs";
     resetHero();
     $("#prog").classList.remove("end"); $("#rerun").disabled = true;
     total = TS.length * (1 + 10); done = 0; t0 = performance.now(); progress();
-    // a resolver's page tests it first, then the others to compare
-    PHASE = 0;
-    const res = await run(TS, { names: NAMES, nxzone: NXZONE, signal: ctl.signal, first: FOCUS ? TS.filter(x => x.r === FOCUS) : [],
-      onPhase: i => { PHASE = FOCUS ? i : 1; heroSoon(); }, onStep: x => {
+    const res = await run(TS, { names: NAMES, nxzone: NXZONE, signal: ctl.signal,
+      onPhase: () => heroSoon(), onStep: x => {
       done = Math.min(total, done + 1); progress(); fillRow(x.r.id); heroSoon(); sortLive();
       // a target that didn't answer the warm-up skips the rounds
       if (x.up === false) { done += 10; progress(); }
@@ -480,6 +481,6 @@ import { regionName } from "./region.mjs";
     finish(res.names);
   }
   $("#rerun").onclick = start;
-  const SP = sharePath(location.pathname), SHARED = SP && decodeShare(SP.code, new Set(RESOLVERS.map(r => r.id)));
+  const SP = sharePath(location.pathname, new Set(RESOLVERS.map(r => r.id))), SHARED = SP && decodeShare(SP.code, new Set(LIST.map(r => r.id)));
   if (SHARED && !EMBED) showShared(SHARED); else start();
 })();

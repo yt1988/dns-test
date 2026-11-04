@@ -35,10 +35,12 @@ test("every resolver's page, in every language, is its own", async () => {
       for (const [l, s] of LANGS) assert.ok(h.includes(`hreflang="${l}" href="${SITE + path(s, r.id)}"`), where + ": alternate " + l);
       assert.ok(h.includes(`hreflang="x-default" href="${SITE + path("", r.id)}"`), where + ": x-default");
       assert.ok(h.includes(`<html lang="${lang}"`), where + ": language");
-      // the hero names it from the start, its row is marked, its addresses are on the page
+      // the hero names it from the start, its addresses are on the page; no list of the others (the page tests only it),
+      // and the way to the test of them all under its result
       assert.ok(one(h, /<h1>(.*?)<\/h1>/).includes(titleOf(r, lang).replace(/&/g, "&amp;")), where + ": heading names it");
       assert.ok(h.includes(`<b id="winName">${r.name}</b>`), where + ": hero");
-      assert.ok(h.includes(`<div class="tr wait me" data-r="${r.id}"`), where + ": its row marked");
+      assert.ok(!h.includes('<div class="tr ') && !h.includes('id="tbl"'), where + ": no list of every resolver");
+      assert.ok(h.includes(`<a class="btn out" id="allLink" href="${path(slug)}">`), where + ": the test of them all");
       assert.ok(h.includes(`<code>${r.doh}</code>`) && (!r.udp || h.includes(`<code>${r.udp[0]}</code>`)), where + ": addresses");
       assert.ok(h.includes(`-r ${r.id},${ABOUT[r.id].vs}</code>`), where + ": the command line tests it");
       // where to go next: the DNS leak check once it is set up, its network on ASN Lookup, the speed test (the page fills
@@ -53,7 +55,7 @@ test("every resolver's page, in every language, is its own", async () => {
       assert.ok(ld["@graph"].some(x => x["@type"] === "BreadcrumbList"), where + ": breadcrumb");
       assert.ok(h.includes(`<a class="brand" href="${path(slug)}"`), where + ": link to the test of them all");
       assert.ok(h.includes(`href="${path(slug, ABOUT[r.id].vs)}"`), where + ": link to the one it is compared with");
-      assert.equal((h.match(/<li><a href="\/[^"]*"/g) || []).length, RESOLVERS.length, where + ": links to every resolver's page");
+      assert.equal((h.match(/<li><a href="\/[^"]*"/g) || []).length, RESOLVERS.filter(x => x.group === r.group).length - 1, where + ": links to the others of its kind");
       // every image has its size (no shift while it loads) and waits until it is near the screen
       for (const img of h.match(/<img [^>]*>/g)) assert.ok(/ width="\d+" height="\d+"/.test(img) && img.includes('loading="lazy"'), where + ": " + img);
       if (lang === "ko") assert.ok(!/[가-힣A-Za-z0-9)]\((은|는|이|가|을|를|과|와)\)/.test(h), where + ": particles picked, not 은(는)");

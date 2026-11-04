@@ -79,15 +79,18 @@ test("a shared result survives the link, unknown resolvers are skipped, other fo
   assert.equal(decode(encode({ ...r, cc: "" }), known).cc, "");
   assert.equal(decode("2~x~-~alidns_1", known), null, "a later format");
   assert.equal(decode("1~x~-~alidns_zz!", known), null, "garbage");
-  assert.deepEqual(sharePath("/zh-cn/r/" + code), { slug: "zh-cn", code });
-  assert.deepEqual(sharePath("/r/" + code), { slug: "", code });
+  assert.deepEqual(sharePath("/zh-cn/r/" + code, known), { slug: "zh-cn", id: "", code });
+  assert.deepEqual(sharePath("/r/" + code, known), { slug: "", id: "", code });
+  // a resolver's page shares its own result under its own path
+  assert.deepEqual(sharePath("/alidns/r/" + code, known), { slug: "", id: "alidns", code });
+  assert.deepEqual(sharePath("/ja/adguard-nf/r/" + code, known), { slug: "ja", id: "adguard-nf", code });
   assert.equal(sharePath("/zh-cn/"), null);
 });
 
 test("a result link whose code can't be read is not found, never sent home", async () => {
   const { default: worker } = await import("../src/worker.js");
   const env = { ASSETS: { fetch: () => { throw new Error("no page for an unreadable code"); } } };
-  for (const p of ["/r/zz", "/zh-cn/r/zz", "/r/1~tntea0~-~nosuch_2c____", "/r/2~x~-~cloudflare_2c____"]) {
+  for (const p of ["/r/zz", "/zh-cn/r/zz", "/nosuch/r/1~tntea0~-~cloudflare_2c____", "/google/r/1~tntea0~-~cloudflare_2c____", "/r/1~tntea0~-~nosuch_2c____", "/r/2~x~-~cloudflare_2c____"]) {
     const res = await worker.fetch(new Request("https://dns.1ms.dog" + p), env, {});
     assert.equal(res.status, 404, p);
   }
@@ -101,4 +104,17 @@ test("Taiwan: fixed name in every language and the cn flag (1ms-shell tool-contr
   assert.equal(flagCode("TW"), "cn");
   assert.equal(regionName("HK", "en"), new Intl.DisplayNames(["en"], { type: "region" }).of("HK"));
   assert.equal(flagCode("HK"), "hk");
+});
+
+test("a resolver's shared result opens its page, titled with its own time", async () => {
+  const { default: worker } = await import("../src/worker.js");
+  // Workers' HTMLRewriter, enough of it to see what the title becomes
+  let asked = "", title = "";
+  globalThis.HTMLRewriter = class { on(sel, h) { if (sel === "title") h.element({ setInnerContent: s => { title = s; } }); return this; } transform(r) { return r; } };
+  const env = { ASSETS: { fetch: req => { asked = new URL(req.url).pathname; return new Response("<title>x</title>"); } } };
+  const res = await worker.fetch(new Request("https://dns.1ms.dog/de/dnsforge/r/1~tntea0~-~dnsforge_2c____"), env, {});
+  delete globalThis.HTMLRewriter;
+  assert.equal(res.status, 200);
+  assert.equal(asked, "/de/dnsforge/");
+  assert.equal(title, "DNSForge in meinem Netz: 8.4 ms · DNS-Test");
 });

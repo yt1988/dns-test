@@ -1,4 +1,5 @@
-// A result in a link: /r/<code> (or /<lang>/r/<code>). The Worker reads the code to put the winner in the link's
+// A result in a link: /r/<code> (or /<lang>/r/<code>); a resolver's page shares its own result, that one row, as
+// /<resolver>/r/<code> (or /<lang>/<resolver>/r/<code>). The Worker reads the code to put the winner in the link's
 // preview title; the page reads it to show the result. Nothing but the numbers goes in it: no address, no city or
 // network, and the country only when the visitor ticks the box.
 //
@@ -34,10 +35,14 @@ export function decode(code, known) {
   return rows.length ? { v: 1, ts: parseInt(ts, 36) * 1000, cc: /^[A-Z]{2}$/.test(cc) ? cc : "", rows } : null;
 }
 
-// /r/<code> or /<lang folder>/r/<code> → { slug, code }, or null
-export function sharePath(pathname) {
-  const m = /^\/(?:([a-z]{2}(?:-[a-z]{2})?)\/)?r\/([0-9A-Za-z~._-]+)\/?$/.exec(pathname);
-  return m ? { slug: m[1] || "", code: decodeURIComponent(m[2]) } : null;
+// /[<lang folder>/][<resolver>/]r/<code> → { slug, id, code }, or null. With a single folder, `ids` (the resolver ids)
+// tells a resolver from a language; no resolver id is also a language folder.
+export function sharePath(pathname, ids) {
+  const m = /^\/(?:([a-z0-9-]+)\/)?(?:([a-z0-9-]+)\/)?r\/([0-9A-Za-z~._-]+)\/?$/.exec(pathname);
+  if (!m) return null;
+  let [, slug = "", id = ""] = m;
+  if (slug && !id && ids && ids.has(slug)) [slug, id] = ["", slug];
+  return { slug, id, code: decodeURIComponent(m[3]) };
 }
 
 // a number as the page shows it: one decimal below 10 ms

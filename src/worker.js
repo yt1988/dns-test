@@ -4,7 +4,7 @@
 //   /v                    the latest dnstest release, "0.1.0", asked of GitHub and kept for 10 minutes
 //   /dl/<tag>/<file>      a file of that release, fetched from GitHub once and then kept (a tag's files never change);
 //                         <tag> may be "latest", which redirects to the current tag
-//   /r/<code>, /<lang>/r/<code>   a shared result: that language's page with the result's winner in its title and
+//   /[<lang>/][<resolver>/]r/<code>   a shared result (from a resolver's page: that one's): that language's page with the result's winner in its title and
 //                         description (what chat apps show as the link's preview), not indexed; the page itself
 //                         reads the code and shows the result (src/share.mjs)
 //                         (a code it can't read: 404)
@@ -38,8 +38,8 @@ export default {
     const url = new URL(req.url);
     if (req.method !== "GET" && req.method !== "HEAD") return new Response("Method not allowed\n", { status: 405 });
 
-    const sp = sharePath(url.pathname);
-    if (sp && STR[sp.slug] && env.ASSETS) return shared(req, env, url, sp);
+    const sp = sharePath(url.pathname, KNOWN);
+    if (sp && STR[sp.slug] && (!sp.id || KNOWN.has(sp.id)) && env.ASSETS) return shared(req, env, url, sp);
 
     if (url.pathname === "/v" || INSTALLER[url.pathname]) {
       const v = await latest(url, ctx);
@@ -69,14 +69,16 @@ const notFound = req => new Response(req.method === "HEAD" ? null : "Not found\n
 
 // A shared result: the language's page as it is, with the title, description and their Open Graph and Twitter copies
 // saying who was fastest. A code this page can't read is not found (the shell shows the 1ms.dog 404 page).
-async function shared(req, env, url, { slug, code }) {
-  const home = "/" + (slug ? slug + "/" : "");
-  const r = decode(code, KNOWN);
+async function shared(req, env, url, { slug, id, code }) {
+  const home = "/" + (slug ? slug + "/" : "") + (id ? id + "/" : "");
+  // a resolver's page: its own row only
+  const r = decode(code, id ? new Set([id]) : KNOWN);
   const won = r && r.rows.filter(x => x.doh != null);
   if (!won || !won.length) return notFound(req);
   const S = STR[slug], [a, b] = won;
-  const title = fill(S.share_title, { name: NAME[a.id], ms: fmt(a.doh) });
-  const desc = fill(b ? S.share_desc : S.share_desc1, { n: r.rows.length, name: NAME[a.id], ms: fmt(a.doh), second: b ? NAME[b.id] : "", ms2: b ? fmt(b.doh) : "" });
+  const title = fill(id ? S.share_title_one : S.share_title, { name: NAME[a.id], ms: fmt(a.doh) });
+  const desc = id ? fill(S.share_desc_one, { name: NAME[a.id], ms: fmt(a.doh) })
+    : fill(b ? S.share_desc : S.share_desc1, { n: r.rows.length, name: NAME[a.id], ms: fmt(a.doh), second: b ? NAME[b.id] : "", ms2: b ? fmt(b.doh) : "" });
   const page = await env.ASSETS.fetch(new Request(new URL(home, url), { headers: req.headers }));
   if (!page.ok) return page;
   const attr = (v, name = "content") => ({ element: e => e.setAttribute(name, v) });

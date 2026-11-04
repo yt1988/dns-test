@@ -118,6 +118,16 @@ function rowsHTML(T, lang, slug, focus) {
   }).join("\n");
 }
 
+// A resolver's page tests only that one, so in place of the list: the other pages of its kind (global, mainland China,
+// regional), names and links only; the home page links every one. `links`: the list card's links to other tools.
+function moreCard(T, lang, slug, focus, links) {
+  const me = RESOLVERS.find(r => r.id === focus);
+  return `<section class="res card">
+      <div class="res-h"><h2 id="rsNavH">${esc(T("rp_more_h"))}</h2><span class="res-l">${links}</span></div>
+      <nav class="rs-nav more" aria-labelledby="rsNavH"><ul>` + RESOLVERS.filter(r => r.group === me.group && r !== me).map(r =>
+    `<li><a href="${pathOf(slug, r.id)}"><img src="/icons/${r.id}.png" width="14" height="14" alt="" loading="lazy" decoding="async">${esc(titleOf(r, lang))}</a></li>`).join("") + "</ul></nav>\n    </section>";
+}
+
 // Every resolver's page, linked from every page under the list: how search engines (and people) find them
 function resNav(T, lang, slug, focus) {
   return `<nav class="rs-nav" aria-labelledby="rsNavH"><h3 id="rsNavH">${esc(T("rp_all_h"))}</h3><ul>` + RESOLVERS.map(r =>
@@ -296,7 +306,10 @@ export async function build({ check = false } = {}) {
       // a resolver's page names it in the hero from the start
       .replace("{{winK}}", esc(T(r ? "f_run" : "best_k"))).replace("{{winIcAttr}}", r ? ` style="background-image:url(/icons/${r.id}.png)"` : "")
       .replace("{{winName}}", r ? esc(r.name) : '<i class="skl"></i>').replace("{{addrCard}}", r ? addrCard(r, T, lang) : "")
+      .replace(/<section class="res card">[\s\S]*?<\/section>/, m => r ? moreCard(T, lang, slug, focus, (/<a [^>]*id="speedLink"[\s\S]*?<\/a>/.exec(m) || [""])[0]) : m)
       .replace("{{rows}}", rowsHTML(T, lang, slug, focus)).replace("{{resNav}}", resNav(T, lang, slug, focus))
+      // a resolver's page: the way to the home page's test of them all, under its own result
+      .replace("{{allLink}}", r ? `<a class="btn out" id="allLink" href="${pathOf(slug)}">${esc(fillL(lang, T("f_all"), { n: RESOLVERS.length }))}</a>` : "")
       .replace("{{cliCmd}}", esc(cliCmd)).replace("{{cliDlg}}", cliDlg(T))
       .replace("{{helpNav}}", helpNav).replace("{{helpC}}", helpC)
       .replace("{{data}}", JSON.stringify({ lang, paths, home: pathOf(slug), focus }).replace(/</g, "\\u003c"));
