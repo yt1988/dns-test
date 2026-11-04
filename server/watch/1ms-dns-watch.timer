@@ -1,0 +1,11 @@
+# /etc/systemd/system/1ms-dns-watch.timer: every 10 minutes at minute 2 (02, 12, 22, ...), as registered in
+# 1ms-shell docs/processes.md ("专用服务器"), staggered from the other scheduled jobs.
+[Unit]
+Description=dns.1ms.dog: Tokyo watch every 10 minutes
+
+[Timer]
+OnCalendar=*-*-* *:02/10:00
+AccuracySec=1s
+
+[Install]
+WantedBy=timers.target

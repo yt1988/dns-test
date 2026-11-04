@@ -1,0 +1,24 @@
+# /etc/systemd/system/1ms-dns-watch.service: one run of the Tokyo watch over the resolvers dns.1ms.dog tests
+# (source: this directory), started by 1ms-dns-watch.timer. Writes /srv/1ms-data/dns/, which data.1ms.dog:2083/dns/
+# publishes. As registered in 1ms-shell docs/processes.md ("专用服务器"): user 1ms-dns, every 10 minutes at minute 2.
+[Unit]
+Description=dns.1ms.dog: Tokyo watch over the public resolvers (one run)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+ExecStart=/opt/1ms/dns/1ms-dns-watch -out /srv/1ms-data/dns
+User=1ms-dns
+Group=1ms-dns
+TimeoutStartSec=150
+Nice=5
+Environment=GOMEMLIMIT=48MiB
+MemoryMax=96M
+CapabilityBoundingSet=
+NoNewPrivileges=yes
+ProtectSystem=strict
+ReadWritePaths=/srv/1ms-data/dns
+ProtectHome=yes
+PrivateTmp=yes
+PrivateDevices=yes
