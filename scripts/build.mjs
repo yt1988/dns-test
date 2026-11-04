@@ -173,7 +173,9 @@ function resolverDocs(r, T, lang, slug) {
     r.udp && ["rp_h_linux", join([P("rp_s_linux", { ips: [r.udp.join(" ")] }), ...(r.dot ? [P("rp_s_linux_dot", { ex: [`${r.udp[0]}#${r.dot}`] })] : [])])],
   ].filter(Boolean).map(([k, p]) => ({ h: `<h4>${esc(T(k))}</h4><p>${p.h}</p>`, t: `${T(k)}: ${p.t}`, block: true }));
   const other = RESOLVERS.find(x => x.id === a.vs), otherName = titleOf(other, lang);
-  const vs = [P("rp_a_vs", { name }), { h: `<a href="${pathOf(slug, other.id)}">${esc(fillL(lang, T("rp_page"), { name: otherName }))} →</a>`, t: "" }];
+  // this page tests only it: the way to the test of them all, and to the other one's page
+  const vs = [P("rp_a_vs", { name }), { h: `<a href="${pathOf(slug)}">${esc(fillL(lang, T("f_all"), { n: RESOLVERS.length }))} →</a>`, t: "" },
+    { h: `<a href="${pathOf(slug, other.id)}">${esc(fillL(lang, T("rp_page"), { name: otherName }))} →</a>`, t: "" }];
 
   const doc = (q, ps) => ({ q, h: ps.map(p => p.block ? p.h : `<p>${p.h}</p>`).join(""), t: ps.map(p => p.t).filter(Boolean).join(sp) });
   return [
