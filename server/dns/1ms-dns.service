@@ -1,0 +1,32 @@
+# /etc/systemd/system/1ms-dns.service: l.1ms.dog, authoritative DNS + results API (source: this directory).
+# Ports, directory, user and service name as registered in 1ms-shell docs/processes.md ("专用服务器"): 53/udp+tcp and
+# 2053/tcp, /opt/1ms/dns/, user 1ms-dns, 1ms-dns.
+# Binds only the interface addresses (172.26.5.21 is where Lightsail's NAT delivers 16.76.79.94) and the public IPv6.
+# 127.0.0.1:2054 is a plain-HTTP copy of the API on loopback, for checks on the machine itself.
+# Query records stay in memory for 2 minutes; no access log; its own output is startup and errors only.
+[Unit]
+Description=l.1ms.dog: authoritative DNS and results API (dns-test)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+ExecStart=/opt/1ms/dns/1ms-dns -dns 172.26.5.21:53,[2406:da14:3c2:6400:d2e5:c654:ae70:30c5]:53 -api 172.26.5.21:2053,[2406:da14:3c2:6400:d2e5:c654:ae70:30c5]:2053 -api-http 127.0.0.1:2054 -state /var/lib/1ms-dns
+User=1ms-dns
+Group=1ms-dns
+Restart=always
+RestartSec=2
+AmbientCapabilities=CAP_NET_BIND_SERVICE
+CapabilityBoundingSet=CAP_NET_BIND_SERVICE
+StateDirectory=1ms-dns
+StateDirectoryMode=0700
+Environment=GOMEMLIMIT=64MiB
+MemoryMax=128M
+NoNewPrivileges=yes
+ProtectSystem=strict
+ProtectHome=yes
+PrivateTmp=yes
+PrivateDevices=yes
+LimitNOFILE=65536
+
+[Install]
+WantedBy=multi-user.target
