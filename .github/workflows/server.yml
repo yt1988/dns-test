@@ -1,0 +1,31 @@
+# The Go services for the 1ms.dog VPS (server/): tests, then linux/amd64 binaries as an artifact, which are uploaded to the
+# machine by hand (Netcatty sftp). Nothing here deploys or holds any key.
+name: server
+on:
+  push:
+    paths: ["server/**", ".github/workflows/server.yml"]
+  workflow_dispatch:
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: server
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version: "1.23"
+          cache: false
+      - run: go mod tidy && git diff --stat -- go.mod go.sum
+      - run: go vet ./...
+      - run: go test ./...
+      - run: |
+          mkdir -p out
+          for c in */; do c=${c%/}; [ -f "$c/main.go" ] || continue
+            CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -trimpath -ldflags "-s -w" -o "out/1ms-$c" "./$c"; done
+          cp go.mod go.sum out/ && sha256sum out/1ms-* && ls -l out
+      - uses: actions/upload-artifact@v4
+        with:
+          name: server
+          path: server/out/
