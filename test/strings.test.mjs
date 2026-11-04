@@ -62,3 +62,10 @@ test("a count picks the language's form: 1, 2, 5 and 21 read right (1ms-shell do
     for (const k in L) { const m = /^(\w+)_(zero|one|two|few|many)$/.exec(k); if (m && L[m[1]]) assert.equal(ph(L[k]), ph(L[m[1]]), lang + " " + k); }
   }
 });
+
+test("the page gets the plural forms only some languages have (Russian's _few)", async () => {
+  const { readdir } = await import("node:fs/promises");
+  const f = (await readdir(new URL("../public/assets/", import.meta.url))).find(n => /^l\.ru\.[0-9a-f]+\.js$/.test(n));
+  const s = await read("public/assets/" + f);
+  for (const k of ["emb_down_few", "card_sub_few", "card_sub_one"]) assert.ok(s.includes(`"${k}":`), k);
+});
