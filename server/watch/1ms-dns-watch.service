@@ -13,7 +13,7 @@ User=1ms-dns
 Group=1ms-dns
 TimeoutStartSec=150
 Nice=5
-Environment=GOMEMLIMIT=48MiB
+Environment=GOMEMLIMIT=48MiB QUIC_GO_DISABLE_RECEIVE_BUFFER_WARNING=true
 MemoryMax=96M
 CapabilityBoundingSet=
 NoNewPrivileges=yes
