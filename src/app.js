@@ -383,7 +383,7 @@ import { regionName } from "./region.mjs";
   // The dialog draws the frame (logo, QR code, the date) around it. The card is also the link's preview, shrunk into
   // 1200×630, so the winner and its times are drawn big enough to read there.
   const pos = ms => Math.max(0, Math.min(1, Math.log10(Math.max(1, ms)) / 3));    // 1 ms … 1 s, log scale
-  async function drawCard(x, { W, P, top, F, M, v, clip, img }, rows) {
+  async function drawCard(x, { W, P, top, F, M, v, clip, fit, img }, rows) {
     const C = { line: v("line"), fg: v("fg"), muted: v("muted"), t1: v("t1"), t2: v("t2"), t3: v("t3"), t4: v("t4"), t5: v("t5") };
     const icons = await Promise.all(rows.slice(0, 9).map(r => img(`/icons/${r.id}.png`).catch(() => null)));
     const y = top + 28;
@@ -392,7 +392,8 @@ import { regionName } from "./region.mjs";
     const w = rows[0];
     x.fillStyle = C.muted; x.font = `600 26px ${F}`; x.fillText(t("card_head"), P, y);
     if (icons[0]) x.drawImage(icons[0], P, y + 24, 60, 60);
-    x.fillStyle = C.fg; x.font = `750 72px ${F}`; x.fillText(clip(x, byId(w.id).name, W - P * 2 - 80), P + 80, y + 82);
+    // the name whole, smaller if it has to be (no "…" on the card: 1ms-shell docs/tool-contract.md)
+    x.fillStyle = C.fg; fit(x, byId(w.id).name, W - P * 2 - 80, 72, 48, 750); x.fillText(clip(x, byId(w.id).name, W - P * 2 - 80), P + 80, y + 82);
     const cell = (label, ms, at, est) => {
       x.fillStyle = C.muted; x.font = `500 24px ${F}`; x.fillText(label, at, y + 140);
       x.fillStyle = ms == null ? C.muted : C[tier(ms)]; x.font = `650 56px ${M}`; x.fillText(ms == null ? "–" : (est ? "≈ " : "") + fmt(ms) + " ms", at, y + 204);
@@ -405,7 +406,11 @@ import { regionName } from "./region.mjs";
       const ry = y0 + 22 + i * RH, k = C[tier(r.doh)];
       x.fillStyle = C.muted; x.font = `600 20px ${M}`; x.textAlign = "right"; x.fillText(String(i + 2), P + 26, ry + 7); x.textAlign = "left";
       if (icons[i + 1]) x.drawImage(icons[i + 1], P + 40, ry - 12, 24, 24);
-      x.fillStyle = C.fg; x.font = `500 22px ${F}`; x.fillText(clip(x, byId(r.id).name, l0 - P - 90), P + 76, ry + 8);
+      // the name, or its short one (CIRA) when the whole one doesn't fit; a little smaller before that
+      const nw = l0 - P - 90, rr = byId(r.id);
+      x.font = `500 22px ${F}`;
+      const nm = x.measureText(rr.name).width <= nw || !rr.short ? rr.name : rr.short;
+      x.fillStyle = C.fg; fit(x, nm, nw, 22, 18, 500); x.fillText(clip(x, nm, nw), P + 76, ry + 8);
       x.fillStyle = C.line; x.fillRect(l0, ry - 1.5, l1 - l0, 3);
       const px = l0 + (l1 - l0) * pos(r.doh);
       x.fillStyle = k + "99"; x.fillRect(l0, ry - 1.5, px - l0, 3);
