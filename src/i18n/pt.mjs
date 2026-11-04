@@ -166,4 +166,30 @@ export default {
     ["Por que 114DNS e Baidu DNS não estão aqui?", "Eles só oferecem DNS comum, e os servidores deles não respondem por HTTPS de jeito nenhum, então um navegador não tem como chegar até eles. O Quad101 (Taiwan, China) também ficou de fora: o DoH dele não respondia de outras regiões quando verificamos."],
     ["Vocês coletam os meus dados?", "Não. As consultas vão direto do seu navegador para cada servidor DNS e são de sites públicos populares e nomes aleatórios; não levam nada sobre você. Os seus resultados ficam no seu navegador. Só quando você clica em Compartilhar eles são gravados no link de compartilhamento (os tempos de cada servidor, sem endereço IP; incluir seu país ou região é escolha sua).\nComo em qualquer consulta DNS, cada servidor vê o seu endereço IP, e vale a política de privacidade de cada um. O código é aberto e está no GitHub."],
   ],
+  // a resolver's page shows only that one: the general answers that speak of the home page's list are hidden there
+  // (null) or reworded (a question and/or paragraphs by number)
+  docs_rp: {
+    "0": null,
+    "3": {
+      "p": {
+        "1": "Primeiro ele se conecta a esse servidor e consulta uma vez três nomes populares, para que fiquem no cache dele. Essa parte não conta. Depois vêm 10 rodadas, uma consulta em cada, então uma travada passageira da sua rede não decide o resultado. A cada duas rodadas, também é consultado um nome aleatório que não existe."
+      }
+    },
+    "4": {
+      "p": {
+        "3": "Para medir UDP, DoT e DoQ de verdade, rode o comando do quadro de linha de comando desta página em um servidor, um computador com Linux ou um roteador. Ele fala todos os protocolos e testa este servidor junto com aquele com que ele é comparado."
+      }
+    },
+    "6": {
+      "p": {
+        "1": "O teste usa nomes aleatórios hospedados na Cloudflare, que tem servidores DNS em quase todo lugar, menos na China continental. Esse tempo depende de onde ficam os servidores DNS de cada site, o que muda de site para site, então ele aparece, mas não entra no ranking. Os servidores da China continental mostram aqui uma primeira consulta lenta porque os servidores desses nomes ficam no exterior; com sites chineses, eles são rápidos."
+      }
+    },
+    "8": {
+      "q": "O que é ECS, e por que não aparece aqui?",
+      "p": {
+        "1": "Não aparece porque não é fixo: nos nossos testes, o mesmo servidor repassava a partir de alguns lugares e por alguns protocolos, mas não de outros. Um simples sim ou não te confundiria."
+      }
+    }
+  },
 };

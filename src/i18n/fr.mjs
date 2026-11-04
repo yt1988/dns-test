@@ -166,4 +166,30 @@ export default {
     ["Pourquoi 114DNS et Baidu DNS ne sont-ils pas testés ?", "Ils ne proposent que du DNS classique, et leurs serveurs ne répondent pas du tout en HTTPS : un navigateur n’a aucun moyen de les joindre. Quad101 (Taïwan, Chine) n’y figure pas non plus : son DoH ne répondait pas depuis d’autres régions lors de nos vérifications."],
     ["Collectez-vous mes données ?", "Non. Les requêtes partent directement de votre navigateur vers chaque serveur DNS, et portent sur des sites publics populaires et des noms aléatoires : rien sur vous. Vos résultats restent dans votre navigateur. Ils ne sont inscrits dans le lien de partage que si vous cliquez sur Partager (les temps de chaque serveur, sans adresse IP ; inclure votre pays ou région est à votre choix).\nComme pour toute requête DNS, chaque serveur voit votre adresse IP, et sa propre politique de confidentialité s’applique. Le code est open source sur GitHub."],
   ],
+  // a resolver's page shows only that one: the general answers that speak of the home page's list are hidden there
+  // (null) or reworded (a question and/or paragraphs by number)
+  docs_rp: {
+    "0": null,
+    "3": {
+      "p": {
+        "1": "Il se connecte d’abord à ce serveur et demande une fois trois noms populaires, pour qu’ils soient dans son cache. Cette étape ne compte pas. Viennent ensuite 10 tours, une requête par tour, si bien qu’un coup de mou passager de votre réseau ne décide pas du résultat. Un tour sur deux demande aussi un nom aléatoire qui n’existe pas."
+      }
+    },
+    "4": {
+      "p": {
+        "3": "Pour mesurer vraiment UDP, DoT et DoQ, lancez la commande de l’encadré ligne de commande de cette page sur un serveur, une machine Linux ou un routeur. Elle parle tous les protocoles et teste ce serveur avec celui auquel on le compare."
+      }
+    },
+    "6": {
+      "p": {
+        "1": "Le test utilise des noms aléatoires hébergés chez Cloudflare, dont les serveurs DNS sont présents presque partout sauf en Chine continentale. Ce temps dépend de l’emplacement des serveurs DNS de chaque site, qui varie d’un site à l’autre : il est affiché mais pas classé. Les serveurs de Chine continentale affichent ici une première requête lente parce que les serveurs de ces noms sont à l’étranger ; pour les sites chinois, ils sont rapides."
+      }
+    },
+    "8": {
+      "q": "Qu’est-ce que l’ECS, et pourquoi n’est-il pas affiché ici ?",
+      "p": {
+        "1": "Il n’est pas affiché parce qu’il n’est pas fixe : lors de nos vérifications, le même serveur le transmettait depuis certains endroits et par certains protocoles, mais pas depuis d’autres. Un simple oui ou non vous induirait en erreur."
+      }
+    }
+  },
 };

@@ -68,3 +68,13 @@ test("the sitemap lists every page with its alternates", async () => {
   assert.equal((sm.match(/<loc>/g) || []).length, LANGS.length * (RESOLVERS.length + 1));
   for (const [, slug] of LANGS) for (const id of [null, ...RESOLVERS.map(r => r.id)]) assert.ok(sm.includes(`<loc>${SITE + path(slug, id)}</loc>`), path(slug, id));
 });
+
+test("a resolver's page doesn't send its help to a list it doesn't have; the home page keeps every general answer", async () => {
+  const en = (await import("../src/i18n/en.mjs")).default;
+  const home = await page("", null), sub = await page("", "dnsforge");
+  const qs = h => [...h.matchAll(/data-hq="\d+"[^>]*>(.*?)<\/button>/g)].map(m => m[1]);
+  assert.equal(qs(home).length, en.docs.length, "home: every general answer");
+  assert.ok(!qs(sub).includes(en.docs[0][0].replace(/'/g, "&#39;")), "which one to pick: hidden on a resolver's page");
+  assert.ok(qs(sub).some(q => q.startsWith("What is ECS, and why isn")), "ECS: reworded, not hidden");
+  for (const s of ["UDP column", "under the table", "in the table", "this column"]) assert.ok(!sub.includes(s), "resolver page: " + s);
+});

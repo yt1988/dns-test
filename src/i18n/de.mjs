@@ -166,4 +166,30 @@ export default {
     ["Warum fehlen 114DNS und Baidu DNS?", "Sie bieten nur normales DNS, und ihre Server antworten überhaupt nicht auf HTTPS: Ein Browser kann sie auf keinem Weg erreichen. Quad101 (Taiwan, China) fehlt ebenfalls: Sein DoH antwortete bei unseren Prüfungen nicht aus anderen Regionen."],
     ["Werden meine Daten gesammelt?", "Nein. Die Abfragen gehen direkt von deinem Browser zu jedem DNS-Server und betreffen beliebte öffentliche Seiten und zufällige Namen; nichts davon handelt von dir. Deine Ergebnisse bleiben in deinem Browser. Nur wenn du auf Teilen klickst, werden sie in den Link zum Teilen geschrieben (die Zeiten jedes Servers, keine IP-Adresse; ob dein Land oder deine Region dabei ist, entscheidest du).\nWie bei jeder DNS-Abfrage sieht jeder Server deine IP-Adresse, und es gilt seine eigene Datenschutzerklärung. Der Code ist Open Source auf GitHub."],
   ],
+  // a resolver's page shows only that one: the general answers that speak of the home page's list are hidden there
+  // (null) or reworded (a question and/or paragraphs by number)
+  docs_rp: {
+    "0": null,
+    "3": {
+      "p": {
+        "1": "Zuerst verbindet er sich mit dem Server und fragt einmal drei beliebte Namen ab, damit sie in seinem Cache liegen. Das zählt nicht. Dann folgen 10 Runden mit je einer Abfrage, sodass ein kurzer Hänger deines Netzes nicht über das Ergebnis entscheidet. Jede zweite Runde fragt außerdem einen zufälligen Namen ab, den es nicht gibt."
+      }
+    },
+    "4": {
+      "p": {
+        "3": "Um UDP, DoT und DoQ echt zu messen, führ den Befehl aus dem Kommandozeilen-Kasten auf dieser Seite auf einem Server, einem Linux-Rechner oder einem Router aus. Er beherrscht alle Protokolle und testet diesen Server zusammen mit dem, mit dem er verglichen wird."
+      }
+    },
+    "6": {
+      "p": {
+        "1": "Der Test nutzt zufällige Namen, die bei Cloudflare liegen; Cloudflare hat DNS-Server fast überall außer in Festlandchina. Diese Zeit hängt davon ab, wo die DNS-Server der jeweiligen Website stehen, und das ist bei jeder Website anders. Sie wird deshalb angezeigt, aber nicht gewertet. Server aus Festlandchina zeigen hier eine langsame Erstabfrage, weil die Server dieser Namen im Ausland stehen; bei chinesischen Websites sind sie schnell."
+      }
+    },
+    "8": {
+      "q": "Was ist ECS, und warum wird es hier nicht angezeigt?",
+      "p": {
+        "1": "Es wird nicht angezeigt, weil es nicht fest ist: Bei unseren Prüfungen gab derselbe Server es von manchen Orten und über manche Protokolle weiter, von anderen nicht. Ein einfaches Ja oder Nein würde dich in die Irre führen."
+      }
+    }
+  },
 };

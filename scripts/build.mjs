@@ -45,7 +45,7 @@ async function loadI18n() {
 
 // Strings only the build uses (the page already shows them); everything else goes to the browser. rp_: a resolver's
 // own page and its help, all drawn here.
-const BUILD_ONLY_SET = new Set(["name", "seo_title", "seo_desc", "seo_kw", "og_sub", "h1", "docs", "lang_label", "faq_h", "h_all"]);
+const BUILD_ONLY_SET = new Set(["name", "seo_title", "seo_desc", "seo_kw", "og_sub", "h1", "docs", "lang_label", "faq_h", "h_all", "docs_rp"]);
 const BUILD_ONLY = k => BUILD_ONLY_SET.has(k) || k.startsWith("rp_");
 
 // a page's path: the language's folder, then the resolver's (none: the test of them all)
@@ -249,13 +249,23 @@ export async function build({ check = false } = {}) {
     const sjs = `window.L1MS=${JSON.stringify(strings).replace(/</g, "\\u003c")};\n`;
     const sName = `l.${lang.toLowerCase()}.${hash(sjs)}.js`;
     files["assets/" + sName] = sjs;
-    const general = T("docs").map(([q, a]) => ({ q, h: a.split(/\n+/).map(p => `<p>${esc(p)}</p>`).join(""), t: a.replace(/\n+/g, " ") }));
+    const docOf = (q, ps) => ({ q, h: ps.map(p => `<p>${esc(p)}</p>`).join(""), t: ps.join(" ") });
+    const general = T("docs").map(([q, a]) => docOf(q, a.split(/\n+/)));
+    // on a resolver's page, without what speaks of the home page's list: hidden (null), or its reworded question and
+    // paragraphs (docs_rp)
+    const generalRp = T("docs").flatMap(([q, a], i) => {
+      const o = T("docs_rp")[i];
+      if (o === null) return [];
+      const ps = a.split(/\n+/);
+      if (o) for (const n in o.p) { if (!ps[n]) throw new Error(`i18n/${lang}.mjs docs_rp ${i}: no paragraph ${n}`); ps[n] = o.p[n]; }
+      return [docOf(o && o.q || q, ps)];
+    });
 
     for (const focus of PAGES) {
     const r = focus && RESOLVERS.find(x => x.id === focus), name = r && titleOf(r, lang);
     const url = SITE + pathOf(slug, focus);
     // a resolver's page asks its own questions first; the FAQ data has only those, the test page all the general ones
-    const own = r ? resolverDocs(r, T, lang, slug) : [], docs = [...own, ...general];
+    const own = r ? resolverDocs(r, T, lang, slug) : [], docs = r ? [...own, ...generalRp] : general;
     const title = r ? fillL(lang, T("rp_title"), { name, ip: r.udp ? fillL(lang, T("rp_ip"), { ip: r.udp[0] }) : "", protos: ["DoH", r.dot && "DoT"].filter(Boolean).join("/") }) : T("seo_title");
     const desc = r ? fillL(lang, T("rp_desc"), { name, n: RESOLVERS.length }) : T("seo_desc");
     const kw = r ? [fillL(lang, T("rp_kw"), { name }), ...(r.udp || []), r.dot, name !== r.name && r.name].filter(Boolean).join(", ") : T("seo_kw");

@@ -167,4 +167,30 @@ export default {
     ["Why aren't 114DNS or Baidu DNS here?", "They only offer plain DNS, and their servers don't answer HTTPS at all, so a browser has no way to reach them. Quad101 (Taiwan, China) isn't included either: its DoH didn't answer from other regions when we checked."],
     ["Do you collect my data?", "No. The queries go straight from your browser to each resolver, and they're for popular public sites and random names; nothing about you is in them. Your results stay in your browser. Only when you click Share are they written into the share link (each resolver's times, no IP address; including your country or region is up to you).\nAs with any DNS query, each resolver sees your IP address, and its own privacy policy applies. The code is open source on GitHub."],
   ],
+  // a resolver's page shows only that one: the general answers that speak of the home page's list are hidden there
+  // (null) or reworded (a question and/or paragraphs by number)
+  docs_rp: {
+    "0": null,
+    "3": {
+      "p": {
+        "1": "First it connects to the resolver and looks up three popular names once, so they're in its cache. That part isn't scored. Then come 10 rounds, each asking it once, so a single hiccup on your network doesn't decide the result. Every other round also looks up a random name that doesn't exist."
+      }
+    },
+    "4": {
+      "p": {
+        "3": "To measure UDP, DoT and DoQ for real, run the command in the command-line box on this page on a server, a Linux machine or a router. It speaks every protocol and tests this resolver along with the one it's compared with."
+      }
+    },
+    "6": {
+      "p": {
+        "1": "The test uses random names hosted on Cloudflare, whose DNS servers are almost everywhere except mainland China. This time depends on where each site's DNS servers are, which varies from site to site, so it's shown but not ranked. Resolvers in mainland China get a slow first lookup here because these names' servers are abroad; for Chinese sites they're fast."
+      }
+    },
+    "8": {
+      "q": "What is ECS, and why isn't it shown here?",
+      "p": {
+        "1": "It isn't shown because it isn't fixed: in our checks, the same resolver passed it on from some places and over some protocols but not others. A single yes or no would mislead you."
+      }
+    }
+  },
 };
