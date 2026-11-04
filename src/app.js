@@ -365,7 +365,7 @@ import { regionName } from "./region.mjs";
   $("#shareBtn").onclick = async () => {
     if (!LAST) return;
     const S = LAST, rows = S.rows.filter(r => r.doh != null), w = rows[0];
-    const { share } = await import("/assets/share/share.js?v=5");
+    const { share } = await import("/assets/share/share.js?v=6");
     share({
       lang: D.lang, name: t("app_name"), file: "dns-test",
       // the country only when the visitor ticks it; never the address, city or network
@@ -433,7 +433,7 @@ import { regionName } from "./region.mjs";
     sortRows(rs.map(x => x.r));
     // the shared banner above it (/assets/share/), with the way to the visitor's own test
     VIEWING = true;
-    import("/assets/share/share.js?v=5").then(({ received }) => {
+    import("/assets/share/share.js?v=6").then(({ received }) => {
       if (VIEWING) BANNER = received({ lang: D.lang, ts: S.ts, at: $(".hero"), test: start });
     }, () => {});
     $("#prog").classList.add("end"); $("#progTxt").innerHTML = "&nbsp;";
