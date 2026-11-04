@@ -67,7 +67,7 @@ func main() {
 
 	geo := NewGeo(*state)
 	go geo.Run(ctx)
-	api := &API{store: store, geo: geo, apex: strings.TrimSuffix(strings.ToLower(*zone), "."), settle: 300 * time.Millisecond}
+	api := &API{store: store, geo: geo, apex: strings.TrimSuffix(strings.ToLower(*zone), "."), settle: 600 * time.Millisecond}
 	quiet := log.New(io.Discard, "", 0) // TLS handshake errors name the client; never log them
 	if addrs := split(*apiAddrs); len(addrs) > 0 {
 		cm := NewCertMgr(*state, *acmeDir, []string{api.apex, "*." + api.apex}, txt)

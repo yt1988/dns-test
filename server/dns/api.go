@@ -10,12 +10,13 @@ import (
 
 // API is the HTTPS results endpoint on :2053 (CORS open, nothing cached, nothing logged).
 //
-//	GET https://api.l.1ms.dog:2053/t/<token>[?wait=ms]    the token's hits
-//	GET https://<token>[-<tag>].l.1ms.dog:2053/            the same, one request: the browser's own lookup of that name
-//	                                                       went through its system resolver on the way here
+//	GET https://api.l.1ms.dog:2053/t/<token>[?wait=ms&settle=ms]   the token's hits
+//	GET https://<token>[-<tag>].l.1ms.dog:2053/                     the same, one request: the browser's own lookup of
+//	                                                                that name went through its system resolver on the way
 //
-// When nothing has arrived yet it waits up to wait ms (default 1500, max 5000) for the first query, then until settle
-// after the first query, so the A and AAAA queries a resolver sends together are both in.
+// When nothing has arrived yet it waits up to wait ms (default 1500, max 5000) for the first query, then until settle ms
+// (default 600, max 3000) after the first query, so the queries a resolver sends after its first are in too: the A and
+// AAAA pair, and resolvers such as China Unicom's that ask once without ECS and again with it about 250 ms later.
 type API struct {
 	store  *Store
 	geo    *Geo
@@ -72,17 +73,23 @@ func (a *API) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 			wait = time.Duration(min(n, 5000)) * time.Millisecond
 		}
 	}
+	settle := a.settle
+	if v := r.URL.Query().Get("settle"); v != "" {
+		if n, err := strconv.Atoi(v); err == nil && n >= 0 {
+			settle = time.Duration(min(n, 3000)) * time.Millisecond
+		}
+	}
 	deadline := time.Now().Add(wait)
 	var hits []Hit
 	for {
 		hs, age := a.store.Get(token, time.Now())
 		var sleep time.Duration
 		if len(hs) > 0 {
-			if age >= a.settle {
+			if age >= settle {
 				hits = hs
 				break
 			}
-			sleep = a.settle - age
+			sleep = settle - age
 		} else {
 			if !time.Now().Before(deadline) {
 				break
