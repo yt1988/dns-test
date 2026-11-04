@@ -1,0 +1,215 @@
+[
+ {
+  "id": "cloudflare",
+  "udp": "1.1.1.1",
+  "udp6": "2606:4700:4700::1111",
+  "dot": "one.one.one.one",
+  "doh": "https://cloudflare-dns.com/dns-query"
+ },
+ {
+  "id": "google",
+  "udp": "8.8.8.8",
+  "udp6": "2001:4860:4860::8888",
+  "dot": "dns.google",
+  "doh": "https://dns.google/dns-query"
+ },
+ {
+  "id": "quad9",
+  "udp": "9.9.9.9",
+  "udp6": "2620:fe::fe",
+  "dot": "dns.quad9.net",
+  "doh": "https://dns.quad9.net/dns-query"
+ },
+ {
+  "id": "opendns",
+  "udp": "208.67.222.222",
+  "udp6": "2620:119:35::35",
+  "dot": "dns.opendns.com",
+  "doh": "https://doh.opendns.com/dns-query"
+ },
+ {
+  "id": "adguard",
+  "udp": "94.140.14.14",
+  "udp6": "2a10:50c0::ad1:ff",
+  "dot": "dns.adguard-dns.com",
+  "doq": "dns.adguard-dns.com",
+  "doh": "https://dns.adguard-dns.com/dns-query"
+ },
+ {
+  "id": "adguard-nf",
+  "udp": "94.140.14.140",
+  "udp6": "2a10:50c0::1:ff",
+  "dot": "unfiltered.adguard-dns.com",
+  "doq": "unfiltered.adguard-dns.com",
+  "doh": "https://unfiltered.adguard-dns.com/dns-query"
+ },
+ {
+  "id": "nextdns",
+  "udp": "45.90.28.0",
+  "udp6": "2a07:a8c0::",
+  "dot": "dns.nextdns.io",
+  "doq": "dns.nextdns.io",
+  "doh": "https://dns.nextdns.io/"
+ },
+ {
+  "id": "controld",
+  "udp": "76.76.2.0",
+  "udp6": "2606:1a40::",
+  "dot": "p0.freedns.controld.com",
+  "doq": "p0.freedns.controld.com",
+  "doh": "https://freedns.controld.com/p0"
+ },
+ {
+  "id": "mullvad",
+  "dot": "dns.mullvad.net",
+  "doh": "https://dns.mullvad.net/dns-query"
+ },
+ {
+  "id": "dnssb",
+  "udp": "185.222.222.222",
+  "udp6": "2a09::",
+  "dot": "dot.sb",
+  "doh": "https://doh.dns.sb/dns-query"
+ },
+ {
+  "id": "he",
+  "udp": "74.82.42.42",
+  "udp6": "2001:470:20::2",
+  "dot": "ordns.he.net",
+  "doh": "https://ordns.he.net/dns-query"
+ },
+ {
+  "id": "wikimedia",
+  "dot": "wikimedia-dns.org",
+  "doh": "https://wikimedia-dns.org/dns-query"
+ },
+ {
+  "id": "cleanbrowsing",
+  "udp": "185.228.168.9",
+  "udp6": "2a0d:2a00:1::2",
+  "dot": "security-filter-dns.cleanbrowsing.org",
+  "doh": "https://doh.cleanbrowsing.org/doh/security-filter/"
+ },
+ {
+  "id": "rethink",
+  "dot": "max.rethinkdns.com",
+  "doh": "https://sky.rethinkdns.com/dns-query"
+ },
+ {
+  "id": "alidns",
+  "udp": "223.5.5.5",
+  "udp6": "2400:3200::1",
+  "dot": "dns.alidns.com",
+  "doq": "dns.alidns.com",
+  "doh": "https://dns.alidns.com/dns-query"
+ },
+ {
+  "id": "dnspod",
+  "udp": "119.29.29.29",
+  "udp6": "2402:4e00::",
+  "dot": "dot.pub",
+  "doh": "https://doh.pub/dns-query"
+ },
+ {
+  "id": "360",
+  "udp": "101.226.4.6",
+  "dot": "dot.360.cn",
+  "doh": "https://doh.360.cn/dns-query"
+ },
+ {
+  "id": "yandex",
+  "udp": "77.88.8.8",
+  "udp6": "2a02:6b8::feed:0ff",
+  "dot": "common.dot.dns.yandex.net",
+  "doh": "https://common.dot.dns.yandex.net/dns-query"
+ },
+ {
+  "id": "dns4eu",
+  "udp": "86.54.11.100",
+  "udp6": "2a13:1001::86:54:11:100",
+  "dot": "unfiltered.joindns4.eu",
+  "doh": "https://unfiltered.joindns4.eu/dns-query"
+ },
+ {
+  "id": "cira",
+  "udp": "149.112.121.10",
+  "udp6": "2620:10a:80bb::10",
+  "dot": "private.canadianshield.cira.ca",
+  "doh": "https://private.canadianshield.cira.ca/dns-query"
+ },
+ {
+  "id": "cznic",
+  "udp": "193.17.47.1",
+  "udp6": "2001:148f:ffff::1",
+  "dot": "odvr.nic.cz",
+  "doh": "https://odvr.nic.cz/doh"
+ },
+ {
+  "id": "switch",
+  "dot": "dns.switch.ch",
+  "doh": "https://dns.switch.ch/dns-query"
+ },
+ {
+  "id": "digiges",
+  "dot": "dns.digitale-gesellschaft.ch",
+  "doh": "https://dns.digitale-gesellschaft.ch/dns-query"
+ },
+ {
+  "id": "dnsforge",
+  "udp": "176.9.93.198",
+  "udp6": "2a01:4f8:151:34aa::198",
+  "dot": "dnsforge.de",
+  "doh": "https://dnsforge.de/dns-query"
+ },
+ {
+  "id": "uncensored",
+  "udp": "91.239.100.100",
+  "udp6": "2001:67c:28a4::",
+  "dot": "anycast.uncensoreddns.org",
+  "doh": "https://anycast.uncensoreddns.org/dns-query"
+ },
+ {
+  "id": "appliedprivacy",
+  "dot": "dot1.applied-privacy.net",
+  "doh": "https://doh.applied-privacy.net/query"
+ },
+ {
+  "id": "njalla",
+  "udp": "95.215.19.53",
+  "udp6": "2001:67c:2354:2::53",
+  "dot": "dns.njal.la",
+  "doh": "https://dns.njal.la/dns-query"
+ },
+ {
+  "id": "dns4all",
+  "udp": "194.0.5.3",
+  "udp6": "2001:678:8::3",
+  "dot": "dot.dns4all.eu",
+  "doh": "https://doh.dns4all.eu/dns-query"
+ },
+ {
+  "id": "libredns",
+  "dot": "dot.libredns.gr",
+  "doh": "https://doh.libredns.gr/dns-query"
+ },
+ {
+  "id": "comss",
+  "dot": "dns.comss.one",
+  "doh": "https://dns.comss.one/dns-query"
+ },
+ {
+  "id": "xfinity",
+  "doh": "https://doh.xfinity.com/dns-query"
+ },
+ {
+  "id": "tiarap",
+  "udp": "174.138.21.128",
+  "dot": "dot.tiar.app",
+  "doh": "https://doh.tiar.app/dns-query"
+ },
+ {
+  "id": "iij",
+  "dot": "public.dns.iij.jp",
+  "doh": "https://public.dns.iij.jp/dns-query"
+ }
+]

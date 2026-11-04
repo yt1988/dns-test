@@ -23,7 +23,8 @@ jobs:
       - run: |
           mkdir -p out
           for c in */; do c=${c%/}; [ -f "$c/main.go" ] || continue
-            CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -trimpath -ldflags "-s -w" -o "out/1ms-$c" "./$c"; done
+            n=1ms-dns-$c; [ "$c" = dns ] && n=1ms-dns
+            CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -trimpath -ldflags "-s -w" -o "out/$n" "./$c"; done
           cp go.mod go.sum out/ && sha256sum out/1ms-* && ls -l out
       - uses: actions/upload-artifact@v4
         with:

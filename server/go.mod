@@ -5,6 +5,7 @@ go 1.23
 require (
 	github.com/miekg/dns v1.1.62
 	github.com/oschwald/maxminddb-golang v1.13.1
+	github.com/quic-go/quic-go v0.48.2
 	golang.org/x/crypto v0.28.0
 )
 
