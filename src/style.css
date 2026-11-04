@@ -41,6 +41,10 @@ code.copied { background: var(--ink-soft); color: var(--ink); }
 .btn.out { height: 34px; border-color: var(--ink); color: var(--ink); background: transparent; font-weight: 600; }
 .btn.out:hover { background: var(--ink-soft); }
 .btn.out[hidden] { display: none; }
+/* the way from a resolver's page to the test of them all: quieter than Share, a button all the same */
+.btn.all { height: 34px; color: var(--fg); text-decoration: none; font-size: 13.5px; }
+.btn.all svg { stroke: currentColor; fill: none; stroke-width: 1.5; stroke-linecap: round; color: var(--muted); }
+.btn.all:hover { border-color: var(--ink); background: var(--soft); }
 .chk-l { font-size: 13px; color: var(--ink); text-decoration: none; }
 .chk-l:hover { text-decoration: underline; }
 .alt b { color: var(--fg); font-weight: 600; }

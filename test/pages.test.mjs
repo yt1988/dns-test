@@ -40,7 +40,7 @@ test("every resolver's page, in every language, is its own", async () => {
       assert.ok(one(h, /<h1>(.*?)<\/h1>/).includes(titleOf(r, lang).replace(/&/g, "&amp;")), where + ": heading names it");
       assert.ok(h.includes(`<b id="winName">${r.name}</b>`), where + ": hero");
       assert.ok(!h.includes('<div class="tr ') && !h.includes('id="tbl"'), where + ": no list of every resolver");
-      assert.ok(h.includes(`<a class="btn out" id="allLink" href="${path(slug)}">`), where + ": the test of them all");
+      assert.ok(h.includes(`<a class="btn all" id="allLink" href="${path(slug)}">`), where + ": the test of them all");
       assert.ok(h.includes(`<code>${r.doh}</code>`) && (!r.udp || h.includes(`<code>${r.udp[0]}</code>`)), where + ": addresses");
       assert.ok(h.includes(`-r ${r.id},${ABOUT[r.id].vs}</code>`), where + ": the command line tests it");
       // where to go next: the DNS leak check once it is set up, its network on ASN Lookup, the speed test (the page fills

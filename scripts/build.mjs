@@ -309,7 +309,7 @@ export async function build({ check = false } = {}) {
       .replace(/<section class="res card">[\s\S]*?<\/section>/, m => r ? moreCard(T, lang, slug, focus, (/<a [^>]*id="speedLink"[\s\S]*?<\/a>/.exec(m) || [""])[0]) : m)
       .replace("{{rows}}", rowsHTML(T, lang, slug, focus)).replace("{{resNav}}", resNav(T, lang, slug, focus))
       // a resolver's page: the way to the home page's test of them all, under its own result
-      .replace("{{allLink}}", r ? `<a class="btn out" id="allLink" href="${pathOf(slug)}">${esc(fillL(lang, T("f_all"), { n: RESOLVERS.length }))}</a>` : "")
+      .replace("{{allLink}}", r ? `<a class="btn all" id="allLink" href="${pathOf(slug)}"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M2.5 4h11M2.5 8h11M2.5 12h7"/></svg>${esc(fillL(lang, T("f_all"), { n: RESOLVERS.length }))}</a>` : "")
       .replace("{{cliCmd}}", esc(cliCmd)).replace("{{cliDlg}}", cliDlg(T))
       .replace("{{helpNav}}", helpNav).replace("{{helpC}}", helpC)
       .replace("{{data}}", JSON.stringify({ lang, paths, home: pathOf(slug), focus }).replace(/</g, "\\u003c"));
