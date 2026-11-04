@@ -47,3 +47,18 @@ test("lists come from $$, never $ (which returns one element)", async () => {
   const bad = app.split("\n").filter(l => /(^|[^$])\$\([^)]*\)\.(forEach|map|filter)\(/.test(l));
   assert.deepEqual(bad, []);
 });
+
+test("a count picks the language's form: 1, 2, 5 and 21 read right (1ms-shell docs/translation.md, 复数)", async () => {
+  const pick = (L, lang, k, n) => { const f = k + "_" + new Intl.PluralRules(lang).select(n); return (L[f] ?? L[k]).replace("{n}", n); };
+  const en = (await import("../src/i18n/en.mjs")).default, ru = (await import("../src/i18n/ru.mjs")).default;
+  assert.equal(pick(en, "en", "emb_down", 1), "1 resolver can't be reached from your network");
+  assert.equal(pick(en, "en", "emb_down", 21), "21 resolvers can't be reached from your network");
+  assert.equal(pick(ru, "ru", "emb_down", 21), "21 DNS-сервер недоступен из вашей сети");
+  assert.equal(pick(ru, "ru", "emb_down", 3), "3 DNS-сервера недоступны из вашей сети");
+  assert.equal(pick(ru, "ru", "emb_down", 5), "5 DNS-серверов недоступны из вашей сети");
+  // every form has the same placeholders as the key it stands in for
+  for (const [lang] of LANGS) {
+    const L = (await import(`../src/i18n/${lang}.mjs`)).default, ph = s => (s.match(/\{\w+\}/g) || []).sort().join();
+    for (const k in L) { const m = /^(\w+)_(zero|one|two|few|many)$/.exec(k); if (m && L[m[1]]) assert.equal(ph(L[k]), ph(L[m[1]]), lang + " " + k); }
+  }
+});

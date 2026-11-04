@@ -76,8 +76,8 @@ async function shared(req, env, url, { slug, id, code }) {
   const won = r && r.rows.filter(x => x.doh != null);
   if (!won || !won.length) return notFound(req);
   const S = STR[slug], [a, b] = won;
-  const title = fill(id ? S.share_title_one : S.share_title, { name: NAME[a.id], ms: fmt(a.doh) });
-  const desc = id ? fill(S.share_desc_one, { name: NAME[a.id], ms: fmt(a.doh) })
+  const title = fill(id ? S.share_title_self : S.share_title, { name: NAME[a.id], ms: fmt(a.doh) });
+  const desc = id ? fill(S.share_desc_self, { name: NAME[a.id], ms: fmt(a.doh) })
     : fill(b ? S.share_desc : S.share_desc1, { n: r.rows.length, name: NAME[a.id], ms: fmt(a.doh), second: b ? NAME[b.id] : "", ms2: b ? fmt(b.doh) : "" });
   const page = await env.ASSETS.fetch(new Request(new URL(home, url), { headers: req.headers }));
   if (!page.ok) return page;

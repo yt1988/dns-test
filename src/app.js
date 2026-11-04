@@ -18,6 +18,9 @@ import { regionName } from "./region.mjs";
   const LIST = FOCUS ? [FOCUS] : RESOLVERS;
   const L = window.L1MS || {};
   const t = (k, v) => { let s = L[k] ?? k; if (v) for (const x in v) s = s.split("{" + x + "}").join(v[x]); return s; };
+  // a sentence with a count {n}: key_one, key_few… where the language has that form for n (1ms-shell docs/translation.md,
+  // "复数"), else the key itself
+  const PL = new Intl.PluralRules(D.lang), tn = (k, v) => { const f = k + "_" + PL.select(v.n); return t(L[f] != null ? f : k, v); };
   const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]);
   const store = { get(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }, set(k, v) { try { localStorage.setItem(k, v); } catch (e) {} } };
   const K = { theme: "dnstest:theme", lang: "dnstest:lang", rules: "dnstest:rules" };
@@ -278,7 +281,7 @@ import { regionName } from "./region.mjs";
       const u = doh && doh.up && doh.uncached.length ? median(doh.uncached) : null;
       $("#winSub").textContent = doh && doh.up === false ? t("f_down") : !rs.length ? t("f_wait")
         : !final ? " " : doh.rewrites ? t("tip_rewrite") : u != null ? t("f_sub", { unc: fmt(u) }) : " ";
-    } else $("#winSub").textContent = !final ? t("lead_sub", { n: rs.length, of: RESOLVERS.length })
+    } else $("#winSub").textContent = !final ? tn("lead_sub", { n: rs.length, of: RESOLVERS.length })
       : rs[1] ? t("win_sub", { n: rs.length, d: fmt(ms(tgt(rs[1].r.id, "doh")) - ms(doh)), second: rs[1].r.name }) : "";
     const w = { doh: doh, udp: estOf(win, "udp"), dot: estOf(win, "dot") };
     for (const k in w) {
@@ -331,7 +334,7 @@ import { regionName } from "./region.mjs";
     const findings = [
       doh.rewrites && { level: "warn", text: t("emb_rewrite", { name: win.name }) },
       !win.dnssec && { level: "warn", text: t("emb_nodnssec", { name: win.name }) },
-      down && { level: "warn", text: t("emb_down", { n: down }) },
+      down && { level: "warn", text: tn("emb_down", { n: down }) },
       CC === "CN" && { level: "warn", text: t("cn_note") },
       second && { level: "ok", text: t("win_sub", { n: rs.length, d: fmt(w2 - w), second: second.name }) },
       plain && plain.r !== win && { level: "ok", text: t("alt_udp", { name: plain.r.name, ms: fmt(ms(plain.x)), ips: plain.r.udp.join(", ") }) },
@@ -374,9 +377,9 @@ import { regionName } from "./region.mjs";
       // a resolver's page shares that one's result, opened on its page
       link: show => location.origin + D.home + (FOCUS ? FOCUS.id + "/" : "") + "r/" + encodeShare({ ...S, cc: show ? S.cc : "" }),
       home: location.origin + D.home,
-      text: () => t(FOCUS ? "share_text_one" : "share_text", { name: w ? byId(w.id).name : "", ms: w ? fmt(w.doh) : "–" }),
+      text: () => t(FOCUS ? "share_text_self" : "share_text", { name: w ? byId(w.id).name : "", ms: w ? fmt(w.doh) : "–" }),
       height: FOCUS ? 520 : 860, draw: (x, kit) => drawCard(x, kit, rows),
-      foot: show => [FOCUS ? t("card_sub_one") : t("card_sub", { n: rows.length }), show && S.cc && country(S.cc)],
+      foot: show => [FOCUS ? t("card_sub_self") : tn("card_sub", { n: rows.length }), show && S.cc && country(S.cc)],
       ts: S.ts,
     }).open();
   };
@@ -392,7 +395,7 @@ import { regionName } from "./region.mjs";
     x.textBaseline = "alphabetic";
     // the winner
     const w = rows[0];
-    x.fillStyle = C.muted; x.font = `600 26px ${F}`; x.fillText(t(FOCUS ? "card_head_one" : "card_head"), P, y);
+    x.fillStyle = C.muted; x.font = `600 26px ${F}`; x.fillText(t(FOCUS ? "card_head_self" : "card_head"), P, y);
     if (icons[0]) x.drawImage(icons[0], P, y + 24, 60, 60);
     // the name whole, smaller if it has to be (no "…" on the card: 1ms-shell docs/tool-contract.md)
     x.fillStyle = C.fg; fit(x, byId(w.id).name, W - P * 2 - 80, 72, 48, 750); x.fillText(clip(x, byId(w.id).name, W - P * 2 - 80), P + 80, y + 82);
