@@ -51,7 +51,7 @@
 <meta name="twitter:description" content="在浏览器里从你自己的网络给 Applied Privacy DNS 测速：DoH 实测延迟，UDP、DoT 估算，还有首次查询要多久。附完整地址和各种设备的设置方法。">
 <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebApplication","name":"Applied Privacy DNS 测速 · 1ms.dog","url":"https://dns.1ms.dog/zh-cn/appliedprivacy/","applicationCategory":"UtilitiesApplication","operatingSystem":"Any","browserRequirements":"Requires JavaScript","description":"在浏览器里从你自己的网络给 Applied Privacy DNS 测速：DoH 实测延迟，UDP、DoT 估算，还有首次查询要多久。附完整地址和各种设备的设置方法。","inLanguage":"zh-CN","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"USD"}},{"@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Applied Privacy DNS 是什么？","acceptedAnswer":{"@type":"Answer","text":"Applied Privacy DNS 是 Applied Privacy Foundation 提供的免费公共 DNS，运营方在奥地利。它只提供加密 DNS（DoT、DoH），没有公开的普通 DNS 地址。它主要服务奥地利：离得近时可能是最快的，离得远一般不如全球性的大服务商。它会验证 DNSSEC（域名签名）：签名对不上的应答会被拒绝，能防止伪造。它不做任何过滤，所有域名都照常解析。运营方是非营利机构。运营方声明不保存用户的 IP 地址。"}},{"@type":"Question","name":"Applied Privacy DNS 服务器地址","acceptedAnswer":{"@type":"Answer","text":"使用 Applied Privacy DNS，填这些地址：DoT / 私人 DNS: dot1.applied-privacy.netDoH: https://doh.applied-privacy.net/query"}},{"@type":"Question","name":"Applied Privacy DNS 怎么设置","acceptedAnswer":{"@type":"Answer","text":"Windows 11: Windows 要先填普通 DNS 地址才能用加密 DNS，而 Applied Privacy DNS 没有公开这种地址。可以在浏览器里用（见下文），或者装一个 dnscrypt-proxy 之类的本地 DNS 客户端。macOS: macOS 用描述文件来设置加密 DNS：安装一个指向 https://doh.applied-privacy.net/query 的 DNS 描述文件即可。iPhone 和 iPad: 安装一个指向 https://doh.applied-privacy.net/query 的 DNS 描述文件，再到设置 → 通用 → VPN 与设备管理 → DNS 里打开。安卓: 设置 → 网络和互联网 → 私人 DNS → 私人 DNS 提供商主机名，填 dot1.applied-privacy.net。所有网络都生效，而且是加密的（DoT）。不同品牌的菜单位置略有不同，可以在设置里搜索「私人 DNS」。路由器: 路由器只能填普通 DNS 地址，而 Applied Privacy DNS 没有公开这种地址。OpenWrt 可以用 https-dns-proxy 转发到 https://doh.applied-privacy.net/query。浏览器: Chrome：设置 → 隐私和安全 → 安全 → 使用安全 DNS → 自定义，填 https://doh.applied-privacy.net/query。Edge 的同一选项在「隐私、搜索和服务」里。Firefox：设置 → 隐私与安全 → 基于 HTTPS 的 DNS → 最大保护 → 自定义，填 https://doh.applied-privacy.net/query。"}},{"@type":"Question","name":"在中国大陆能用 Applied Privacy DNS 吗？","acceptedAnswer":{"@type":"Answer","text":"普通 DNS 一般能用，但服务器在境外，会慢一些，而且被封锁网站的应答可能在途中被伪造。加密 DNS（DoH、DoT）经常连不上或不稳定。最简单的办法是在本页测一下：如果结果显示「从你的网络连不上它」，就说明你的网络连不上它。"}},{"@type":"Question","name":"Applied Privacy DNS 和 Mullvad DNS 哪个快？","acceptedAnswer":{"@type":"Answer","text":"没有哪家在哪儿都更快。关键看两家离你最近的服务器有多远，以及你的运营商走哪条线路过去。本页几秒钟就能从你自己的网络测出 Applied Privacy DNS 的速度；想和其他 DNS 比，用首页的测试，它会把列表里的每一家都测一遍，告诉你哪家最快。"}},{"@type":"Question","name":"为什么 Applied Privacy DNS 在我这里很慢？","acceptedAnswer":{"@type":"Answer","text":"最常见的原因是距离：离你最近的服务器也很远，或者运营商绕了远路。开着代理或 VPN 时，查询也走代理，测到的是代理的线路，加上直连规则就能测准。有些网络会限速或阻断加密 DNS。另外，没人查过的域名总要慢一些（看结果下面的首次查询时间）。想知道有没有更快的，用首页的测试把全部 DNS 测一遍。"}}]},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"DNS 测试","item":"https://dns.1ms.dog/zh-cn/"},{"@type":"ListItem","position":2,"name":"Applied Privacy DNS 测速","item":"https://dns.1ms.dog/zh-cn/appliedprivacy/"}]}]}</script>
 <link rel="preload" href="/assets/fonts/geist-latin.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="/assets/app.4a5db558b0.css">
+<link rel="stylesheet" href="/assets/app.a2e42fee12.css">
 </head>
 <body>
 <div class="app">
@@ -113,6 +113,14 @@
       </div>
     </section>
 
+    <section class="mine card" id="mine">
+      <h2 data-i="mine_h">你的设备实际在用的 DNS</h2>
+      <p class="mine-r" id="mineR">&nbsp;</p>
+      <p class="mine-e" id="mineE"></p>
+      <p class="mine-e" id="mineF" hidden></p>
+      <p class="note" id="mineC"></p>
+    </section>
+
 <section class="addr card">
       <div class="addr-h"><h2>Applied Privacy DNS 地址</h2><span class="addr-acts"><button class="btn sm" type="button" data-help="2">设置方法</button><a class="btn sm xl" href="https://applied-privacy.net/services/dns/" target="_blank" rel="noopener noreferrer">官网<svg class="ext" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 2.5h4.5V7M13.5 2.5 7.5 8.5M12 10v3.5H2.5V4H6"/></svg></a></span></div>
       <dl class="addr-l"><dt>DoT / 私人 DNS</dt><dd><code>dot1.applied-privacy.net</code></dd><dt>DoH</dt><dd><code>https://doh.applied-privacy.net/query</code></dd></dl>
@@ -169,7 +177,7 @@
 </div>
 
 <script type="application/json" id="data">{"lang":"zh-CN","paths":{"en":"/appliedprivacy/","zh-CN":"/zh-cn/appliedprivacy/","zh-TW":"/zh-tw/appliedprivacy/","ja":"/ja/appliedprivacy/","ko":"/ko/appliedprivacy/","es":"/es/appliedprivacy/","fr":"/fr/appliedprivacy/","de":"/de/appliedprivacy/","pt":"/pt/appliedprivacy/","ru":"/ru/appliedprivacy/"},"home":"/zh-cn/","focus":"appliedprivacy"}</script>
-<script src="/assets/l.zh-cn.96c89a823d.js"></script>
-<script src="/assets/app.902314a130.js"></script>
+<script src="/assets/l.zh-cn.01a24d6a31.js"></script>
+<script src="/assets/app.4cdd7ee017.js"></script>
 </body>
 </html>

@@ -8,6 +8,8 @@
 //                         description (what chat apps show as the link's preview), not indexed; the page itself
 //                         reads the code and shows the result (src/share.mjs)
 //                         (a code it can't read: 404)
+//   /tokyo.json           every resolver as the 1ms.dog server in Tokyo sees it (server/watch, every 10 minutes): its
+//                         latest probe and uptime per protocol, fetched from data.1ms.dog and kept for 2 minutes
 //   anything else         a bare 404; 1ms-shell puts the shared 1ms.dog 404 page in front of it
 // The installer and the tool try these before GitHub, which is often slow or blocked in mainland China.
 
@@ -40,6 +42,8 @@ export default {
 
     const sp = sharePath(url.pathname, KNOWN);
     if (sp && STR[sp.slug] && (!sp.id || KNOWN.has(sp.id)) && env.ASSETS) return shared(req, env, url, sp);
+
+    if (url.pathname === "/tokyo.json") return tokyo(req, ctx);
 
     if (url.pathname === "/v" || INSTALLER[url.pathname]) {
       const v = await latest(url, ctx);
@@ -95,6 +99,31 @@ async function shared(req, env, url, { slug, id, code }) {
   h.set("cache-control", "public, max-age=3600");
   h.set("x-robots-tag", "noindex");
   return new Response(req.method === "HEAD" ? null : out.body, { status: 200, headers: h });
+}
+
+// Tokyo's view (server/watch writes it on the VPS, data.1ms.dog publishes it): only what the page reads, kept 2 minutes
+const TOKYO = "https://data.1ms.dog:2083/dns/summary.json";
+function trimTokyo(j) {
+  const r = {};
+  for (const [id, ps] of Object.entries((j && j.r) || {})) {
+    if (!KNOWN.has(id)) continue;
+    r[id] = {};
+    for (const [p, s] of Object.entries(ps)) r[id][p] = { last: s.last ?? null, up7d: s.up7d, up30d: s.up30d };
+  }
+  return { t: j && j.t, r };
+}
+async function tokyo(req, ctx) {
+  const cache = caches.default, key = new Request(new URL("/tokyo.json", req.url).toString());
+  let res = await cache.match(key);
+  if (!res) {
+    let up;
+    try { up = await fetch(TOKYO, { signal: AbortSignal.timeout(5000) }); } catch (e) { up = null; }
+    if (!up || !up.ok) return new Response("Tokyo did not answer\n", { status: 502, headers: { "cache-control": "no-store" } });
+    res = new Response(JSON.stringify(trimTokyo(await up.json())), {
+      headers: { "content-type": "application/json; charset=utf-8", "cache-control": "public, max-age=120" } });
+    ctx.waitUntil(cache.put(key, res.clone()));
+  }
+  return req.method === "HEAD" ? new Response(null, { headers: res.headers }) : res;
 }
 
 // the newest release's version, from the redirect GitHub gives for /releases/latest

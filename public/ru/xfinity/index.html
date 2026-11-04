@@ -48,7 +48,7 @@
 <meta name="twitter:description" content="Проверьте Xfinity DNS из своей сети прямо в браузере: реальная задержка DoH, оценка UDP и DoT и время первого запроса. Плюс все адреса и настройка на любом устройстве.">
 <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebApplication","name":"Тест скорости Xfinity DNS · 1ms.dog","url":"https://dns.1ms.dog/ru/xfinity/","applicationCategory":"UtilitiesApplication","operatingSystem":"Any","browserRequirements":"Requires JavaScript","description":"Проверьте Xfinity DNS из своей сети прямо в браузере: реальная задержка DoH, оценка UDP и DoT и время первого запроса. Плюс все адреса и настройка на любом устройстве.","inLanguage":"ru","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"USD"}},{"@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Что такое Xfinity DNS?","acceptedAnswer":{"@type":"Answer","text":"Xfinity DNS — бесплатный публичный DNS, его оператор — Comcast (Соединенные Штаты). Он работает только как шифрованный DNS (DoH); публичного адреса обычного DNS нет. Работает в основном на один регион (Соединенные Штаты): рядом может быть самым быстрым, а издалека обычно медленнее крупных глобальных сервисов. Он проверяет DNSSEC (подписи доменов): ответы с неверной подписью отклоняются, подделать их не получится. Ничего не фильтрует: все имена разрешаются как есть."}},{"@type":"Question","name":"Адреса серверов Xfinity DNS","acceptedAnswer":{"@type":"Answer","text":"Чтобы пользоваться Xfinity DNS, укажите: DoH: https://doh.xfinity.com/dns-query"}},{"@type":"Question","name":"Как настроить Xfinity DNS","acceptedAnswer":{"@type":"Answer","text":"Windows 11: Windows включает шифрованный DNS только поверх адреса обычного DNS, а Xfinity DNS такого адреса не публикует. Используйте его в браузере (см. ниже) или через локальный DNS-клиент, например dnscrypt-proxy. macOS: В macOS шифрованный DNS включается через профиль конфигурации: установите DNS-профиль для https://doh.xfinity.com/dns-query. iPhone и iPad: Установите DNS-профиль для https://doh.xfinity.com/dns-query и включите его в разделе Настройки → Основные → VPN и управление устройством → DNS. Android: В Android его негде задать: у Xfinity DNS нет ни имени хоста DoT, ни адреса обычного DNS. Используйте его в браузере. Роутер: Роутеры принимают только адреса обычного DNS, а Xfinity DNS такого адреса не публикует. В OpenWrt https-dns-proxy может пересылать запросы на https://doh.xfinity.com/dns-query. Браузер: Chrome: Настройки → Конфиденциальность и безопасность → Безопасность → Использовать безопасный DNS → Другой, введите https://doh.xfinity.com/dns-query. В Edge то же самое в разделе «Конфиденциальность, поиск и службы». Firefox: Настройки → Приватность и защита → DNS через HTTPS → Максимальная защита → Другой, введите https://doh.xfinity.com/dns-query."}},{"@type":"Question","name":"Работает ли Xfinity DNS в материковом Китае?","acceptedAnswer":{"@type":"Answer","text":"Обычный DNS, как правило, отвечает, но медленнее, потому что серверы находятся за пределами материкового Китая, а ответы для заблокированных сайтов могут подделываться по пути. Шифрованный DNS (DoH, DoT) часто блокируется или работает нестабильно. Проще всего проверить тестом на этой странице: если в результате написано «Недоступен из вашей сети», из вашей сети до него не достучаться."}},{"@type":"Question","name":"Xfinity DNS или Google Public DNS: какой быстрее?","acceptedAnswer":{"@type":"Answer","text":"Ни один не быстрее везде. Всё зависит от того, насколько далеко от вас ближайший сервер каждого из них и каким маршрутом туда ведёт трафик ваш провайдер. Эта страница за несколько секунд замерит Xfinity DNS из вашей собственной сети. Чтобы сравнить его с остальными, запустите тест на главной странице: он замерит все серверы из списка и покажет, какой у вас самый быстрый."}},{"@type":"Question","name":"Почему Xfinity DNS у меня медленный?","acceptedAnswer":{"@type":"Answer","text":"Чаще всего дело в расстоянии: ближайший сервер далеко от вас или провайдер ведёт трафик в обход. Если включён прокси или VPN, запросы тоже идут через него, и тест замеряет маршрут прокси (прямые правила это исправляют). Некоторые сети замедляют или блокируют шифрованный DNS. А имя, которое ещё никто не запрашивал, всегда отвечает дольше (см. время первого запроса под результатом). Чтобы узнать, нет ли у вас сервера быстрее, проверьте все сразу тестом на главной странице."}}]},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Тест DNS","item":"https://dns.1ms.dog/ru/"},{"@type":"ListItem","position":2,"name":"Тест скорости Xfinity DNS","item":"https://dns.1ms.dog/ru/xfinity/"}]}]}</script>
 <link rel="preload" href="/assets/fonts/geist-latin.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="/assets/app.4a5db558b0.css">
+<link rel="stylesheet" href="/assets/app.a2e42fee12.css">
 </head>
 <body>
 <div class="app">
@@ -110,6 +110,14 @@
       </div>
     </section>
 
+    <section class="mine card" id="mine">
+      <h2 data-i="mine_h">DNS, который на самом деле использует ваше устройство</h2>
+      <p class="mine-r" id="mineR">&nbsp;</p>
+      <p class="mine-e" id="mineE"></p>
+      <p class="mine-e" id="mineF" hidden></p>
+      <p class="note" id="mineC"></p>
+    </section>
+
 <section class="addr card">
       <div class="addr-h"><h2>Адреса Xfinity DNS</h2><span class="addr-acts"><button class="btn sm" type="button" data-help="2">Как настроить</button><a class="btn sm xl" href="https://www.xfinity.com/support/articles/dns-over-https" target="_blank" rel="noopener noreferrer">Сайт<svg class="ext" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 2.5h4.5V7M13.5 2.5 7.5 8.5M12 10v3.5H2.5V4H6"/></svg></a></span></div>
       <dl class="addr-l"><dt>DoH</dt><dd><code>https://doh.xfinity.com/dns-query</code></dd></dl>
@@ -166,7 +174,7 @@
 </div>
 
 <script type="application/json" id="data">{"lang":"ru","paths":{"en":"/xfinity/","zh-CN":"/zh-cn/xfinity/","zh-TW":"/zh-tw/xfinity/","ja":"/ja/xfinity/","ko":"/ko/xfinity/","es":"/es/xfinity/","fr":"/fr/xfinity/","de":"/de/xfinity/","pt":"/pt/xfinity/","ru":"/ru/xfinity/"},"home":"/ru/","focus":"xfinity"}</script>
-<script src="/assets/l.ru.1238789382.js"></script>
-<script src="/assets/app.902314a130.js"></script>
+<script src="/assets/l.ru.9843a382d2.js"></script>
+<script src="/assets/app.4cdd7ee017.js"></script>
 </body>
 </html>

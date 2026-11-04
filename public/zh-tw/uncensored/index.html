@@ -48,7 +48,7 @@
 <meta name="twitter:description" content="在瀏覽器裡從你自己的網路替 UncensoredDNS 測速：DoH 實測延遲，UDP、DoT 估算，還有首次查詢要多久。附完整位址和各種裝置的設定方式。">
 <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebApplication","name":"UncensoredDNS 測速 · 1ms.dog","url":"https://dns.1ms.dog/zh-tw/uncensored/","applicationCategory":"UtilitiesApplication","operatingSystem":"Any","browserRequirements":"Requires JavaScript","description":"在瀏覽器裡從你自己的網路替 UncensoredDNS 測速：DoH 實測延遲，UDP、DoT 估算，還有首次查詢要多久。附完整位址和各種裝置的設定方式。","inLanguage":"zh-TW","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"USD"}},{"@type":"FAQPage","mainEntity":[{"@type":"Question","name":"UncensoredDNS 是什麼？","acceptedAnswer":{"@type":"Answer","text":"UncensoredDNS 是 UncensoredDNS 提供的免費公共 DNS，營運單位位於丹麥。一般 DNS 位址是 91.239.100.100、89.233.43.71（IPv6：2001:67c:28a4::、2a01:3a0:53:53::），也支援加密 DNS：DoT、DoH。它主要服務丹麥：離得近時可能是最快的，離得遠通常不如全球性的大型服務。它會驗證 DNSSEC（網域簽章）：簽章對不上的回應會被拒絕，可以防止偽造。它不做任何過濾，所有網域都照常解析。營運單位聲明不保存使用者的 IP 位址。"}},{"@type":"Question","name":"UncensoredDNS 伺服器位址","acceptedAnswer":{"@type":"Answer","text":"使用 UncensoredDNS 時，請填入：DNS (IPv4): 91.239.100.100、89.233.43.71DNS (IPv6): 2001:67c:28a4::、2a01:3a0:53:53::DoT / 私人 DNS: anycast.uncensoreddns.orgDoH: https://anycast.uncensoreddns.org/dns-query"}},{"@type":"Question","name":"UncensoredDNS 設定方式","acceptedAnswer":{"@type":"Answer","text":"Windows 11: 設定 → 網路和網際網路 → Wi‑Fi 或乙太網路 → 硬體內容 → DNS 伺服器指派 → 編輯 → 手動。開啟 IPv4，填入 91.239.100.100、89.233.43.71。若要加密，把「DNS over HTTPS」設為「開啟（手動範本）」，範本填 https://anycast.uncensoreddns.org/dns-query。macOS: 系統設定 → 網路 → Wi‑Fi（或乙太網路）→ 詳細資訊 → DNS，按 + 加入 91.239.100.100、89.233.43.71。加密 DNS（https://anycast.uncensoreddns.org/dns-query）需要另外安裝描述檔。iPhone 和 iPad: 設定 → Wi‑Fi → 點網路旁邊的 ⓘ → 設定 DNS → 手動，加入 91.239.100.100、89.233.43.71。這樣只對這個 Wi‑Fi 有效；想在所有網路上使用加密 DNS，請安裝一個指向 https://anycast.uncensoreddns.org/dns-query 的 DNS 描述檔。Android: 設定 → 網路和網際網路 → 私人 DNS → 私人 DNS 供應商主機名稱，填入 anycast.uncensoreddns.org。所有網路都有效，而且是加密的（DoT）。各品牌的選單位置略有不同，可以在設定裡搜尋「私人 DNS」。路由器: 進入路由器管理頁面（WAN 或 DHCP 設定），把 DNS 伺服器改成 91.239.100.100、89.233.43.71，區域網路裡的所有裝置就都會使用它。瀏覽器: Chrome：設定 → 隱私權和安全性 → 安全性 → 使用安全 DNS → 自訂，填入 https://anycast.uncensoreddns.org/dns-query。Edge 的相同選項在「隱私權、搜尋與服務」裡。Firefox：設定 → 隱私權與安全性 → DNS over HTTPS → 最大保護 → 自訂，填入 https://anycast.uncensoreddns.org/dns-query。Linux: 使用 systemd-resolved 時：在 /etc/systemd/resolved.conf 寫入 DNS=91.239.100.100 89.233.43.71，再執行 systemctl restart systemd-resolved。若要使用 DoT，把位址寫成 91.239.100.100#anycast.uncensoreddns.org，並加上 DNSOverTLS=yes。"}},{"@type":"Question","name":"在中國大陸能用 UncensoredDNS 嗎？","acceptedAnswer":{"@type":"Answer","text":"一般 DNS 通常能用，但伺服器在中國大陸以外，速度會慢一些，而且被封鎖網站的回應可能在途中遭到偽造。加密 DNS（DoH、DoT）經常連不上或不穩定。最簡單的方法是在本頁測一下：如果結果顯示「從你的網路連不上它」，就代表你的網路連不上它。"}},{"@type":"Question","name":"UncensoredDNS 和 Quad9 DNS 哪個快？","acceptedAnswer":{"@type":"Answer","text":"沒有哪一家在任何地方都比較快。關鍵在於兩家離你最近的伺服器有多遠，以及你的電信業者走哪條線路過去。本頁幾秒鐘就能從你自己的網路測出 UncensoredDNS 的速度；想和其他 DNS 比較，請用首頁的測試，它會把清單裡的每一家都測一遍，告訴你哪家最快。"}},{"@type":"Question","name":"為什麼 UncensoredDNS 在我這裡很慢？","acceptedAnswer":{"@type":"Answer","text":"最常見的原因是距離：離你最近的伺服器也很遠，或是電信業者繞了遠路。開著代理或 VPN 時，查詢也會經過代理，測到的是代理的線路，加上直連規則就能測準。有些網路會限速或阻擋加密 DNS。另外，還沒人查過的網域一定比較慢（見結果下方的首次查詢時間）。想知道有沒有更快的，用首頁的測試把全部 DNS 測一遍。"}}]},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"DNS 測試","item":"https://dns.1ms.dog/zh-tw/"},{"@type":"ListItem","position":2,"name":"UncensoredDNS 測速","item":"https://dns.1ms.dog/zh-tw/uncensored/"}]}]}</script>
 <link rel="preload" href="/assets/fonts/geist-latin.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="/assets/app.4a5db558b0.css">
+<link rel="stylesheet" href="/assets/app.a2e42fee12.css">
 </head>
 <body>
 <div class="app">
@@ -110,6 +110,14 @@
       </div>
     </section>
 
+    <section class="mine card" id="mine">
+      <h2 data-i="mine_h">你的裝置實際在用的 DNS</h2>
+      <p class="mine-r" id="mineR">&nbsp;</p>
+      <p class="mine-e" id="mineE"></p>
+      <p class="mine-e" id="mineF" hidden></p>
+      <p class="note" id="mineC"></p>
+    </section>
+
 <section class="addr card">
       <div class="addr-h"><h2>UncensoredDNS 位址</h2><span class="addr-acts"><button class="btn sm" type="button" data-help="2">設定方式</button><a class="btn sm xl" href="https://blog.uncensoreddns.org/" target="_blank" rel="noopener noreferrer">官網<svg class="ext" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 2.5h4.5V7M13.5 2.5 7.5 8.5M12 10v3.5H2.5V4H6"/></svg></a></span></div>
       <dl class="addr-l"><dt>DNS (IPv4)</dt><dd><code>91.239.100.100</code> <code>89.233.43.71</code></dd><dt>DNS (IPv6)</dt><dd><code>2001:67c:28a4::</code> <code>2a01:3a0:53:53::</code></dd><dt>DoT / 私人 DNS</dt><dd><code>anycast.uncensoreddns.org</code></dd><dt>DoH</dt><dd><code>https://anycast.uncensoreddns.org/dns-query</code></dd></dl>
@@ -166,7 +174,7 @@
 </div>
 
 <script type="application/json" id="data">{"lang":"zh-TW","paths":{"en":"/uncensored/","zh-CN":"/zh-cn/uncensored/","zh-TW":"/zh-tw/uncensored/","ja":"/ja/uncensored/","ko":"/ko/uncensored/","es":"/es/uncensored/","fr":"/fr/uncensored/","de":"/de/uncensored/","pt":"/pt/uncensored/","ru":"/ru/uncensored/"},"home":"/zh-tw/","focus":"uncensored"}</script>
-<script src="/assets/l.zh-tw.036d5e86ab.js"></script>
-<script src="/assets/app.902314a130.js"></script>
+<script src="/assets/l.zh-tw.2ee85dede3.js"></script>
+<script src="/assets/app.4cdd7ee017.js"></script>
 </body>
 </html>

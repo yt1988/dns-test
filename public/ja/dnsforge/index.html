@@ -48,7 +48,7 @@
 <meta name="twitter:description" content="ブラウザで、あなたの回線から DNSForge を実測。DoH の実測遅延、UDP と DoT の推定値、初回問い合わせにかかる時間がわかります。アドレスと各端末での設定方法も掲載。">
 <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebApplication","name":"DNSForge 速度テスト · 1ms.dog","url":"https://dns.1ms.dog/ja/dnsforge/","applicationCategory":"UtilitiesApplication","operatingSystem":"Any","browserRequirements":"Requires JavaScript","description":"ブラウザで、あなたの回線から DNSForge を実測。DoH の実測遅延、UDP と DoT の推定値、初回問い合わせにかかる時間がわかります。アドレスと各端末での設定方法も掲載。","inLanguage":"ja","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"USD"}},{"@type":"FAQPage","mainEntity":[{"@type":"Question","name":"DNSForge とは？","acceptedAnswer":{"@type":"Answer","text":"DNSForge は DNSForge（ドイツ）が運営する無料の公開 DNS です。通常の DNS アドレスは 176.9.93.198、176.9.1.117（IPv6：2a01:4f8:151:34aa::198、2a01:4f8:141:316d::117）で、暗号化 DNS（DoT、DoH）にも対応しています。主にドイツ向けのサービスです。近くなら最速になることもありますが、遠いと世界規模の大手より遅いのが普通です。DNSSEC（ドメインの署名）を検証します。署名が合わない応答は拒否されるので、偽の応答を防げます。初期設定で広告とトラッカーをブロックします。"}},{"@type":"Question","name":"DNSForge の DNS サーバーアドレス","acceptedAnswer":{"@type":"Answer","text":"DNSForge を使うときは、次のアドレスを入力します：DNS (IPv4): 176.9.93.198、176.9.1.117DNS (IPv6): 2a01:4f8:151:34aa::198、2a01:4f8:141:316d::117DoT / プライベート DNS: dnsforge.deDoH: https://dnsforge.de/dns-query"}},{"@type":"Question","name":"DNSForge の設定方法","acceptedAnswer":{"@type":"Answer","text":"Windows 11: 設定 → ネットワークとインターネット → Wi‑Fi またはイーサネット → ハードウェアのプロパティ → DNS サーバーの割り当て → 編集 → 手動。IPv4 をオンにして 176.9.93.198、176.9.1.117 を入力します。暗号化するには「DNS over HTTPS」を「オン（手動テンプレート）」にし、テンプレートに https://dnsforge.de/dns-query を入力します。macOS: システム設定 → ネットワーク → Wi‑Fi（または Ethernet）→ 詳細 → DNS で + を押し、176.9.93.198、176.9.1.117 を追加します。暗号化 DNS（https://dnsforge.de/dns-query）を使うには構成プロファイルのインストールが必要です。iPhone と iPad: 設定 → Wi‑Fi → ネットワーク名の横の ⓘ → DNSを構成 → 手動 で 176.9.93.198、176.9.1.117 を追加します。この設定はその Wi‑Fi だけに有効です。どのネットワークでも暗号化 DNS を使うには、https://dnsforge.de/dns-query 用の DNS プロファイルをインストールします。Android: 設定 → ネットワークとインターネット → プライベート DNS → プライベート DNS プロバイダのホスト名 に dnsforge.de を入力します。どのネットワークでも有効で、通信は暗号化されます（DoT）。メニューの場所はメーカーによって少し違うので、設定で「プライベート DNS」を検索してください。ルーター: ルーターの管理画面（WAN または DHCP の設定）で、DNS サーバーを 176.9.93.198、176.9.1.117 にします。家のネットワークにつながるすべての端末で使われます。ブラウザ: Chrome：設定 → プライバシーとセキュリティ → セキュリティ → セキュア DNS を使用する → カスタム に https://dnsforge.de/dns-query を入力。Edge は「プライバシー、検索、サービス」に同じ項目があります。Firefox：設定 → プライバシーとセキュリティ → DNS over HTTPS → 最大保護 → カスタム に https://dnsforge.de/dns-query を入力。Linux: systemd-resolved の場合：/etc/systemd/resolved.conf に DNS=176.9.93.198 176.9.1.117 と書き、systemctl restart systemd-resolved を実行します。DoT を使うには、アドレスを 176.9.93.198#dnsforge.de と書き、DNSOverTLS=yes を追加します。"}},{"@type":"Question","name":"DNSForge は中国本土で使えますか？","acceptedAnswer":{"@type":"Answer","text":"通常の DNS はたいてい応答しますが、サーバーが中国本土の外にあるので遅めで、ブロックされたサイトへの応答は途中で偽造されることがあります。暗号化 DNS（DoH、DoT）はよく遮断されたり不安定になったりします。確かめるにはこのページでテストするのが一番です。結果に「あなたの回線からつながりません」と出たら、あなたの回線からはつながらないということです。"}},{"@type":"Question","name":"DNSForge と AdGuard DNS、どちらが速い？","acceptedAnswer":{"@type":"Answer","text":"どこでも速いほうというのはありません。それぞれの一番近いサーバーがどれだけ遠いか、プロバイダーがどんな経路でつなぐかで決まります。このページでは数秒で DNSForge の速さをあなたの回線から測れます。ほかの DNS と比べるなら、トップページのテストを使ってください。一覧のすべての DNS を測り、あなたにとって一番速いところを示します。"}},{"@type":"Question","name":"DNSForge が遅いのはなぜ？","acceptedAnswer":{"@type":"Answer","text":"多くの場合は距離です。一番近いサーバーでも遠いか、プロバイダーが遠回りしています。プロキシや VPN がオンだと問い合わせもそこを通り、測れるのはプロキシの経路になります（直接接続ルールで解決できます）。暗号化 DNS を遅くしたり遮断したりするネットワークもあります。また、まだだれも問い合わせていない名前は必ず時間がかかります（結果の下に出る初回問い合わせの時間）。もっと速い DNS があるか知りたいときは、トップページのテストで全部を測ってみましょう。"}}]},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"DNS テスト","item":"https://dns.1ms.dog/ja/"},{"@type":"ListItem","position":2,"name":"DNSForge 速度テスト","item":"https://dns.1ms.dog/ja/dnsforge/"}]}]}</script>
 <link rel="preload" href="/assets/fonts/geist-latin.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="/assets/app.4a5db558b0.css">
+<link rel="stylesheet" href="/assets/app.a2e42fee12.css">
 </head>
 <body>
 <div class="app">
@@ -110,6 +110,14 @@
       </div>
     </section>
 
+    <section class="mine card" id="mine">
+      <h2 data-i="mine_h">あなたの端末が実際に使っている DNS</h2>
+      <p class="mine-r" id="mineR">&nbsp;</p>
+      <p class="mine-e" id="mineE"></p>
+      <p class="mine-e" id="mineF" hidden></p>
+      <p class="note" id="mineC"></p>
+    </section>
+
 <section class="addr card">
       <div class="addr-h"><h2>DNSForge のアドレス</h2><span class="addr-acts"><button class="btn sm" type="button" data-help="2">設定方法</button><a class="btn sm xl" href="https://dnsforge.de/" target="_blank" rel="noopener noreferrer">公式サイト<svg class="ext" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 2.5h4.5V7M13.5 2.5 7.5 8.5M12 10v3.5H2.5V4H6"/></svg></a></span></div>
       <dl class="addr-l"><dt>DNS (IPv4)</dt><dd><code>176.9.93.198</code> <code>176.9.1.117</code></dd><dt>DNS (IPv6)</dt><dd><code>2a01:4f8:151:34aa::198</code> <code>2a01:4f8:141:316d::117</code></dd><dt>DoT / プライベート DNS</dt><dd><code>dnsforge.de</code></dd><dt>DoH</dt><dd><code>https://dnsforge.de/dns-query</code></dd></dl>
@@ -166,7 +174,7 @@
 </div>
 
 <script type="application/json" id="data">{"lang":"ja","paths":{"en":"/dnsforge/","zh-CN":"/zh-cn/dnsforge/","zh-TW":"/zh-tw/dnsforge/","ja":"/ja/dnsforge/","ko":"/ko/dnsforge/","es":"/es/dnsforge/","fr":"/fr/dnsforge/","de":"/de/dnsforge/","pt":"/pt/dnsforge/","ru":"/ru/dnsforge/"},"home":"/ja/","focus":"dnsforge"}</script>
-<script src="/assets/l.ja.d5932da346.js"></script>
-<script src="/assets/app.902314a130.js"></script>
+<script src="/assets/l.ja.b5f7680137.js"></script>
+<script src="/assets/app.4cdd7ee017.js"></script>
 </body>
 </html>

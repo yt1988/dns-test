@@ -51,7 +51,7 @@
 <meta name="twitter:description" content="在浏览器里从你自己的网络给腾讯 DNSPod 测速：DoH 实测延迟，UDP、DoT 估算，还有首次查询要多久。附完整地址和各种设备的设置方法。">
 <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebApplication","name":"腾讯 DNSPod 测速 · 1ms.dog","url":"https://dns.1ms.dog/zh-cn/dnspod/","applicationCategory":"UtilitiesApplication","operatingSystem":"Any","browserRequirements":"Requires JavaScript","description":"在浏览器里从你自己的网络给腾讯 DNSPod 测速：DoH 实测延迟，UDP、DoT 估算，还有首次查询要多久。附完整地址和各种设备的设置方法。","inLanguage":"zh-CN","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"USD"}},{"@type":"FAQPage","mainEntity":[{"@type":"Question","name":"腾讯 DNSPod 是什么？","acceptedAnswer":{"@type":"Answer","text":"腾讯 DNSPod 是腾讯云提供的免费公共 DNS，运营方在中国。普通 DNS 地址是 119.29.29.29（IPv6：2402:4e00::），也支持加密 DNS：DoT、DoH。服务器在中国大陆：在国内快，在境外慢。它不验证 DNSSEC（域名签名）。它不做任何过滤，所有域名都照常解析。"}},{"@type":"Question","name":"腾讯 DNSPod DNS 服务器地址","acceptedAnswer":{"@type":"Answer","text":"使用腾讯 DNSPod，填这些地址：DNS (IPv4): 119.29.29.29DNS (IPv6): 2402:4e00::DoT / 私人 DNS: dot.pubDoH: https://doh.pub/dns-query"}},{"@type":"Question","name":"腾讯 DNSPod 怎么设置","acceptedAnswer":{"@type":"Answer","text":"Windows 11: 设置 → 网络和 Internet → WLAN 或以太网 → 硬件属性 → DNS 服务器分配 → 编辑 → 手动。打开 IPv4，填入 119.29.29.29。想加密的话，把「DNS over HTTPS」设为「开（手动模板）」，模板填 https://doh.pub/dns-query。macOS: 系统设置 → 网络 → Wi‑Fi（或以太网）→ 详细信息 → DNS，点 + 添加 119.29.29.29。加密 DNS（https://doh.pub/dns-query）需要另外安装描述文件。iPhone 和 iPad: 设置 → 无线局域网 → 点网络旁边的 ⓘ → 配置 DNS → 手动，添加 119.29.29.29。这样只对这个 Wi‑Fi 生效；想在所有网络上用加密 DNS，就安装一个指向 https://doh.pub/dns-query 的 DNS 描述文件。安卓: 设置 → 网络和互联网 → 私人 DNS → 私人 DNS 提供商主机名，填 dot.pub。所有网络都生效，而且是加密的（DoT）。不同品牌的菜单位置略有不同，可以在设置里搜索「私人 DNS」。路由器: 进入路由器管理页面（WAN 或 DHCP 设置），把 DNS 服务器改成 119.29.29.29，局域网里的所有设备就都会用它。浏览器: Chrome：设置 → 隐私和安全 → 安全 → 使用安全 DNS → 自定义，填 https://doh.pub/dns-query。Edge 的同一选项在「隐私、搜索和服务」里。Firefox：设置 → 隐私与安全 → 基于 HTTPS 的 DNS → 最大保护 → 自定义，填 https://doh.pub/dns-query。Linux: 用 systemd-resolved 的话：在 /etc/systemd/resolved.conf 里写上 DNS=119.29.29.29，再运行 systemctl restart systemd-resolved。想用 DoT，把地址写成 119.29.29.29#dot.pub，并加上 DNSOverTLS=yes。"}},{"@type":"Question","name":"在中国大陆能用腾讯 DNSPod 吗？","acceptedAnswer":{"@type":"Answer","text":"能。它的服务器就在中国大陆，是国内常用的公共 DNS，普通 DNS、DoT、DoH 都能用。"}},{"@type":"Question","name":"腾讯 DNSPod 和阿里 DNS 哪个快？","acceptedAnswer":{"@type":"Answer","text":"没有哪家在哪儿都更快。关键看两家离你最近的服务器有多远，以及你的运营商走哪条线路过去。本页几秒钟就能从你自己的网络测出腾讯 DNSPod 的速度；想和其他 DNS 比，用首页的测试，它会把列表里的每一家都测一遍，告诉你哪家最快。"}},{"@type":"Question","name":"为什么腾讯 DNSPod 在我这里很慢？","acceptedAnswer":{"@type":"Answer","text":"最常见的原因是距离：离你最近的服务器也很远，或者运营商绕了远路。开着代理或 VPN 时，查询也走代理，测到的是代理的线路，加上直连规则就能测准。有些网络会限速或阻断加密 DNS。另外，没人查过的域名总要慢一些（看结果下面的首次查询时间）。想知道有没有更快的，用首页的测试把全部 DNS 测一遍。"}}]},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"DNS 测试","item":"https://dns.1ms.dog/zh-cn/"},{"@type":"ListItem","position":2,"name":"腾讯 DNSPod 测速","item":"https://dns.1ms.dog/zh-cn/dnspod/"}]}]}</script>
 <link rel="preload" href="/assets/fonts/geist-latin.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="/assets/app.4a5db558b0.css">
+<link rel="stylesheet" href="/assets/app.a2e42fee12.css">
 </head>
 <body>
 <div class="app">
@@ -113,6 +113,14 @@
       </div>
     </section>
 
+    <section class="mine card" id="mine">
+      <h2 data-i="mine_h">你的设备实际在用的 DNS</h2>
+      <p class="mine-r" id="mineR">&nbsp;</p>
+      <p class="mine-e" id="mineE"></p>
+      <p class="mine-e" id="mineF" hidden></p>
+      <p class="note" id="mineC"></p>
+    </section>
+
 <section class="addr card">
       <div class="addr-h"><h2>腾讯 DNSPod 地址</h2><span class="addr-acts"><button class="btn sm" type="button" data-help="2">设置方法</button><a class="btn sm xl" href="https://www.dnspod.cn/products/publicdns" target="_blank" rel="noopener noreferrer">官网<svg class="ext" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 2.5h4.5V7M13.5 2.5 7.5 8.5M12 10v3.5H2.5V4H6"/></svg></a></span></div>
       <dl class="addr-l"><dt>DNS (IPv4)</dt><dd><code>119.29.29.29</code></dd><dt>DNS (IPv6)</dt><dd><code>2402:4e00::</code></dd><dt>DoT / 私人 DNS</dt><dd><code>dot.pub</code></dd><dt>DoH</dt><dd><code>https://doh.pub/dns-query</code></dd></dl>
@@ -169,7 +177,7 @@
 </div>
 
 <script type="application/json" id="data">{"lang":"zh-CN","paths":{"en":"/dnspod/","zh-CN":"/zh-cn/dnspod/","zh-TW":"/zh-tw/dnspod/","ja":"/ja/dnspod/","ko":"/ko/dnspod/","es":"/es/dnspod/","fr":"/fr/dnspod/","de":"/de/dnspod/","pt":"/pt/dnspod/","ru":"/ru/dnspod/"},"home":"/zh-cn/","focus":"dnspod"}</script>
-<script src="/assets/l.zh-cn.96c89a823d.js"></script>
-<script src="/assets/app.902314a130.js"></script>
+<script src="/assets/l.zh-cn.01a24d6a31.js"></script>
+<script src="/assets/app.4cdd7ee017.js"></script>
 </body>
 </html>

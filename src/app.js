@@ -8,6 +8,7 @@ import { FORMATS, FORMAT_NAMES, items as ruleItems, inline as ruleInline, remote
 import { encode as encodeShare, decode as decodeShare, sharePath } from "./share.mjs";
 import { ABOUT } from "./about.mjs";
 import { regionName } from "./region.mjs";
+import { dohURL } from "./dns.mjs";
 
 (function () {
   "use strict";
@@ -180,7 +181,7 @@ import { regionName } from "./region.mjs";
   // the time a row shows for a target: its median so far; a mark when queries were lost
   function cellOf(x, est) {
     if (!x || x.up === null) return '<span class="dots">…</span>';
-    if (!x.up) return `<span class="fail">${esc(t(x.err === "timeout" ? "e_timeout" : "e_fail"))}</span>`;
+    if (!x.up) return `<span class="fail"${x.kind === "doh" ? tkWhy(x.r.id) : ""}>${esc(t(x.err === "timeout" ? "e_timeout" : "e_fail"))}</span>`;
     const m = x.cached.length ? median(x.cached) : x.warm.length ? median(x.warm) : null;
     if (m == null) return '<span class="dots">…</span>';
     const l = loss(x);
@@ -203,6 +204,7 @@ import { regionName } from "./region.mjs";
       : u == null ? (doh && doh.up === false ? '<span class="m">–</span>' : '<span class="dots">…</span>') : `<span class="nu">${fmt(u)}</span>`;
     row.classList.toggle("wait", !doh || doh.up === null);
     row.classList.toggle("down", !!doh && doh.up === false);
+    tkRow(id, !!doh && doh.up === false);
   }
 
   let total = 0, done = 0, t0 = 0, sentPc = -1;
@@ -319,6 +321,7 @@ import { regionName } from "./region.mjs";
     LAST = snapshot(rs);
     $("#shareBtn").hidden = !rs.length;   // nothing to share when nothing answered
     if (EMBED) post(rs.length ? checkup(rs) : { type: "error", text: t("none_up") });
+    else askNodes();
   }
 
   // The result for the Checkup report: the hero's sentence, its numbers, what is worth a look, and the facts its
@@ -342,7 +345,9 @@ import { regionName } from "./region.mjs";
     const cc = (ABOUT[win.id] || {}).hq || win.cc;
     return { type: "result", lang: D.lang, path: D.home + "r/" + encodeShare({ ...LAST, cc: "" }), grade: null, score: null,
       headline: t("emb_head", { name: win.name, ms: fmt(w) }), stats, findings,
-      facts: { winner: win.id, winnerMs: Math.round(w * 10) / 10, ...(cc && { winnerCountry: cc }), dnssec: !!win.dnssec } };
+      // resolverCountry: where the device's own resolver is, as l.1ms.dog saw it (its country only, never its address)
+      facts: { winner: win.id, winnerMs: Math.round(w * 10) / 10, ...(cc && { winnerCountry: cc }), dnssec: !!win.dnssec,
+        ...(MINE && MINE.first.cc && { resolverCountry: MINE.first.cc }) } };
   }
 
   // where the visitor is: for the mainland China note, and for the share card when the visitor ticks "show my country".
@@ -351,8 +356,102 @@ import { regionName } from "./region.mjs";
   const cc2 = s => /^[A-Z]{2}$/.test(s || "") ? s : "";
   fetch("/_ms/me", { cache: "no-store" }).then(r => { if (!r.ok) throw r; return r.json(); }).then(j => { CC = cc2(j.country); })
     .catch(() => fetch("/cdn-cgi/trace", { cache: "no-store" }).then(r => r.ok ? r.text() : "").then(s => { CC = cc2((/\bloc=([A-Z]{2})/.exec(s) || [])[1]); }))
-    .catch(() => {});
+    .catch(() => {}).then(() => { if (MINE) renderMine(); });
   const country = cc => { try { return regionName(cc, D.lang); } catch (e) { return cc; } };
+
+  /* ---------- from the 1ms.dog server: the resolver this device really uses, each one's node, Tokyo's view ---------- */
+  // l.1ms.dog is 1ms.dog's own authoritative DNS (server/dns). A fresh name under it, looked up by the browser (through
+  // the device's resolver) or sent through a resolver's DoH, is a query that reaches it from that resolver; its API says
+  // from which address, network and country, and whether it passed on the visitor's network (ECS). Shown on the
+  // visitor's own page only: none of it goes into the share link or card. Tokyo's view is server/watch's summary.
+  const LZ = "l.1ms.dog";
+  const tok = () => [...crypto.getRandomValues(new Uint8Array(18))].map(b => "abcdefghijklmnopqrstuvwxyz0123456789"[b % 36]).join("");
+  const getJSON = (u, ms) => fetch(u, { cache: "no-store", credentials: "omit", referrerPolicy: "no-referrer", signal: AbortSignal.timeout(ms) })
+    .then(r => r.ok ? r.json() : Promise.reject(r));
+  // one resolver's queries: the first one is the one whose answer was used, so it decides about ECS (1ms-shell cdn's
+  // finding: China Unicom asks first without ECS, then from other addresses with it)
+  function seen(hits) {
+    if (!hits || !hits.length) return null;
+    const hs = [...hits].sort((a, b) => a.ms - b.ms), first = hs[0], later = hs.find(h => h.ecs);
+    return { first, ips: [...new Set(hs.map(h => h.ip))], ecs: first.ecs ? "yes" : later ? "late" : "no", net: first.ecs || (later ? later.ecs : "") };
+  }
+  const asnHTML = n => tool("asn") ? `<a class="val" href="${esc(tool("asn") + "AS" + n)}" target="_blank" rel="noopener" title="${esc(t("asn_tip", { as: "AS" + n }))}">AS${n}</a>` : "AS" + n;
+  const nodeHTML = s => !s ? esc(t("node_none")) : [s.first.cc && esc(country(s.first.cc)), s.first.asn && asnHTML(s.first.asn), s.first.org && esc(s.first.org),
+    esc(t(s.ecs === "no" ? "node_noecs" : "node_ecs"))].filter(Boolean).join(" · ");
+
+  // the device's own resolver: undefined while asking, null when it couldn't be told
+  let MINE;
+  function renderMine() {
+    if (MINE === undefined) { $("#mineR").textContent = t("mine_wait"); $("#mineE").textContent = ""; return; }
+    if (!MINE) { $("#mineR").textContent = t("mine_fail"); $("#mineE").textContent = ""; return; }
+    const h = MINE.first;
+    $("#mineR").innerHTML = [`<b>${esc(h.org || h.ip)}</b>`, h.cc && esc(country(h.cc)), h.asn && asnHTML(h.asn),
+      MINE.ips.slice(0, 3).map(ip => `<code>${esc(ip)}</code>`).join(" ")].filter(Boolean).join(" · ");
+    const lines = [t("mine_ecs_" + MINE.ecs, { net: MINE.net })];
+    if (h.cc && CC && h.cc !== CC) lines.push(t("mine_far", { where: country(h.cc), here: country(CC) }));
+    $("#mineE").textContent = lines.join(" ");
+  }
+  function askMine() {
+    MINE = undefined; renderMine();
+    $("#mineC").innerHTML = t("mine_credit", { db: '<a href="https://db-ip.com" target="_blank" rel="noopener">DB-IP</a>' });
+    // the name's own address is this API: one request both makes the lookup and reads what it saw
+    return getJSON(`https://${tok()}-s.${LZ}:2053/`, 8000).then(j => { MINE = seen(j.hits); }, () => { MINE = null; }).then(renderMine);
+  }
+
+  // each resolver's node for this visitor: after the test (so these queries don't share its time), one query for a fresh
+  // name through each resolver that answered, then what l.1ms.dog saw of them
+  let NODES = {};
+  function askNodes() {
+    const k = tok(), ask = LIST.filter(r => { const x = tgt(r.id, "doh"); return x && x.up; });
+    NODES = {};
+    const sent = ask.map(r => fetch(dohURL(r.doh, `${k}-r${RESOLVERS.indexOf(r)}.${LZ}`), { mode: r.cors ? "cors" : "no-cors", cache: "no-store",
+      credentials: "omit", referrerPolicy: "no-referrer", signal: AbortSignal.timeout(5000) }).catch(() => {}));
+    Promise.all(sent).then(() => getJSON(`https://api.${LZ}:2053/t/${k}?wait=1000`, 8000)).then(j => {
+      for (const r of ask) NODES[r.id] = seen(j.hits.filter(h => h.tag === "r" + RESOLVERS.indexOf(r)));
+      renderNodes();
+    }, () => {});
+  }
+  // a line in a row's details (created the first time)
+  function dlSet(id, key, label, html) {
+    const dl = DET[id] && DET[id].querySelector("dl");
+    if (!dl) return;
+    let dt = dl.querySelector(`dt[data-x="${key}"]`);
+    if (!dt) { dt = Object.assign(document.createElement("dt"), { className: "x" }); dt.dataset.x = key; dl.append(dt, document.createElement("dd")); }
+    dt.textContent = label; dt.nextElementSibling.innerHTML = html;
+  }
+  function renderNodes() {
+    for (const id in NODES) dlSet(id, "node", t("node_h"), nodeHTML(NODES[id]));
+    renderFocus();
+  }
+
+  // Tokyo: is it up there (so a resolver that doesn't answer here is blocked on the visitor's network), and its uptime
+  let TK = null;
+  const pct = v => v == null ? "–" : v >= .9995 ? "100%" : (v * 100).toFixed(1) + "%";
+  const PN = { doh: "DoH", udp: "UDP", dot: "DoT", doq: "DoQ" };
+  const tkUp = id => { const s = TK && TK[id]; return !s ? "" : t("tk_v", Object.fromEntries([["d7", "up7d"], ["d30", "up30d"]].map(([k, f]) =>
+    [k, Object.keys(PN).filter(p => s[p]).map(p => `${PN[p]} ${pct(s[p][f])}`).join(" / ")]))); };
+  // why it doesn't answer, by Tokyo: "" while Tokyo's view isn't in
+  const tkHint = id => { const s = TK && TK[id] && TK[id].doh; return !s ? "" : s.last != null ? t("tk_up", { ms: s.last }) : t("tk_down"); };
+  const tkWhy = id => { const h = tkHint(id); return h ? ` data-why="${esc(h)}"` : ""; };
+  function tkRow(id, down) {
+    if (!TK || !TK[id]) return;
+    dlSet(id, "tk", t("tk_h"), esc(tkUp(id)) + (down && tkHint(id) ? `<span class="tkh">${esc(tkHint(id))}</span>` : ""));
+  }
+  // a resolver's page has no list: its node and Tokyo's view go under the device's resolver
+  function renderFocus() {
+    if (!FOCUS) return;
+    const doh = tgt(FOCUS.id, "doh"), lines = [];
+    if (FOCUS.id in NODES) lines.push(`<b class="k">${esc(t("f_node", { name: FOCUS.name }))}</b> ${nodeHTML(NODES[FOCUS.id])}`);
+    if (doh && doh.up === false && tkHint(FOCUS.id)) lines.push(esc(tkHint(FOCUS.id)));
+    if (TK && TK[FOCUS.id]) lines.push(`<b class="k">${esc(t("tk_h"))}</b> ${esc(tkUp(FOCUS.id))}`);
+    $("#mineF").innerHTML = lines.join("<br>"); $("#mineF").hidden = !lines.length;
+  }
+  fetch("/tokyo.json").then(r => r.ok ? r.json() : null).then(j => {
+    TK = j && j.r || null;
+    if (!TK) return;
+    for (const id in ROW) fillRow(id);
+    renderFocus();
+  }).catch(() => {});
 
   /* ---------- share: the shared 1ms.dog dialog (/assets/share/, copied from 1ms-shell) with this result in it ---------- */
   // The result as the link carries it (src/share.mjs): every resolver in rank order, its times, nothing about the visitor
@@ -485,5 +584,6 @@ import { regionName } from "./region.mjs";
   }
   $("#rerun").onclick = start;
   const SP = sharePath(location.pathname, new Set(RESOLVERS.map(r => r.id))), SHARED = SP && decodeShare(SP.code, new Set(LIST.map(r => r.id)));
+  askMine();
   if (SHARED && !EMBED) showShared(SHARED); else start();
 })();
