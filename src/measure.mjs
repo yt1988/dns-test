@@ -34,10 +34,13 @@ function watch() {
   } catch (e) { observer = null; }
 }
 
+// The same entry straight from the browser's buffer, which has it as soon as the response ends; the observer's copy
+// comes later (its callbacks wait for an idle moment, a long one on a busy phone).
+const entry = url => seen.get(url) || (performance.getEntriesByName ? performance.getEntriesByName(url, "resource").pop() : undefined);
 async function timing(url, fallback) {
   // the entry is recorded when the response ends, which can be a moment after the promise settles
-  for (let i = 0; i < 6 && !seen.has(url); i++) await new Promise(r => setTimeout(r, 25));
-  const e = seen.get(url);
+  for (let i = 0; i < 6 && !entry(url); i++) await new Promise(r => setTimeout(r, 25));
+  const e = entry(url);
   seen.delete(url);
   if (e && e.duration > 0) return e.duration;
   return fallback;
@@ -88,20 +91,21 @@ async function pool(items, n, f, signal) {
   }));
 }
 
-// run the whole test; onStep(target) after every query that changes what a row shows, onPhase(i) when a
-// group of targets starts (0: first, if any; then the rest)
-export async function run(ts, { names, nxzone, rounds = ROUNDS, signal, first = [], onStep = () => {}, onPhase = () => {} }) {
+// run the whole test; onStep(target) after every step of the progress (a target's warm-up, then each of its rounds),
+// onPeek(target) when its warm-up has a first time to show before that step ends, onPhase(i) when a group of targets
+// starts (0: first, if any; then the rest)
+export async function run(ts, { names, nxzone, rounds = ROUNDS, signal, first = [], onStep = () => {}, onPeek = () => {}, onPhase = () => {} }) {
   watch();
   const pickNames = shuffle([...names]).slice(0, 3);
   const groups = first.length ? [first, ts.filter(t => !first.includes(t))] : [ts];
   for (let i = 0; i < groups.length && !(signal && signal.aborted); i++) {
     onPhase(i);
-    await runGroup(groups[i], pickNames, { nxzone, rounds, signal, onStep });
+    await runGroup(groups[i], pickNames, { nxzone, rounds, signal, onStep, onPeek });
   }
   return { names: pickNames };
 }
 
-async function runGroup(ts, pickNames, { nxzone, rounds, signal, onStep }) {
+async function runGroup(ts, pickNames, { nxzone, rounds, signal, onStep, onPeek }) {
   // warm-up: open the connection (finding out whether answers can be read), then cache the names
   await pool(ts, CONC, async t => {
     try {
@@ -111,8 +115,9 @@ async function runGroup(ts, pickNames, { nxzone, rounds, signal, onStep }) {
         t.cors = false;                    // no CORS here after all: time it without reading
         await hit(t, mixCase(pickNames[0]), signal);
       }
-      // the cache-filling queries already ride the open connection: a first idea of the time, until the rounds have some
-      for (const n of pickNames.slice(1)) await hit(t, mixCase(n), signal).then(x => t.warm.push(x.ms), () => {});
+      // the cache-filling queries already ride the open connection: a first idea of the time, until the rounds have
+      // some; shown as soon as the first is in (the page names a leader that much sooner)
+      for (const n of pickNames.slice(1)) await hit(t, mixCase(n), signal).then(x => { t.warm.push(x.ms); if (t.warm.length === 1) { t.up = true; onPeek(t); } }, () => {});
       t.up = true;
     } catch (e) {
       t.up = false;

@@ -567,7 +567,10 @@ import { dohURL } from "./dns.mjs";
     $("#prog").classList.remove("end"); $("#rerun").disabled = true;
     total = TS.length * (1 + 10); done = 0; t0 = performance.now(); progress();
     const res = await run(TS, { names: NAMES, nxzone: NXZONE, signal: ctl.signal,
-      onPhase: () => heroSoon(), onStep: x => {
+      onPhase: () => heroSoon(),
+      // a first time before the target's warm-up is over: its row and the leader so far, not the progress
+      onPeek: x => { fillRow(x.r.id); heroSoon(); sortLive(); },
+      onStep: x => {
       done = Math.min(total, done + 1); progress(); fillRow(x.r.id); heroSoon(); sortLive();
       // a target that didn't answer the warm-up skips the rounds
       if (x.up === false) { done += 10; progress(); }
