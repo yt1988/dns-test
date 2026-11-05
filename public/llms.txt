@@ -3,8 +3,10 @@
 > Free DNS speed test in the browser. Times 33 public DNS resolvers (Cloudflare, Google, Quad9, OpenDNS, AdGuard DNS, AdGuard Unfiltered, NextDNS, Control D, Mullvad, DNS.SB, Hurricane Electric, Wikimedia DNS, CleanBrowsing, Rethink DNS, AliDNS, DNSPod, 360 DNS, Yandex DNS, DNS4EU, CIRA Canadian Shield, CZ.NIC ODVR, SWITCH, Digitale Gesellschaft, DNSForge, UncensoredDNS, Applied Privacy, Njalla, DNS4ALL, LibreDNS, Comss.one DNS, Xfinity, Tiarap, IIJ Public DNS)
 > from the visitor's own network: DNS over HTTPS measured for real on a warm connection (10 rounds, interleaved,
 > median), UDP and DoT estimated by timing the same servers' addresses, plus uncached lookups and DNSSEC validation.
-> Shows the fastest resolver and what to enter to use it. Nothing is sent to this site; queries go straight from the
-> browser to each resolver.
+> Shows the fastest resolver and what to enter to use it. Test queries go straight from the browser to each resolver;
+> to show which resolver the device really uses, it also looks up random names under l.1ms.dog, 1ms.dog's own
+> authoritative DNS, which keeps the asking resolver's address and the ECS subnet in memory for 2 minutes, no logs.
+> Status of every resolver from Tokyo: https://dns.1ms.dog/status/
 
 - Page: https://dns.1ms.dog/ (also /zh-cn/, /zh-tw/, /ja/, /ko/, /es/, /fr/, /de/, /pt/, /ru/)
 - One page per resolver (its addresses, facts, how to set it up, and the same test with it in front): https://dns.1ms.dog/cloudflare/, https://dns.1ms.dog/google/, https://dns.1ms.dog/quad9/, https://dns.1ms.dog/opendns/, https://dns.1ms.dog/adguard/, https://dns.1ms.dog/adguard-nf/, https://dns.1ms.dog/nextdns/, https://dns.1ms.dog/controld/, https://dns.1ms.dog/mullvad/, https://dns.1ms.dog/dnssb/, https://dns.1ms.dog/he/, https://dns.1ms.dog/wikimedia/, https://dns.1ms.dog/cleanbrowsing/, https://dns.1ms.dog/rethink/, https://dns.1ms.dog/alidns/, https://dns.1ms.dog/dnspod/, https://dns.1ms.dog/360/, https://dns.1ms.dog/yandex/, https://dns.1ms.dog/dns4eu/, https://dns.1ms.dog/cira/, https://dns.1ms.dog/cznic/, https://dns.1ms.dog/switch/, https://dns.1ms.dog/digiges/, https://dns.1ms.dog/dnsforge/, https://dns.1ms.dog/uncensored/, https://dns.1ms.dog/appliedprivacy/, https://dns.1ms.dog/njalla/, https://dns.1ms.dog/dns4all/, https://dns.1ms.dog/libredns/, https://dns.1ms.dog/comss/, https://dns.1ms.dog/xfinity/, https://dns.1ms.dog/tiarap/, https://dns.1ms.dog/iij/; in other languages under the language's folder (/zh-cn/cloudflare/)

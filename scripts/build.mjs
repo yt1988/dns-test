@@ -372,8 +372,10 @@ export async function build({ check = false } = {}) {
 > Free DNS speed test in the browser. Times ${RESOLVERS.length} public DNS resolvers (${RESOLVERS.map(r => r.name).join(", ")})
 > from the visitor's own network: DNS over HTTPS measured for real on a warm connection (10 rounds, interleaved,
 > median), UDP and DoT estimated by timing the same servers' addresses, plus uncached lookups and DNSSEC validation.
-> Shows the fastest resolver and what to enter to use it. Nothing is sent to this site; queries go straight from the
-> browser to each resolver.
+> Shows the fastest resolver and what to enter to use it. Test queries go straight from the browser to each resolver;
+> to show which resolver the device really uses, it also looks up random names under l.1ms.dog, 1ms.dog's own
+> authoritative DNS, which keeps the asking resolver's address and the ECS subnet in memory for 2 minutes, no logs.
+> Status of every resolver from Tokyo: ${SITE}/status/
 
 - Page: ${SITE}/ (also ${langs.slice(1).map(([, s]) => "/" + s + "/").join(", ")})
 - One page per resolver (its addresses, facts, how to set it up, and the same test with it in front): ${RESOLVERS.map(r => SITE + pathOf("", r.id)).join(", ")}; in other languages under the language's folder (/zh-cn/cloudflare/)
