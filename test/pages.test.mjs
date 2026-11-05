@@ -65,8 +65,22 @@ test("every resolver's page, in every language, is its own", async () => {
 
 test("the sitemap lists every page with its alternates", async () => {
   const sm = await readFile(new URL("../public/sitemap.xml", import.meta.url), "utf8");
-  assert.equal((sm.match(/<loc>/g) || []).length, LANGS.length * (RESOLVERS.length + 1));
-  for (const [, slug] of LANGS) for (const id of [null, ...RESOLVERS.map(r => r.id)]) assert.ok(sm.includes(`<loc>${SITE + path(slug, id)}</loc>`), path(slug, id));
+  assert.equal((sm.match(/<loc>/g) || []).length, LANGS.length * (RESOLVERS.length + 2));
+  for (const [, slug] of LANGS) for (const id of [null, ...RESOLVERS.map(r => r.id), "status"]) assert.ok(sm.includes(`<loc>${SITE + path(slug, id)}</loc>`), path(slug, id));
+});
+
+test("the status page: every resolver with its protocols, its own script, linked from the list and every resolver's card", async () => {
+  for (const [, slug] of LANGS) {
+    const h = await page(slug, "status");
+    assert.ok(!/id="tbl"|app\.[0-9a-f]+\.js/.test(h), slug + ": no test on it");
+    assert.match(h, /\/assets\/status\.[0-9a-f]+\.js/);
+    for (const r of RESOLVERS) assert.ok(h.includes(`<tr data-id="${r.id}"`), slug + ": " + r.id);
+    assert.match(h, /<tr data-id="cloudflare"[^]*?<span class="pc">UDP<\/span><span class="pc">IPv6<\/span><span class="pc">DoT<\/span><span class="pc">DoH<\/span><\/span>/);
+    const link = `href="${path(slug, "status")}"`;
+    assert.ok((await page(slug, null)).includes(link), slug + ": home links it");
+    assert.ok((await page(slug, "google")).includes(link), slug + ": a resolver's page links it");
+  }
+  assert.match(await readFile(new URL("../public/_headers", import.meta.url), "utf8"), /connect-src [^;]* https:\/\/data\.1ms\.dog:2083/);
 });
 
 test("a resolver's page doesn't send its help to a list it doesn't have; the home page keeps every general answer", async () => {

@@ -128,6 +128,26 @@ function moreCard(T, lang, slug, focus, links) {
     `<li><a href="${pathOf(slug, r.id)}"><img src="/icons/${r.id}.png" width="14" height="14" alt="" loading="lazy" decoding="async">${esc(titleOf(r, lang))}</a></li>`).join("") + "</ul></nav>\n    </section>";
 }
 
+// The status page's main (src/status.js fills it from the Tokyo watch, server/watch): every resolver with each of its
+// protocols now, its last 24 hours, the share that answered over a day, a week and a month; then the outages
+const PROTO_N = { udp: "UDP", udp6: "IPv6", dot: "DoT", doh: "DoH", doq: "DoQ" };
+function statusMain(T, lang, slug) {
+  const th = `<thead><tr><th>DNS</th><th class="bar24">${esc(T("sp_c_24"))}</th><th class="u">${esc(T("sp_c_up24"))}</th><th class="u u7">${esc(T("sp_c_up7"))}</th><th class="u u30">${esc(T("sp_c_up30"))}</th></tr></thead>`;
+  const tr = r => `<tr data-id="${r.id}" data-name="${esc(r.name)}"><td class="sn"><a href="${pathOf(slug, r.id)}"><img src="/icons/${r.id}.png" width="16" height="16" alt="" loading="lazy" decoding="async">${esc(r.name)}</a>` +
+    `<span class="now">${["udp", "udp6", "dot", "doh", "doq"].filter(p => p === "doh" || r[p]).map(p => `<span class="pc">${PROTO_N[p]}</span>`).join("")}</span></td>` +
+    `<td class="bar24"></td><td class="u24">–</td><td class="u7">–</td><td class="u30">–</td></tr>`;
+  return `
+    <section class="hero card stp-h">
+      <div class="st-h"><h1>${esc(T("sp_h1"))}</h1><div class="st-top"><p class="st-sum" id="stSum"></p><p class="st-meta" id="stMeta">${esc(T("sp_wait"))}</p></div></div>
+      <p class="intro">${esc(T("sp_intro"))}</p>
+      <p class="st-key"><i class="s-o"></i>${esc(T("sp_ok"))}<i class="s-d"></i>${esc(T("sp_part"))}<i class="s-b"></i>${esc(T("sp_bad"))}<i></i>${esc(T("sp_cell"))}</p>
+    </section>
+    <section class="card stp" id="stTable"><table class="stt">${th}<tbody>${RESOLVERS.map(tr).join("")}</tbody></table></section>
+    <section class="card stp"><h2>${esc(T("sp_out_h"))}</h2><ul class="st-out" id="stOut"><li class="m">${esc(T("sp_wait"))}</li></ul>
+      <p class="all-l"><a class="btn all" href="${pathOf(slug)}">${esc(fillL(lang, T("f_all"), { n: RESOLVERS.length }))}</a></p></section>
+`;
+}
+
 // Every resolver's page, linked from every page under the list: how search engines (and people) find them
 function resNav(T, lang, slug, focus) {
   return `<nav class="rs-nav" aria-labelledby="rsNavH"><h3 id="rsNavH">${esc(T("rp_all_h"))}</h3><ul>` + RESOLVERS.map(r =>
@@ -236,10 +256,13 @@ export async function build({ check = false } = {}) {
   const cssFull = (await Promise.all(["fonts.css", "base.css", "style.css"].map(f => readFile(new URL(f, src), "utf8")))).join("\n");
   const css = (await transform(cssFull, { loader: "css", minify: true, legalComments: "none" })).code;
   const jsName = `app.${hash(js)}.js`, cssName = `app.${hash(css)}.css`;
-  const files = { ["assets/" + jsName]: js, ["assets/" + cssName]: css };
+  // the status page's own script (it doesn't test)
+  const stJs = (await transform(await readFile(new URL("status.js", src), "utf8"), { loader: "js", minify: true, target: "es2020", legalComments: "none" })).code;
+  const stName = `status.${hash(stJs)}.js`;
+  const files = { ["assets/" + jsName]: js, ["assets/" + cssName]: css, ["assets/" + stName]: stJs };
 
-  // the pages: per language, the test of them all and one page per resolver (pathOf)
-  const PAGES = [null, ...RESOLVERS.map(r => r.id)];
+  // the pages: per language, the test of them all, one page per resolver (pathOf), and the status page
+  const PAGES = [null, ...RESOLVERS.map(r => r.id), "status"];
   for (const [lang, slug, locale] of langs) {
     // {n} in the two descriptions is the number of resolvers, filled here so it never goes stale
     const d = I[lang], T = k => { if (!(k in d)) throw new Error(`i18n/${lang}.mjs has no "${k}"`); return k === "seo_desc" || k === "og_sub" ? d[k].split("{n}").join(RESOLVERS.length) : d[k]; };
@@ -262,16 +285,16 @@ export async function build({ check = false } = {}) {
     });
 
     for (const focus of PAGES) {
-    const r = focus && RESOLVERS.find(x => x.id === focus), name = r && titleOf(r, lang);
+    const ST = focus === "status", r = !ST && focus && RESOLVERS.find(x => x.id === focus), name = r && titleOf(r, lang);
     const url = SITE + pathOf(slug, focus);
     // a resolver's page asks its own questions first; the FAQ data has only those, the test page all the general ones
     const own = r ? resolverDocs(r, T, lang, slug) : [], docs = r ? [...own, ...generalRp] : general;
-    const title = r ? fillL(lang, T("rp_title"), { name, ip: r.udp ? fillL(lang, T("rp_ip"), { ip: r.udp[0] }) : "", protos: ["DoH", r.dot && "DoT"].filter(Boolean).join("/") }) : T("seo_title");
-    const desc = r ? fillL(lang, T("rp_desc"), { name, n: RESOLVERS.length }) : T("seo_desc");
+    const title = ST ? T("sp_title") : r ? fillL(lang, T("rp_title"), { name, ip: r.udp ? fillL(lang, T("rp_ip"), { ip: r.udp[0] }) : "", protos: ["DoH", r.dot && "DoT"].filter(Boolean).join("/") }) : T("seo_title");
+    const desc = ST ? T("sp_desc") : r ? fillL(lang, T("rp_desc"), { name, n: RESOLVERS.length }) : T("seo_desc");
     const kw = r ? [fillL(lang, T("rp_kw"), { name }), ...(r.udp || []), r.dot, name !== r.name && r.name].filter(Boolean).join(", ") : T("seo_kw");
-    const h1 = r ? fillL(lang, T("rp_h1"), { name }) : T("h1");
+    const h1 = ST ? T("sp_h1") : r ? fillL(lang, T("rp_h1"), { name }) : T("h1");
     const alts = langs.map(([l, sl]) => `<link rel="alternate" hreflang="${l}" href="${SITE + pathOf(sl, focus)}">`).join("\n") + `\n<link rel="alternate" hreflang="x-default" href="${SITE + pathOf("", focus)}">`;
-    const graph = [
+    const graph = ST ? [{ "@type": "WebPage", name: title, url, description: desc, inLanguage: lang }] : [
       { "@type": "WebApplication", name: (r ? h1 : T("app_name")) + " · 1ms.dog", url, applicationCategory: "UtilitiesApplication", operatingSystem: "Any",
         browserRequirements: "Requires JavaScript", description: desc, inLanguage: lang, isAccessibleForFree: true,
         offers: { "@type": "Offer", price: "0", priceCurrency: "USD" } },
@@ -292,7 +315,7 @@ export async function build({ check = false } = {}) {
       `<link rel="canonical" href="${url}">`, alts,
       `<link rel="icon" href="/favicon.ico" sizes="any">`, `<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">`, `<link rel="apple-touch-icon" href="/apple-touch-icon.png">`,
       // the resolvers' connections start while the page loads
-      ...ORIGINS.slice(0, 6).map(o => `<link rel="preconnect" href="${o}" crossorigin>`),
+      ...(ST ? [] : ORIGINS.slice(0, 6).map(o => `<link rel="preconnect" href="${o}" crossorigin>`)),
       `<meta property="og:type" content="website">`, `<meta property="og:site_name" content="1ms.dog">`,
       `<meta property="og:title" content="${esc(title)}">`, `<meta property="og:description" content="${esc(r ? desc : T("og_sub"))}">`, `<meta property="og:url" content="${url}">`,
       `<meta property="og:locale" content="${locale}">`,
@@ -310,7 +333,12 @@ export async function build({ check = false } = {}) {
     // the install line: on a resolver's page, run once against it and the one it is compared with
     const cliCmd = `curl -fsSL ${SITE}/i | sh` + (r ? ` -s -- run -r ${r.id},${ABOUT[r.id].vs}` : "");
 
-    const html = tpl
+    // "Are these resolvers up?": the status page, beside the list's other links (on a resolver's page, in its card)
+    const stLink = `<a class="who st-l" href="${pathOf(slug, "status")}"><span>${esc(T("sp_link"))}</span></a>`;
+    // the status page: the same header and help around its own main and script
+    const base = ST ? tpl.replace(/<main>[\s\S]*<\/main>/, () => "<main>" + statusMain(T, lang, slug) + "  </main>").replace("{{js}}", stName) : tpl;
+    const html = base
+      .replace("{{stLink}}", stLink)
       .replace(/(<(\w+)\b[^>]*\sdata-i="(\w+)"[^>]*>)([^<]*)(<\/\2>)/g, (m, open, tag, k, inner, close) => open + esc(T(k)) + close)
       .replace(/\{\{a:(\w+)\}\}/g, (m, k) => esc(T(k)))   // translated attribute values (aria-label, tooltips)
       .replace(/\{\{(c_\w+)\}\}/g, (m, k) => esc(T(k)))   // column heads that carry a tooltip
@@ -320,7 +348,7 @@ export async function build({ check = false } = {}) {
       // a resolver's page names it in the hero from the start
       .replace("{{winK}}", esc(T(r ? "f_run" : "best_k"))).replace("{{winIcAttr}}", r ? ` style="background-image:url(/icons/${r.id}.png)"` : "")
       .replace("{{winName}}", r ? esc(r.name) : '<i class="skl"></i>').replace("{{addrCard}}", r ? addrCard(r, T, lang) : "")
-      .replace(/<section class="res card">[\s\S]*?<\/section>/, m => r ? moreCard(T, lang, slug, focus, (/<a [^>]*id="speedLink"[\s\S]*?<\/a>/.exec(m) || [""])[0]) : m)
+      .replace(/<section class="res card">[\s\S]*?<\/section>/, m => r ? moreCard(T, lang, slug, focus, (/<a [^>]*id="speedLink"[\s\S]*?<\/a>/.exec(m) || [""])[0] + stLink) : m)
       .replace("{{rows}}", rowsHTML(T, lang, slug, focus)).replace("{{resNav}}", resNav(T, lang, slug, focus))
       // a resolver's page: the way to the home page's test of them all, under its own result
       .replace("{{allLink}}", r ? `<a class="btn all" id="allLink" href="${pathOf(slug)}"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M2.5 4h11M2.5 8h11M2.5 12h7"/></svg>${esc(fillL(lang, T("f_all"), { n: RESOLVERS.length }))}</a>` : "")
@@ -356,7 +384,7 @@ export async function build({ check = false } = {}) {
   // The only inline script is the pre-paint snippet, identical on every page: one hash covers the site.
   const csp = ["default-src 'self'", `script-src 'self' 'sha256-${sha(PREPAINT)}'`, "style-src 'self' 'unsafe-inline'", "font-src 'self'", "img-src 'self' data:",
     // and 1ms.dog's own authoritative DNS and its results API (src/app.js: the resolver this device really uses)
-    "connect-src 'self' " + ORIGINS.join(" ") + " https://*.l.1ms.dog:2053",
+    "connect-src 'self' " + ORIGINS.join(" ") + " https://*.l.1ms.dog:2053 https://data.1ms.dog:2083",   // and the Tokyo watch's results (src/status.js)
     "manifest-src 'self'", "object-src 'none'", "base-uri 'none'", "form-action 'none'", "frame-ancestors 'none'"].join("; ");
   files["_headers"] = `# Generated by scripts/build.mjs
 /*
@@ -369,6 +397,9 @@ export async function build({ check = false } = {}) {
 /assets/*
   Cache-Control: public, max-age=604800
 /assets/app.*
+  ! Cache-Control
+  Cache-Control: public, max-age=31536000, immutable
+/assets/status.*
   ! Cache-Control
   Cache-Control: public, max-age=31536000, immutable
 /assets/l.*
@@ -402,7 +433,7 @@ export async function build({ check = false } = {}) {
 `;
 
   // generated files that are no longer produced (old hashes) are stale too
-  const gen = async () => (await readdir(new URL("assets/", pub))).filter(f => /^(app|l)\..+\.(js|css)$/.test(f)).map(f => "assets/" + f);
+  const gen = async () => (await readdir(new URL("assets/", pub))).filter(f => /^(app|l|status)\..+\.(js|css)$/.test(f)).map(f => "assets/" + f);
   const stale = [];
   for (const [f, body] of Object.entries(files)) {
     let cur = null; try { cur = await readFile(new URL(f, pub), "utf8"); } catch (e) {}

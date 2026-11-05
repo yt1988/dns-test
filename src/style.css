@@ -265,3 +265,45 @@ html.embed .hero { padding-top: 14px; gap: 10px; }
 .td dd .tkh { flex-basis: 100%; color: var(--fg); }
 html.embed .mine { display: none; }
 @media (max-width: 560px) { .mine { padding: 12px 16px; } }
+
+/* the status page (/status/, src/status.js): every resolver as the Tokyo watch sees it */
+.stp-h { padding: 18px 22px; display: flex; flex-direction: column; gap: 10px; }
+.stp-h .st-h { display: flex; justify-content: space-between; align-items: flex-start; gap: 8px 20px; flex-wrap: wrap; }
+.stp-h h1 { font-size: 22px; letter-spacing: -.01em; }
+.stp-h .intro { font-size: 13.5px; color: var(--muted); line-height: 1.6; }
+.st-top { display: flex; flex-direction: column; align-items: flex-end; gap: 2px; text-align: right; }
+.st-sum { font-size: 18px; font-weight: 700; color: var(--t1); font-variant-numeric: tabular-nums; white-space: nowrap; }
+.st-sum.warn, .st-meta.warn { color: var(--warn); }
+.st-meta, .st-key { font-size: 13px; color: var(--muted); }
+.st-key i { display: inline-block; width: 8px; height: 12px; border-radius: 2px; margin: 0 4px -1px 10px; }
+.st-key i:first-child { margin-left: 0; }
+.stp { padding: 14px 22px 18px; overflow-x: auto; }
+.stp h2 { margin-bottom: 8px; }
+.stt { width: 100%; border-collapse: collapse; font-size: 13.5px; }
+.stt th { text-align: left; font-weight: 500; font-size: 12px; color: var(--muted); padding: 4px 8px; border-bottom: 1px solid var(--line); white-space: nowrap; }
+.stt td { padding: 6px 8px; border-bottom: 1px solid var(--line); vertical-align: middle; white-space: nowrap; }
+.stt tr:last-child td { border-bottom: 0; }
+.stt th.u, .stt td.u24, .stt td.u7, .stt td.u30 { text-align: right; font-variant-numeric: tabular-nums; }
+.stt .sn a { color: inherit; text-decoration: none; display: inline-flex; align-items: center; gap: 8px; } .stt .sn a:hover { text-decoration: underline; }
+.stt .now { display: flex; gap: 4px; margin: 3px 0 0 24px; }
+.pc { display: inline-block; font: 600 11px/18px var(--f-mono, ui-monospace, monospace); padding: 0 5px; border-radius: 4px; }
+.pc.s-o { color: var(--t1); background: color-mix(in srgb, var(--t1) 12%, transparent); }
+.pc.s-b { color: var(--bad); background: color-mix(in srgb, var(--bad) 12%, transparent); }
+.hb { display: inline-flex; gap: 2px; vertical-align: middle; }
+.hb i, .st-key i { background: var(--soft); box-shadow: inset 0 0 0 1px var(--line); }
+.hb i { width: 5px; height: 16px; border-radius: 1.5px; }
+.hb i.s-o, .st-key i.s-o { background: var(--t1); box-shadow: none; }
+.hb i.s-d, .st-key i.s-d { background: var(--warn); box-shadow: none; }
+.hb i.s-b, .st-key i.s-b { background: var(--bad); box-shadow: none; }
+.c-ok { color: var(--t1); } .c-mid { color: var(--warn); } .c-bad { color: var(--bad); }
+.st-out { list-style: none; display: flex; flex-direction: column; gap: 6px; font-size: 13.5px; line-height: 21px; margin: 0; padding: 0; }
+.st-out .pc { margin: 0 6px; }
+.st-out .m, .stp .m { color: var(--muted); }
+.stp .all-l { margin-top: 14px; }
+@media (max-width: 560px) {
+  .stp-h, .stp { padding: 12px 14px; }
+  .st-top { align-items: flex-start; text-align: left; }
+  .stt th.u7, .stt td.u7, .stt th.u30, .stt td.u30 { display: none; }
+  .hb { gap: 1px; } .hb i { width: 4px; }
+  .stt td.sn { white-space: normal; } .stt .now { flex-wrap: wrap; margin-left: 0; } .stt td, .stt th { padding-inline: 4px; }
+}

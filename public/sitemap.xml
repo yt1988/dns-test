@@ -4760,4 +4760,144 @@
     <xhtml:link rel="alternate" hreflang="ru" href="https://dns.1ms.dog/ru/iij/"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://dns.1ms.dog/iij/"/>
   </url>
+  <url>
+    <loc>https://dns.1ms.dog/status/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://dns.1ms.dog/status/"/>
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://dns.1ms.dog/zh-cn/status/"/>
+    <xhtml:link rel="alternate" hreflang="zh-TW" href="https://dns.1ms.dog/zh-tw/status/"/>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://dns.1ms.dog/ja/status/"/>
+    <xhtml:link rel="alternate" hreflang="ko" href="https://dns.1ms.dog/ko/status/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://dns.1ms.dog/es/status/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://dns.1ms.dog/fr/status/"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://dns.1ms.dog/de/status/"/>
+    <xhtml:link rel="alternate" hreflang="pt" href="https://dns.1ms.dog/pt/status/"/>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://dns.1ms.dog/ru/status/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://dns.1ms.dog/status/"/>
+  </url>
+  <url>
+    <loc>https://dns.1ms.dog/zh-cn/status/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://dns.1ms.dog/status/"/>
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://dns.1ms.dog/zh-cn/status/"/>
+    <xhtml:link rel="alternate" hreflang="zh-TW" href="https://dns.1ms.dog/zh-tw/status/"/>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://dns.1ms.dog/ja/status/"/>
+    <xhtml:link rel="alternate" hreflang="ko" href="https://dns.1ms.dog/ko/status/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://dns.1ms.dog/es/status/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://dns.1ms.dog/fr/status/"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://dns.1ms.dog/de/status/"/>
+    <xhtml:link rel="alternate" hreflang="pt" href="https://dns.1ms.dog/pt/status/"/>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://dns.1ms.dog/ru/status/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://dns.1ms.dog/status/"/>
+  </url>
+  <url>
+    <loc>https://dns.1ms.dog/zh-tw/status/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://dns.1ms.dog/status/"/>
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://dns.1ms.dog/zh-cn/status/"/>
+    <xhtml:link rel="alternate" hreflang="zh-TW" href="https://dns.1ms.dog/zh-tw/status/"/>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://dns.1ms.dog/ja/status/"/>
+    <xhtml:link rel="alternate" hreflang="ko" href="https://dns.1ms.dog/ko/status/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://dns.1ms.dog/es/status/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://dns.1ms.dog/fr/status/"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://dns.1ms.dog/de/status/"/>
+    <xhtml:link rel="alternate" hreflang="pt" href="https://dns.1ms.dog/pt/status/"/>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://dns.1ms.dog/ru/status/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://dns.1ms.dog/status/"/>
+  </url>
+  <url>
+    <loc>https://dns.1ms.dog/ja/status/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://dns.1ms.dog/status/"/>
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://dns.1ms.dog/zh-cn/status/"/>
+    <xhtml:link rel="alternate" hreflang="zh-TW" href="https://dns.1ms.dog/zh-tw/status/"/>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://dns.1ms.dog/ja/status/"/>
+    <xhtml:link rel="alternate" hreflang="ko" href="https://dns.1ms.dog/ko/status/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://dns.1ms.dog/es/status/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://dns.1ms.dog/fr/status/"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://dns.1ms.dog/de/status/"/>
+    <xhtml:link rel="alternate" hreflang="pt" href="https://dns.1ms.dog/pt/status/"/>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://dns.1ms.dog/ru/status/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://dns.1ms.dog/status/"/>
+  </url>
+  <url>
+    <loc>https://dns.1ms.dog/ko/status/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://dns.1ms.dog/status/"/>
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://dns.1ms.dog/zh-cn/status/"/>
+    <xhtml:link rel="alternate" hreflang="zh-TW" href="https://dns.1ms.dog/zh-tw/status/"/>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://dns.1ms.dog/ja/status/"/>
+    <xhtml:link rel="alternate" hreflang="ko" href="https://dns.1ms.dog/ko/status/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://dns.1ms.dog/es/status/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://dns.1ms.dog/fr/status/"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://dns.1ms.dog/de/status/"/>
+    <xhtml:link rel="alternate" hreflang="pt" href="https://dns.1ms.dog/pt/status/"/>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://dns.1ms.dog/ru/status/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://dns.1ms.dog/status/"/>
+  </url>
+  <url>
+    <loc>https://dns.1ms.dog/es/status/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://dns.1ms.dog/status/"/>
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://dns.1ms.dog/zh-cn/status/"/>
+    <xhtml:link rel="alternate" hreflang="zh-TW" href="https://dns.1ms.dog/zh-tw/status/"/>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://dns.1ms.dog/ja/status/"/>
+    <xhtml:link rel="alternate" hreflang="ko" href="https://dns.1ms.dog/ko/status/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://dns.1ms.dog/es/status/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://dns.1ms.dog/fr/status/"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://dns.1ms.dog/de/status/"/>
+    <xhtml:link rel="alternate" hreflang="pt" href="https://dns.1ms.dog/pt/status/"/>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://dns.1ms.dog/ru/status/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://dns.1ms.dog/status/"/>
+  </url>
+  <url>
+    <loc>https://dns.1ms.dog/fr/status/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://dns.1ms.dog/status/"/>
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://dns.1ms.dog/zh-cn/status/"/>
+    <xhtml:link rel="alternate" hreflang="zh-TW" href="https://dns.1ms.dog/zh-tw/status/"/>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://dns.1ms.dog/ja/status/"/>
+    <xhtml:link rel="alternate" hreflang="ko" href="https://dns.1ms.dog/ko/status/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://dns.1ms.dog/es/status/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://dns.1ms.dog/fr/status/"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://dns.1ms.dog/de/status/"/>
+    <xhtml:link rel="alternate" hreflang="pt" href="https://dns.1ms.dog/pt/status/"/>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://dns.1ms.dog/ru/status/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://dns.1ms.dog/status/"/>
+  </url>
+  <url>
+    <loc>https://dns.1ms.dog/de/status/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://dns.1ms.dog/status/"/>
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://dns.1ms.dog/zh-cn/status/"/>
+    <xhtml:link rel="alternate" hreflang="zh-TW" href="https://dns.1ms.dog/zh-tw/status/"/>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://dns.1ms.dog/ja/status/"/>
+    <xhtml:link rel="alternate" hreflang="ko" href="https://dns.1ms.dog/ko/status/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://dns.1ms.dog/es/status/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://dns.1ms.dog/fr/status/"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://dns.1ms.dog/de/status/"/>
+    <xhtml:link rel="alternate" hreflang="pt" href="https://dns.1ms.dog/pt/status/"/>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://dns.1ms.dog/ru/status/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://dns.1ms.dog/status/"/>
+  </url>
+  <url>
+    <loc>https://dns.1ms.dog/pt/status/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://dns.1ms.dog/status/"/>
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://dns.1ms.dog/zh-cn/status/"/>
+    <xhtml:link rel="alternate" hreflang="zh-TW" href="https://dns.1ms.dog/zh-tw/status/"/>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://dns.1ms.dog/ja/status/"/>
+    <xhtml:link rel="alternate" hreflang="ko" href="https://dns.1ms.dog/ko/status/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://dns.1ms.dog/es/status/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://dns.1ms.dog/fr/status/"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://dns.1ms.dog/de/status/"/>
+    <xhtml:link rel="alternate" hreflang="pt" href="https://dns.1ms.dog/pt/status/"/>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://dns.1ms.dog/ru/status/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://dns.1ms.dog/status/"/>
+  </url>
+  <url>
+    <loc>https://dns.1ms.dog/ru/status/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://dns.1ms.dog/status/"/>
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://dns.1ms.dog/zh-cn/status/"/>
+    <xhtml:link rel="alternate" hreflang="zh-TW" href="https://dns.1ms.dog/zh-tw/status/"/>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://dns.1ms.dog/ja/status/"/>
+    <xhtml:link rel="alternate" hreflang="ko" href="https://dns.1ms.dog/ko/status/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://dns.1ms.dog/es/status/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://dns.1ms.dog/fr/status/"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://dns.1ms.dog/de/status/"/>
+    <xhtml:link rel="alternate" hreflang="pt" href="https://dns.1ms.dog/pt/status/"/>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://dns.1ms.dog/ru/status/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://dns.1ms.dog/status/"/>
+  </url>
 </urlset>
