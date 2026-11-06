@@ -62,6 +62,8 @@ export default {
   card_head_self: "私の回線での実測",
   card_sub_self: "DoH は実測、UDP と DoT は推定",
   who_link: "端末が実際に使っている DNS は？「あなたは誰」で DNS 漏れを確認",
+  c_doq: "DoQ ≈",
+  tip_est_doq: "推定値です。ブラウザは DoQ（DNS over QUIC）の問い合わせも送れません。DoQ は DoT と同じサーバーで、接続後は 1 回の往復で答えるため、ここでは DoT の推定値を使っています。DoQ の実測はコマンドラインツールでできます。",
   sp_title: "公開 DNS は使える？東京からの稼働状況 · DNS テスト",
   sp_desc: "DNS テストに載っているすべての公開 DNS を、東京から 10 分ごとに UDP・IPv6・DoT・DoH・DoQ で確認：各プロトコルの現在の状態、過去 24 時間、1 日・1 週間・1 か月の稼働率、すべての障害。",
   sp_h1: "これらの DNS は使えますか？",

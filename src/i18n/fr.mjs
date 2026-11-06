@@ -62,6 +62,8 @@ export default {
   card_head_self: "Mesuré sur mon réseau",
   card_sub_self: "DoH mesuré, UDP et DoT estimés",
   who_link: "Quel DNS votre appareil utilise-t-il vraiment ? Cherchez les fuites DNS sur Qui êtes-vous",
+  c_doq: "DoQ ≈",
+  tip_est_doq: "Une estimation. Les navigateurs ne peuvent pas non plus envoyer de requêtes DNS sur QUIC. Le DoQ d’un résolveur est le même serveur que son DoT, un aller-retour par requête une fois la connexion ouverte : c’est donc l’estimation DoT. L’outil en ligne de commande mesure DoQ pour de vrai.",
   sp_title: "Les DNS publics fonctionnent-ils ? État depuis Tokyo · Test DNS",
   sp_desc: "Chaque résolveur public du Test DNS, sondé depuis Tokyo toutes les 10 minutes en UDP, IPv6, DoT, DoH et DoQ : chaque protocole maintenant, les dernières 24 heures, la disponibilité sur un jour, une semaine et un mois, et chaque panne.",
   sp_h1: "Ces résolveurs fonctionnent-ils ?",

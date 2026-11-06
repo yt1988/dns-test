@@ -63,6 +63,8 @@ export default {
   card_head_self: "Timed on my network",
   card_sub_self: "DoH measured, UDP and DoT estimated",
   who_link: "Which DNS is your device really using? Check for DNS leaks on Who Are You",
+  c_doq: "DoQ ≈",
+  tip_est_doq: "An estimate. Browsers can't send DNS over QUIC either. A resolver's DoQ is the same server as its DoT, one round trip per query on an open connection, so this is the DoT estimate. The command-line tool measures DoQ for real.",
   sp_title: "Are public DNS resolvers up? Status from Tokyo · DNS Test",
   sp_desc: "Every resolver DNS Test lists, probed from Tokyo every 10 minutes over UDP, IPv6, DoT, DoH and DoQ: each protocol now, the last 24 hours, uptime over a day, a week and a month, and every outage.",
   sp_h1: "Are these resolvers up?",

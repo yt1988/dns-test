@@ -62,6 +62,8 @@ export default {
   card_head_self: "我這裡的實測",
   card_sub_self: "DoH 實測，UDP 和 DoT 為估算",
   who_link: "裝置實際在用哪個 DNS？到「你是誰」檢查 DNS 外洩",
+  c_doq: "DoQ ≈",
+  tip_est_doq: "估算值。瀏覽器同樣送不出 DoQ（DNS over QUIC）查詢。一家的 DoQ 和 DoT 是同一台伺服器，連線建立後每次查詢都是一個來回，所以這裡用的就是 DoT 的估算。要實測 DoQ，請用命令列工具。",
   sp_title: "公共 DNS 現在能用嗎？東京即時狀態 · DNS 測試",
   sp_desc: "DNS 測試列出的每一家公共 DNS，從東京每 10 分鐘探測一次，涵蓋 UDP、IPv6、DoT、DoH、DoQ：每種協定現在的狀態、過去 24 小時、一天、一週和一個月的可用率，以及每一次中斷。",
   sp_h1: "這些 DNS 都能用嗎？",

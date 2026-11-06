@@ -188,14 +188,16 @@ import { dohURL } from "./dns.mjs";
     const mark = l > 0 ? `<i class="lost" data-why="${esc(t("tip_loss", { p: Math.round(l * 100) }))}">!</i>` : "";
     return (est ? '<i class="ap">≈</i>' : "") + num(m, mark);
   }
-  const estOf = (r, k) => r.est[k] === "doh" ? tgt(r.id, "doh") : r.est[k] === "ip" ? tgt(r.id, "ip") : null;
+  // where a resolver's UDP or DoT estimate comes from; DoQ's is its DoT one (the same server, on UDP instead of TCP)
+  const estKey = (r, k) => k === "doq" ? r.doq && r.est.dot : r.est[k];
+  const estOf = (r, k) => estKey(r, k) === "doh" ? tgt(r.id, "doh") : estKey(r, k) === "ip" ? tgt(r.id, "ip") : null;
   function fillRow(id) {
     const r = RESOLVERS.find(x => x.id === id), row = ROW[id], doh = tgt(id, "doh");
     if (!row) return;
     row.querySelector('[data-c="doh"]').innerHTML = cellOf(doh);
-    for (const k of ["udp", "dot"]) {
+    for (const k of ["udp", "dot", "doq"]) {
       const c = row.querySelector(`[data-c="${k}"]`);
-      if (!r.est[k]) { c.innerHTML = `<span class="m" data-why="${esc(t(r[k] ? "tip_noest" : "tip_none"))}">–</span>`; continue; }
+      if (!estKey(r, k)) { c.innerHTML = `<span class="m" data-why="${esc(t(r[k] ? "tip_noest" : "tip_none"))}">–</span>`; continue; }
       c.innerHTML = cellOf(estOf(r, k), true);
     }
     // uncached: the DoH target's, marked when the resolver answers a missing name with an address

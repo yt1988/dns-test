@@ -62,6 +62,8 @@ export default {
   card_head_self: "In meinem Netz gemessen",
   card_sub_self: "DoH gemessen, UDP und DoT geschätzt",
   who_link: "Welchen DNS nutzt dein Gerät wirklich? DNS-Lecks prüfen bei „Wer bist du?“",
+  c_doq: "DoQ ≈",
+  tip_est_doq: "Ein Schätzwert. Browser können auch keine DNS-Anfragen über QUIC senden. DoQ läuft beim selben Server wie DoT, eine Runde pro Anfrage bei offener Verbindung, daher steht hier der DoT-Schätzwert. Das Kommandozeilen-Tool misst DoQ echt.",
   sp_title: "Laufen die öffentlichen DNS-Server? Status aus Tokio · DNS-Test",
   sp_desc: "Jeder DNS-Server aus dem DNS-Test, alle 10 Minuten aus Tokio über UDP, IPv6, DoT, DoH und DoQ geprüft: jedes Protokoll jetzt, die letzten 24 Stunden, die Verfügbarkeit über einen Tag, eine Woche und einen Monat und jeder Ausfall.",
   sp_h1: "Laufen diese DNS-Server?",

@@ -62,6 +62,8 @@ export default {
   card_head_self: "내 인터넷에서 실측",
   card_sub_self: "DoH는 실측, UDP와 DoT는 추정",
   who_link: "기기가 실제로 쓰는 DNS는? '당신은 누구'에서 DNS 유출 확인",
+  c_doq: "DoQ ≈",
+  tip_est_doq: "추정값이에요. 브라우저는 DoQ(DNS over QUIC) 조회도 보낼 수 없어요. DoQ는 DoT와 같은 서버이고 연결된 뒤에는 조회마다 왕복 한 번이라서, 여기서는 DoT 추정값을 써요. DoQ 실측은 명령줄 도구로 할 수 있어요.",
   sp_title: "공용 DNS는 지금 작동하나요? 도쿄에서 본 상태 · DNS 테스트",
   sp_desc: "DNS 테스트에 있는 모든 공용 DNS를 도쿄에서 10분마다 UDP, IPv6, DoT, DoH, DoQ로 확인합니다. 프로토콜별 현재 상태, 지난 24시간, 하루·일주일·한 달 가용률, 모든 장애를 보여 줘요.",
   sp_h1: "이 DNS들은 작동하나요?",

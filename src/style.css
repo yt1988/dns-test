@@ -84,7 +84,7 @@ svg.ext[viewBox] { width: .95em; height: .95em; flex: none; fill: none; stroke: 
 a.val { color: inherit; text-decoration: underline dotted; text-underline-offset: 3px; }
 a.val:hover { color: var(--ink); }
 .tbl { display: flex; flex-direction: column; }
-.th, .tr { display: grid; grid-template-columns: 26px minmax(0, 1fr) 76px 76px 76px 70px 62px; align-items: center; gap: 8px; }
+.th, .tr { display: grid; grid-template-columns: 26px minmax(0, 1fr) 76px 76px 76px 76px 70px 62px; align-items: center; gap: 8px; }
 .th { height: 30px; font-size: 12px; font-weight: 600; color: var(--muted); }
 .th > span:nth-child(n+3) { text-align: right; }
 .th [data-why] { cursor: help; text-decoration: underline dotted; text-underline-offset: 3px; outline: none; }
@@ -208,7 +208,7 @@ details.rblk > summary { cursor: pointer; font-size: 13px; color: var(--ink); }
 
 @media (prefers-reduced-motion: reduce) { .skl, .v .dots { animation: none !important; transition: none !important; } }
 @media (max-width: 860px) {
-  .th, .tr { grid-template-columns: 22px minmax(0, 1fr) 64px 64px 64px 56px 52px; gap: 6px; }
+  .th, .tr { grid-template-columns: 22px minmax(0, 1fr) 64px 64px 64px 64px 56px 52px; gap: 6px; }
   .pp { display: none; }
 }
 @media (max-width: 720px) {

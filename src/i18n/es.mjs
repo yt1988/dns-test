@@ -62,6 +62,8 @@ export default {
   card_head_self: "Medido en mi red",
   card_sub_self: "DoH medido, UDP y DoT estimados",
   who_link: "¿Qué DNS usa de verdad tu dispositivo? Busca fugas de DNS en Quién eres",
+  c_doq: "DoQ ≈",
+  tip_est_doq: "Una estimación. Los navegadores tampoco pueden enviar consultas DNS por QUIC. El DoQ de un DNS es el mismo servidor que su DoT, un viaje de ida y vuelta por consulta con la conexión abierta, así que aquí va la estimación de DoT. La herramienta de línea de comandos mide DoQ de verdad.",
   sp_title: "¿Funcionan los DNS públicos? Estado desde Tokio · Test de DNS",
   sp_desc: "Cada DNS público del Test de DNS, comprobado desde Tokio cada 10 minutos por UDP, IPv6, DoT, DoH y DoQ: cada protocolo ahora, las últimas 24 horas, la disponibilidad en un día, una semana y un mes, y cada caída.",
   sp_h1: "¿Funcionan estos DNS?",

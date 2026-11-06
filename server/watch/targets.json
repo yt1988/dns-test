@@ -18,6 +18,7 @@
   "udp": "9.9.9.9",
   "udp6": "2620:fe::fe",
   "dot": "dns.quad9.net",
+  "doq": "dns.quad9.net",
   "doh": "https://dns.quad9.net/dns-query"
  },
  {
@@ -76,6 +77,7 @@
   "udp": "74.82.42.42",
   "udp6": "2001:470:20::2",
   "dot": "ordns.he.net",
+  "doq": "ordns.he.net",
   "doh": "https://ordns.he.net/dns-query"
  },
  {
@@ -152,6 +154,7 @@
  {
   "id": "digiges",
   "dot": "dns.digitale-gesellschaft.ch",
+  "doq": "dns.digitale-gesellschaft.ch",
   "doh": "https://dns.digitale-gesellschaft.ch/dns-query"
  },
  {
@@ -159,12 +162,11 @@
   "udp": "176.9.93.198",
   "udp6": "2a01:4f8:151:34aa::198",
   "dot": "dnsforge.de",
+  "doq": "dnsforge.de",
   "doh": "https://dnsforge.de/dns-query"
  },
  {
   "id": "uncensored",
-  "udp": "91.239.100.100",
-  "udp6": "2001:67c:28a4::",
   "dot": "anycast.uncensoreddns.org",
   "doh": "https://anycast.uncensoreddns.org/dns-query"
  },
@@ -185,6 +187,7 @@
   "udp": "194.0.5.3",
   "udp6": "2001:678:8::3",
   "dot": "dot.dns4all.eu",
+  "doq": "dot.dns4all.eu",
   "doh": "https://doh.dns4all.eu/dns-query"
  },
  {
@@ -195,6 +198,7 @@
  {
   "id": "comss",
   "dot": "dns.comss.one",
+  "doq": "dns.comss.one",
   "doh": "https://dns.comss.one/dns-query"
  },
  {
@@ -205,6 +209,7 @@
   "id": "tiarap",
   "udp": "174.138.21.128",
   "dot": "dot.tiar.app",
+  "doq": "dot.tiar.app",
   "doh": "https://doh.tiar.app/dns-query"
  },
  {
