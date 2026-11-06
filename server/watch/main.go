@@ -17,7 +17,9 @@ import (
 	_ "embed"
 	"encoding/json"
 	"flag"
+	"fmt"
 	"log"
+	"net/url"
 	"path/filepath"
 	"sync"
 	"time"
@@ -59,11 +61,16 @@ func RunAll(ctx context.Context, targets []Target, parallel int) map[string]map[
 func main() {
 	out := flag.String("out", "/srv/1ms-data/dns", "output directory")
 	keep := flag.Int("keep", 90, "days of history to keep")
+	scan := flag.Bool("scan-doq", false, "print which resolvers answer DNS over QUIC on their DoQ, DoT or DoH host, then exit (writes nothing)")
 	flag.Parse()
 	log.SetFlags(0)
 	var targets []Target
 	if err := json.Unmarshal(targetsJSON, &targets); err != nil {
 		log.Fatal(err)
+	}
+	if *scan {
+		scanDoQ(targets)
+		return
 	}
 	start := time.Now().UTC()
 	ctx, cancel := context.WithTimeout(context.Background(), 2*time.Minute)
@@ -106,5 +113,40 @@ func main() {
 	}
 	if fails > 0 {
 		log.Printf("%d probes failed (see latest.json)", fails)
+	}
+}
+
+// scanDoQ tries DoQ (UDP 853) on every host a resolver is known by, three times each, for keeping the list's doq
+// entries true: "id host ok ms" or "id host fail reason".
+func scanDoQ(targets []Target) {
+	for _, t := range targets {
+		hosts := []string{}
+		seen := map[string]bool{}
+		add := func(h string) {
+			if h != "" && !seen[h] {
+				seen[h] = true
+				hosts = append(hosts, h)
+			}
+		}
+		add(t.DoQ)
+		add(t.DoT)
+		if u, err := url.Parse(t.DoH); err == nil {
+			add(u.Hostname())
+		}
+		for _, h := range hosts {
+			ok, last := 0, ""
+			for i := 0; i < 3; i++ {
+				ctx, cancel := context.WithTimeout(context.Background(), 6*time.Second)
+				r := Probe(ctx, "doq", h)
+				cancel()
+				if r.Ms != nil {
+					ok++
+					last = fmt.Sprintf("%d ms", *r.Ms)
+				} else if last == "" {
+					last = r.Err
+				}
+			}
+			fmt.Printf("%-16s %-40s %d/3 %s\n", t.ID, h, ok, last)
+		}
 	}
 }
