@@ -59,6 +59,10 @@ src/i18n/*.mjs      10 languages
 scripts/build.mjs   builds public/ (pages, assets, rule sets, CSP)
 scripts/verify.mjs  checks every resolver over HTTP/2: answers, CORS, DNSSEC, NXDOMAIN
 scripts/icons.mjs   fetches each resolver's site icon once into public/icons/
+src/status.js       the status page (/status/): every resolver as the Tokyo watch sees it
+server/dns          1ms.dog's own authoritative DNS for l.1ms.dog: which resolver a device really uses (VPS)
+server/watch        the Tokyo watch: every resolver over UDP, IPv6, DoT, DoH, DoQ every 10 minutes (VPS)
+docs/               self-hosting the server side, the l.1ms.dog API, design notes; AGENTS.md is where to start
 ```
 
 ## Adding a resolver
@@ -78,7 +82,7 @@ npm run dev        # http://localhost:8793
 npx wrangler deploy
 ```
 
-The site is static files on a Cloudflare Worker with static assets: files are served without running any script, so those requests aren't metered. `src/worker.js` only answers `/i`, `/v` and `/dl/*` (the command-line tool's installer and its release files, passed on from GitHub). Pushing to `main` deploys through Workers Builds (`npm ci && npm test`, then `npx wrangler deploy`). `wrangler.toml` binds no domain: on 1ms.dog the shared shell routes `dns.1ms.dog` to it. To self-host, bind your own domain to the Worker in the Cloudflare dashboard and build with `SITE_URL=https://your.domain npm run build`. The random names for uncached lookups are under `NXZONE` in `src/resolvers.mjs` (`nx.dns.1ms.dog`); any zone with no wildcard record works.
+The site is static files on a Cloudflare Worker with static assets: files are served without running any script, so those requests aren't metered. `src/worker.js` only answers `/i`, `/v` and `/dl/*` (the command-line tool's installer and its release files, passed on from GitHub), `/tokyo.json` (the Tokyo watch's summary, kept 2 minutes) and shared results (`/r/<code>`). Pushing to `main` deploys through Workers Builds (`npm ci && npm test`, then `npx wrangler deploy`). `wrangler.toml` binds no domain: on 1ms.dog the shared shell routes `dns.1ms.dog` to it. To self-host, bind your own domain to the Worker in the Cloudflare dashboard and build with `SITE_URL=https://your.domain npm run build`. The random names for uncached lookups are under `NXZONE` in `src/resolvers.mjs` (`nx.dns.1ms.dog`); any zone with no wildcard record works.
 
 ## License
 
