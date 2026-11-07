@@ -41,7 +41,7 @@ npm run dev        # wrangler dev，http://localhost:8793
 ## 部署和发版
 
 - **网站**：推送 `main` 就是上线。Cloudflare Workers Builds 自动跑 `npm ci && npm test`，再 `npx wrangler deploy`。`public/` 是生成的文件，要和源码一起提交。自己部署时，Worker 不绑域名（`wrangler.toml`），在 Cloudflare 面板里把你的域名绑到它上面，构建时用 `SITE_URL=https://<your-domain> npm run build`。
-- **VPS 上的服务**：不随网站部署。改了 `server/` 之后，从 GitHub Actions 的 `server` 工作流下载二进制，传到机器上替换，再重启服务，步骤见 docs/vps.md。
+- **服务器上的程序**：不随网站部署。`server/` 的改动合进 `main` 后，`server` 工作流会自动测试、静态编译，并发布 GitHub Release（tag 是 `server-<短提交号>`，标为 latest，附 `SHA256SUMS`）。装或者换程序时，下载 `https://github.com/yt1988/dns-test/releases/latest/download/<程序名>`（`1ms-dns`、`1ms-dns-watch`），用 `sha256sum -c SHA256SUMS` 校验，替换后重启服务，步骤见 docs/vps.md。
 - **命令行工具**：在 dns-test-cli 仓库发版（打 tag）。改 DNS 列表不需要发版：工具运行时会先读本站的 `/resolvers.json`，内置的那份每天自动同步。
 
 ## 规矩

@@ -9,6 +9,21 @@
 
 网页会读这两样东西：「你的设备实际在用的 DNS」卡片读结果接口（`src/app.js` 里的 `LZ`），状态页读探测结果（`src/status.js` 里的 `BASE`）。默认指向 1ms.dog 的服务，自己部署时把这两处改成你的地址；CSP 在 `scripts/build.mjs` 里。
 
+## 下载（不用自己编译）
+
+`server/` 的改动每次合进 `main`，GitHub Actions 都会编译出静态的 linux/amd64 程序，发布成一个 Release（tag 是 `server-<短提交号>`，最新一版标为 latest），并附上 `SHA256SUMS`：
+
+```bash
+cd /tmp
+for f in 1ms-dns 1ms-dns-watch SHA256SUMS; do
+  curl -fsSLO https://github.com/yt1988/dns-test/releases/latest/download/$f
+done
+sha256sum -c SHA256SUMS          # 两行都应该是 OK
+install -m 755 1ms-dns 1ms-dns-watch /opt/<app>/
+```
+
+要装某一个特定版本，把 `latest/download` 换成 `download/server-<短提交号>`。
+
 ## 编译
 
 ```bash

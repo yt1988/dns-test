@@ -1,5 +1,7 @@
-# The Go services for the 1ms.dog VPS (server/): tests, then linux/amd64 binaries as an artifact, which are uploaded to the
-# machine by hand (Netcatty sftp). Nothing here deploys or holds any key.
+# The server programs (server/: 1ms-dns, 1ms-dns-watch): tests, then static linux/amd64 binaries as an artifact. On main,
+# also a GitHub Release (tag server-<short commit>, marked latest) with the binaries and SHA256SUMS, so a machine can be
+# set up by downloading them: https://github.com/yt1988/dns-test/releases/latest/download/<program>. Nothing here deploys
+# or holds any key beyond the workflow's own token.
 name: server
 on:
   push:
@@ -8,6 +10,8 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     defaults:
       run:
         working-directory: server
@@ -25,8 +29,17 @@ jobs:
           for c in */; do c=${c%/}; [ -f "$c/main.go" ] || continue
             n=1ms-dns-$c; [ "$c" = dns ] && n=1ms-dns
             CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -trimpath -ldflags "-s -w" -o "out/$n" "./$c"; done
-          cp go.mod go.sum out/ && sha256sum out/1ms-* && ls -l out
+          (cd out && sha256sum 1ms-* > SHA256SUMS && cat SHA256SUMS)
+          cp go.mod go.sum out/ && ls -l out
       - uses: actions/upload-artifact@v4
         with:
           name: server
           path: server/out/
+      - name: Release (main only)
+        if: github.ref == 'refs/heads/main'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          tag="server-${GITHUB_SHA::7}"
+          gh release create "$tag" out/1ms-dns out/1ms-dns-watch out/SHA256SUMS --target "$GITHUB_SHA" --latest \
+            --title "$tag" --notes "Server programs at ${GITHUB_SHA::7}, static linux/amd64: 1ms-dns (authoritative DNS and results API) and 1ms-dns-watch (one run of the watch). Check them against SHA256SUMS. Setup: docs/vps.md."
