@@ -249,7 +249,7 @@ export async function build({ check = false } = {}) {
   const tpl = await readFile(new URL("page.html", src), "utf8");
 
   const root = fileURLToPath(new URL("..", import.meta.url));
-  const js = (await bundle({ entryPoints: [fileURLToPath(new URL("app.js", src))], bundle: true, minify: true, format: "iife", target: "es2020",
+  const js = (await bundle({ entryPoints: [fileURLToPath(new URL("app.js", src))], bundle: true, minify: true, format: "iife", target: "es2019",
     legalComments: "none", write: false, absWorkingDir: root,
     // the share dialog is loaded from the site when someone shares, never bundled (1ms-shell compares the copy)
     external: ["/assets/share/*"] })).outputFiles[0].text;
@@ -257,7 +257,7 @@ export async function build({ check = false } = {}) {
   const css = (await transform(cssFull, { loader: "css", minify: true, legalComments: "none" })).code;
   const jsName = `app.${hash(js)}.js`, cssName = `app.${hash(css)}.css`;
   // the status page's own script (it doesn't test)
-  const stJs = (await transform(await readFile(new URL("status.js", src), "utf8"), { loader: "js", minify: true, target: "es2020", legalComments: "none" })).code;
+  const stJs = (await transform(await readFile(new URL("status.js", src), "utf8"), { loader: "js", minify: true, target: "es2019", legalComments: "none" })).code;
   const stName = `status.${hash(stJs)}.js`;
   const files = { ["assets/" + jsName]: js, ["assets/" + cssName]: css, ["assets/" + stName]: stJs };
 

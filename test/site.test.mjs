@@ -55,3 +55,17 @@ test("the list is consistent", () => {
     assert.ok(r.icon, r.id + ": icon domain");
   }
 });
+
+// Older browsers (Safari before 13.1, Chrome before 80) can't parse ?. and ??: one of them stops the whole script.
+// The build lowers the bundles to ES2019 (scripts/build.mjs); this keeps it that way.
+test("the page scripts parse in older browsers: no ?. or ?? in the bundles", async () => {
+  const { readdir } = await import("node:fs/promises");
+  const dir = new URL("../public/assets/", import.meta.url);
+  const js = (await readdir(dir)).filter(f => /^(app|status)\.[0-9a-f]+\.js$/.test(f));
+  assert.ok(js.length >= 2, "bundles: " + js.join(", "));
+  for (const f of js) {
+    const s = await readFile(new URL(f, dir), "utf8");
+    assert.ok(!/\?\.[^\d]/.test(s), f + " has ?.");
+    assert.ok(!s.includes("??"), f + " has ??");
+  }
+});
