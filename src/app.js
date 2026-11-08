@@ -470,7 +470,7 @@ import { dohURL } from "./dns.mjs";
   $("#shareBtn").onclick = async () => {
     if (!LAST) return;
     const S = LAST, rows = S.rows.filter(r => r.doh != null), w = rows[0];
-    const { share } = await import("/assets/share/share.js?v=8");
+    const { share } = await import("/assets/share/share.js?v=9");
     share({
       lang: D.lang, name: t("app_name"), file: "dns-test",
       // the country only when the visitor ticks it; never the address, city or network
@@ -545,7 +545,7 @@ import { dohURL } from "./dns.mjs";
     sortRows(rs.map(x => x.r));
     // the shared banner above it (/assets/share/), with the way to the visitor's own test
     VIEWING = true;
-    import("/assets/share/share.js?v=8").then(({ received }) => {
+    import("/assets/share/share.js?v=9").then(({ received }) => {
       if (VIEWING) BANNER = received({ lang: D.lang, ts: S.ts, at: $(".hero"), test: start });
     }, () => {});
     $("#prog").classList.add("end"); $("#progTxt").innerHTML = "&nbsp;";
