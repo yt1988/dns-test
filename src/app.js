@@ -9,6 +9,7 @@ import { encode as encodeShare, decode as decodeShare, sharePath } from "./share
 import { ABOUT } from "./about.mjs";
 import { regionName } from "./region.mjs";
 import { dohURL } from "./dns.mjs";
+import { reportContext } from "./report.mjs";
 
 (function () {
   "use strict";
@@ -553,6 +554,14 @@ import { dohURL } from "./dns.mjs";
     LAST = S; $("#shareBtn").hidden = false;
   }
   let VIEWING = false, BANNER = null;
+
+  /* ---------- reporting a problem (the shared dialog) ---------- */
+  // The shell's "Report a problem" dialog asks the page for what the visitor saw, if the page defines this
+  // (1ms-shell docs/tool-contract.md, 报告问题): one line, the result as JSON that reproduces it, and one-tap readings
+  // for what is most often called wrong. Same privacy rule as the share link: no address, and nothing the share
+  // dialog only adds when ticked. Built in src/report.mjs so it can be tested without a browser.
+  window.msReport = () => reportContext({ last: LAST, targets: TS, resolvers: RESOLVERS, mine: MINE, nodes: NODES,
+    focus: FOCUS, lang: D.lang, path: location.pathname, viewing: VIEWING, t, tn, fmt, country });
 
   async function start() {
     // a shared result gives way to the visitor's own test, on the language's page, and its banner with it (no compare

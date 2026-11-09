@@ -55,6 +55,7 @@ src/measure.mjs     浏览器里的测试：预热、多轮、计时、统计
 src/dns.mjs         DoH GET 用的 DNS 报文（构造、编码、解析）
 src/rules.mjs       代理工具的直连规则
 src/app.js          页面脚本
+src/report.mjs      交给 shell「报告问题」弹窗的内容：一句话、能复现结果的 JSON、可一点就填的读数
 src/i18n/*.mjs      10 种语言
 scripts/build.mjs   生成 public/（页面、资源、规则集、CSP）
 scripts/verify.mjs  用 HTTP/2 逐家核实：应答、CORS、DNSSEC、NXDOMAIN

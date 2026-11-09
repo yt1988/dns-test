@@ -55,6 +55,7 @@ src/measure.mjs     the test in the browser: warm-up, rounds, timing, statistics
 src/dns.mjs         DNS messages for DoH GET (build, encode, parse)
 src/rules.mjs       direct rules for proxy tools
 src/app.js          the page
+src/report.mjs      what the shell's "Report a problem" dialog gets: one line, the result as JSON, one-tap readings
 src/i18n/*.mjs      10 languages
 scripts/build.mjs   builds public/ (pages, assets, rule sets, CSP)
 scripts/verify.mjs  checks every resolver over HTTP/2: answers, CORS, DNSSEC, NXDOMAIN
