@@ -259,7 +259,9 @@ html.embed .hero { padding-top: 14px; gap: 10px; }
 .mine-r { font-size: 14px; line-height: 1.6; overflow-wrap: anywhere; }
 .mine-r b { font-weight: 650; }
 .mine-r code, .td dd code.ip { font-size: 12.5px; color: var(--muted); }
-.mine-e { font-size: 13px; color: var(--muted); line-height: 1.55; }
+/* two lines from the start: the ECS sentence arrives after the page is up, and growing here pushed the whole result
+   table down (CLS 0.15); at 1280 the longest of the 10 translations is two lines (see design.md, 2026-11-11) */
+.mine-e { font-size: 13px; color: var(--muted); line-height: 1.55; min-height: 2lh; }
 .mine .note a { color: inherit; }
 .mine-e .k { color: var(--fg); font-weight: 600; margin-right: 4px; }
 .td dd .tkh { flex-basis: 100%; color: var(--fg); }

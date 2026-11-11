@@ -8,6 +8,7 @@
 - **CleanBrowsing 的 DNSSEC 标记不由 verify 比对**：它官方说会验证；从东京和中国实测不验证——`dnssec-failed.org` 被过滤器自己答成一个地址（`96.99.227.255`），`sigfail.verteiltesysteme.net` 也照常返回地址、AD 不设。GitHub 的美国 runner 在 11-02、11-09 测到 true，11-11 手动重跑又是 false。同一个名字在不同节点上结果不同，一个布尔值没法两处都对。列表保持 `dnssec: false`（亚洲访客拿到的结果），verify 的 `SKIP_DNSSEC` 让它只打印实测值和原因，不算问题。
 - **连接被半路关掉时不要打印 `HTTP undefined`**：服务器发 GOAWAY 或 RST_STREAM 时，Node 可能只发 `end` 而没有 `:status`（11-11 的 appliedprivacy、xfinity）。现在报 `no HTTP response`，并对传输类错误重试一次。
 - **11-11 从东京跑全表 `all ok`**：dnssb 的 dnssec 为 yes（503 + SERVFAIL 身体被接受），cleanbrowsing 打印 skip。上周的两条 `!` 都不再出现。
+- **「你的设备实际在用的 DNS」卡片一开始就留够说明文字的高度**：ECS 那句话要等 `l.1ms.dog` 的答案回来才出现，卡片从 114px 长到 154px，把下面的命令行块和结果表往下推，1280×900 的 CLS 是 0.15。`.mine-e` 现在从服务端渲染起就占两行（`min-height: 2lh`）；10 种语言在 1280 下最长是两行，亚洲语言常见是一行，会多出一行空白，这是预留的代价。手机上不额外预留：375 宽实测 CLS 0.011–0.016，而多留两行会在首屏多出一大块空白。
 
 ## 2026-11-06
 
