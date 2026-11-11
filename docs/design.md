@@ -2,6 +2,13 @@
 
 技术上为什么这样做，以及测过的结果，按日期倒序排列。改东西之前先看，别把已经证明行不通的方法再试一遍。
 
+## 2026-11-11
+
+- **DNS.SB 把 SERVFAIL 当 HTTP 503 回**：RFC 8484 要求 DNS 应答一律 200，但 DNS.SB 对 `dnssec-failed.org` 这类 SERVFAIL 回 503，身体还是完整的 DNS 报文。`scripts/verify.mjs` 的检查项以前先看状态码，于是把「它会验证 DNSSEC」报成了接口故障（11-02、11-09 两周的 `checks: HTTP 503`）。现在检查项接受任何状态码下能解析成 DNS 报文的身体；普通查询仍要求 200，因为 `example.com` 一定解析得出来，非 200 就是坏的。
+- **CleanBrowsing 的 DNSSEC 标记不由 verify 比对**：它官方说会验证；从东京和中国实测不验证——`dnssec-failed.org` 被过滤器自己答成一个地址（`96.99.227.255`），`sigfail.verteiltesysteme.net` 也照常返回地址、AD 不设。GitHub 的美国 runner 在 11-02、11-09 测到 true，11-11 手动重跑又是 false。同一个名字在不同节点上结果不同，一个布尔值没法两处都对。列表保持 `dnssec: false`（亚洲访客拿到的结果），verify 的 `SKIP_DNSSEC` 让它只打印实测值和原因，不算问题。
+- **连接被半路关掉时不要打印 `HTTP undefined`**：服务器发 GOAWAY 或 RST_STREAM 时，Node 可能只发 `end` 而没有 `:status`（11-11 的 appliedprivacy、xfinity）。现在报 `no HTTP response`，并对传输类错误重试一次。
+- **11-11 从东京跑全表 `all ok`**：dnssb 的 dnssec 为 yes（503 + SERVFAIL 身体被接受），cleanbrowsing 打印 skip。上周的两条 `!` 都不再出现。
+
 ## 2026-11-06
 
 - **「DoQ ≈」这一列是 DoT 的估算**。浏览器发不了 DoQ（DNS over QUIC），网页脚本也开不出 853 端口的 QUIC 连接（WebTransport 是另一套协议）。一家的 DoQ 和 DoT 是同一台服务器，连接建立后每次查询都是一个来回，所以用同一个估算。真实的 DoQ 时间要在服务器上测（东京探测、命令行工具）。
