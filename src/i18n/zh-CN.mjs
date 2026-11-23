@@ -89,6 +89,7 @@ export default {
   mine_h: "你的设备实际在用的 DNS",
   mine_wait: "正在查…",
   mine_fail: "没查到：你的网络可能拦了 l.1ms.dog 的 2053 端口。",
+  mine_timeout: "暂时查不到：查询超时了，刷新页面再试。",
   mine_ecs_yes: "它会把你的网段（{net}）告诉网站的 DNS，CDN 能按你的位置分配节点。",
   mine_ecs_no: "它不会把你的网段告诉网站的 DNS，CDN 只能按它的位置、而不是你的位置分配节点。",
   mine_ecs_late: "它最先发出的查询没带你的网段，稍后的几条带了（{net}）。",

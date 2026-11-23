@@ -89,6 +89,7 @@ export default {
   mine_h: "你的裝置實際在用的 DNS",
   mine_wait: "查詢中…",
   mine_fail: "沒查到：你的網路可能擋了 l.1ms.dog 的 2053 連接埠。",
+  mine_timeout: "暫時查不到：查詢逾時了，重新整理頁面再試。",
   mine_ecs_yes: "它會把你的網段（{net}）告訴網站的 DNS，CDN 能按你的位置分配節點。",
   mine_ecs_no: "它不會把你的網段告訴網站的 DNS，CDN 只能按它的位置、而不是你的位置分配節點。",
   mine_ecs_late: "它最先送出的查詢沒帶你的網段，稍後的幾筆帶了（{net}）。",

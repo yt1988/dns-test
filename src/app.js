@@ -383,10 +383,12 @@ import { reportContext } from "./report.mjs";
     esc(t(s.ecs === "no" ? "node_noecs" : "node_ecs"))].filter(Boolean).join(" · ");
 
   // the device's own resolver: undefined while asking, null when it couldn't be told
-  let MINE;
+  // 4 s, not 8: this answer is the page's largest element once it arrives, and a slow lookup held the largest paint
+  // for up to 8 s (mobile p75 5.5 s, 2026-11-23). Past 4 s the card says so and the rest of the test carries on.
+  let MINE, mineTimeout = false;
   function renderMine() {
     if (MINE === undefined) { $("#mineR").textContent = t("mine_wait"); $("#mineE").textContent = ""; return; }
-    if (!MINE) { $("#mineR").textContent = t("mine_fail"); $("#mineE").textContent = ""; return; }
+    if (!MINE) { $("#mineR").textContent = t(mineTimeout ? "mine_timeout" : "mine_fail"); $("#mineE").textContent = ""; return; }
     const h = MINE.first;
     $("#mineR").innerHTML = [`<b>${esc(h.org || h.ip)}</b>`, h.cc && esc(country(h.cc)), h.asn && asnHTML(h.asn),
       MINE.ips.slice(0, 3).map(ip => `<code>${esc(ip)}</code>`).join(" ")].filter(Boolean).join(" · ");
@@ -395,10 +397,14 @@ import { reportContext } from "./report.mjs";
     $("#mineE").textContent = lines.join(" ");
   }
   function askMine() {
-    MINE = undefined; renderMine();
+    MINE = undefined; mineTimeout = false; renderMine();
     $("#mineC").innerHTML = t("mine_credit", { db: '<a href="https://db-ip.com" target="_blank" rel="noopener">DB-IP</a>' });
     // the name's own address is this API: one request both makes the lookup and reads what it saw
-    return getJSON(`https://${tok()}-s.${LZ}:2053/`, 8000).then(j => { MINE = seen(j.hits); }, () => { MINE = null; }).then(renderMine);
+    return getJSON(`https://${tok()}-s.${LZ}:2053/`, 4000).then(j => { MINE = seen(j.hits); }, e => {
+      MINE = null;
+      // the fetch ran out of time (AbortSignal.timeout) rather than being refused or reset: say so, not "blocked"
+      mineTimeout = !!e && (e.name === "TimeoutError" || e.name === "AbortError");
+    }).then(renderMine);
   }
 
   // each resolver's node for this visitor: after the test (so these queries don't share its time), one query for a fresh

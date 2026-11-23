@@ -89,6 +89,7 @@ export default {
   mine_h: "O DNS que o seu dispositivo usa de verdade",
   mine_wait: "Consultando…",
   mine_fail: "Não deu para saber: sua rede pode estar bloqueando a porta 2053 de l.1ms.dog.",
+  mine_timeout: "Desta vez não deu para saber: a consulta expirou. Recarregue para tentar de novo.",
   mine_ecs_yes: "Ele informa sua rede ({net}) aos DNS dos sites, então as CDNs podem escolher um servidor perto de você.",
   mine_ecs_no: "Ele não informa sua rede aos DNS dos sites, então as CDNs escolhem um servidor perto dele, não de você.",
   mine_ecs_late: "A primeira consulta dele não levava sua rede; as seguintes levavam ({net}).",

@@ -89,6 +89,7 @@ export default {
   mine_h: "Der DNS-Server, den dein Gerät wirklich nutzt",
   mine_wait: "Wird ermittelt…",
   mine_fail: "Nicht ermittelt: Dein Netz sperrt vielleicht Port 2053 von l.1ms.dog.",
+  mine_timeout: "Diesmal nicht ermittelt: Die Abfrage hat zu lange gedauert. Lade die Seite neu und versuche es erneut.",
   mine_ecs_yes: "Er teilt den DNS-Servern der Websites dein Netz mit ({net}), so können CDNs dir einen Server in deiner Nähe zuweisen.",
   mine_ecs_no: "Er teilt den DNS-Servern der Websites dein Netz nicht mit, deshalb wählen CDNs einen Server in seiner Nähe, nicht in deiner.",
   mine_ecs_late: "Seine erste Anfrage enthielt dein Netz nicht, spätere schon ({net}).",

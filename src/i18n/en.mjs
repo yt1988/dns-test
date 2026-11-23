@@ -90,6 +90,7 @@ export default {
   mine_h: "The DNS your device really uses",
   mine_wait: "Looking…",
   mine_fail: "Couldn't tell: your network may be blocking port 2053 of l.1ms.dog.",
+  mine_timeout: "Couldn't tell this time: the lookup timed out. Reload to try again.",
   mine_ecs_yes: "It tells websites' DNS servers your network ({net}), so CDNs can pick a server near you.",
   mine_ecs_no: "It doesn't tell websites' DNS servers your network, so CDNs pick a server near the resolver, not near you.",
   mine_ecs_late: "Its first query didn't carry your network; later ones did ({net}).",
