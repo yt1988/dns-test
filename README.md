@@ -61,9 +61,9 @@ scripts/build.mjs   builds public/ (pages, assets, rule sets, CSP)
 scripts/verify.mjs  checks every resolver over HTTP/2: answers, CORS, DNSSEC, NXDOMAIN
 scripts/icons.mjs   fetches each resolver's site icon once into public/icons/
 src/status.js       the status page (/status/): every resolver as the Tokyo watch sees it
-server/dns          1ms.dog's own authoritative DNS for l.1ms.dog: which resolver a device really uses (VPS)
+server/dns          1ms.dog's own authoritative DNS for the device-resolver lookup: which resolver a device really uses (VPS)
 server/watch        the Tokyo watch: every resolver over UDP, IPv6, DoT, DoH, DoQ every 10 minutes (VPS)
-docs/               self-hosting the server side, the l.1ms.dog API, design notes; AGENTS.md is where to start
+docs/               self-hosting the server side, the device-resolver API, design notes; AGENTS.md is where to start
 ```
 
 ## Adding a resolver
