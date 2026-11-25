@@ -1,14 +1,17 @@
-// The hosts the page uses to measure (the authoritative DNS for the device-resolver lookup, its results API, the
-// Tokyo watch's results) are deployment details; visitor-facing copy names the site and its location instead
-// (1ms.dog tool-contract.md, "内部测量/辅助域名"). Code constants and the CSP keep the real names.
+// Where the page measures and where its results come from are deployment details (1ms.dog tool-contract.md §2):
+// visitor-facing copy names the site and its location, and every absolute URL it carries is either the tool's own
+// public domain or a third party (the resolvers it tests, the sites it points to). Any other 1ms.dog host there
+// would be one of our measurement or service endpoints.
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFile, readdir } from "node:fs/promises";
 
 const root = new URL("../", import.meta.url);
 const read = p => readFile(new URL(p, root), "utf8");
-// l.1ms.dog covers api.l.1ms.dog; data.1ms.dog is the Tokyo watch's results, named the same way in copy
-const HOST = /(?:^|[^a-z0-9-])(?:l\.1ms\.dog|data\.1ms\.dog)(?:[^a-z0-9-]|$)/i;
+const OWN = new Set(["1ms.dog", "dns.1ms.dog"]);
+const URLS = /\bhttps?:\/\/([^\s"'`<>/?#)]+)/gi;
+const hostOf = s => s.toLowerCase().replace(/:\d+$/, "").replace(/\.$/, "");
+const ours = h => h === "1ms.dog" || h.endsWith(".1ms.dog");
 
 async function htmlFiles(dir) {
   const out = [];
@@ -19,13 +22,16 @@ async function htmlFiles(dir) {
   return out;
 }
 
-test("visitor copy names no internal host, only the site and where it is", async () => {
+test("visitor copy reaches no 1ms.dog host but the tool's own", async () => {
   const files = ["src/page.html", "README.md", "README.zh-CN.md", "public/llms.txt"];
   for (const f of await readdir(new URL("src/i18n/", root))) if (f.endsWith(".mjs")) files.push("src/i18n/" + f);
   for (const f of await readdir(new URL("public/assets/", root))) if (/^l\..*\.js$/.test(f)) files.push("public/assets/" + f);
   files.push(...await htmlFiles("public/"));
   for (const f of files) {
     const s = await read(f);
-    assert.doesNotMatch(s, HOST, f + ": names an internal host; say the site's resolver server in Tokyo instead");
+    for (const m of s.matchAll(URLS)) {
+      const host = hostOf(m[1]);
+      if (ours(host)) assert.ok(OWN.has(host), f + ": " + m[0] + " is not this tool's own host");
+    }
   }
 });

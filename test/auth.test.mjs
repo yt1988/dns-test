@@ -29,15 +29,15 @@ const newToken = tok => ({ status: 200, ok: true, json: async () => ({ token: to
 test("a page with the meta sends its token", async () => {
   const doc = fakeDoc("v1.token.one");
   const { calls, fetch } = recorder([ok]);
-  const res = await authFetch("https://api.l.1ms.dog:2053/t/abc", {}, { fetch, doc });
+  const res = await authFetch("https://api.example.com:2053/t/abc", {}, { fetch, doc });
   assert.equal(res.status, 200);
-  assert.deepEqual(calls, [{ url: "https://api.l.1ms.dog:2053/t/abc", auth: "Bearer v1.token.one" }]);
+  assert.deepEqual(calls, [{ url: "https://api.example.com:2053/t/abc", auth: "Bearer v1.token.one" }]);
 });
 
 test("no meta means no Authorization header", async () => {
   const doc = fakeDoc(null);
   const { calls, fetch } = recorder([ok]);
-  await authFetch("https://api.l.1ms.dog:2053/t/abc", {}, { fetch, doc });
+  await authFetch("https://api.example.com:2053/t/abc", {}, { fetch, doc });
   assert.equal(calls.length, 1);
   assert.equal(calls[0].auth, null);
 });
@@ -45,9 +45,9 @@ test("no meta means no Authorization header", async () => {
 test("a 401 renews the token once and retries once", async () => {
   const doc = fakeDoc("v1.old");
   const { calls, fetch } = recorder([unauth, newToken("v1.new"), ok]);
-  const res = await authFetch("https://api.l.1ms.dog:2053/t/abc", {}, { fetch, doc });
+  const res = await authFetch("https://api.example.com:2053/t/abc", {}, { fetch, doc });
   assert.equal(res.status, 200);
-  assert.deepEqual(calls.map(c => c.url), ["https://api.l.1ms.dog:2053/t/abc", "/_ms/token", "https://api.l.1ms.dog:2053/t/abc"]);
+  assert.deepEqual(calls.map(c => c.url), ["https://api.example.com:2053/t/abc", "/_ms/token", "https://api.example.com:2053/t/abc"]);
   assert.deepEqual(calls.map(c => c.auth), ["Bearer v1.old", null, "Bearer v1.new"]);
   assert.equal(tokenOf(doc), "v1.new", "the meta carries the new token");
 });
@@ -55,7 +55,7 @@ test("a 401 renews the token once and retries once", async () => {
 test("a second 401 is the answer: no third attempt", async () => {
   const doc = fakeDoc("v1.old");
   const { calls, fetch } = recorder([unauth, newToken("v1.new"), unauth]);
-  const res = await authFetch("https://api.l.1ms.dog:2053/t/abc", {}, { fetch, doc });
+  const res = await authFetch("https://api.example.com:2053/t/abc", {}, { fetch, doc });
   assert.equal(res.status, 401);
   assert.equal(calls.length, 3);
 });
@@ -64,7 +64,7 @@ test("a renewal that fails leaves the 401 and stops", async () => {
   for (const renewal of [unauth, () => { throw new Error("offline"); }, newToken("")]) {
     const doc = fakeDoc("v1.old");
     const { calls, fetch } = recorder([unauth, renewal]);
-    const res = await authFetch("https://api.l.1ms.dog:2053/t/abc", {}, { fetch, doc });
+    const res = await authFetch("https://api.example.com:2053/t/abc", {}, { fetch, doc });
     assert.equal(res.status, 401);
     assert.equal(calls.length, 2, "the API and /_ms/token, nothing else");
     assert.equal(tokenOf(doc), "v1.old", "the meta is left alone");

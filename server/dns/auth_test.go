@@ -39,14 +39,14 @@ func authRec(auth *Auth, host, path, header string) *httptest.ResponseRecorder {
 }
 
 func testAuth(secret string) *Auth {
-	a := NewAuth(secret, "api.l.1ms.dog")
+	a := NewAuth(secret, "api.example.com")
 	a.now = func() time.Time { return authNow }
 	return a
 }
 
 func TestAuthUnsetLetsEverythingThrough(t *testing.T) {
 	a := testAuth("")
-	for _, u := range [][2]string{{"api.l.1ms.dog:2053", "/t/abc"}, {"abcd-s.l.1ms.dog:2053", "/"}} {
+	for _, u := range [][2]string{{"api.example.com:2053", "/t/abc"}, {"abcd-s.example.com:2053", "/"}} {
 		if code, body := authCall(a, u[0], u[1], ""); code != 200 {
 			t.Errorf("%s%s without a secret: %d %q, want 200", u[0], u[1], code, body)
 		}
@@ -57,16 +57,16 @@ func TestAuthNeedsATokenOnTheAPI(t *testing.T) {
 	a := testAuth(authTestSecret)
 	cases := map[string]string{"no Authorization": "", "another scheme": "Basic abc", "empty Bearer": "Bearer "}
 	for name, header := range cases {
-		if code, body := authCall(a, "api.l.1ms.dog:2053", "/t/abc", header); code != 401 || body != "no_token" {
+		if code, body := authCall(a, "api.example.com:2053", "/t/abc", header); code != 401 || body != "no_token" {
 			t.Errorf("%s: %d %q, want 401 no_token", name, code, body)
 		}
 	}
 	// the same API under another name: /t/ is still the API, so a random hostname cannot be used to skip the check
-	if code, body := authCall(a, "abcd-s.l.1ms.dog:2053", "/t/abc", ""); code != 401 || body != "no_token" {
+	if code, body := authCall(a, "abcd-s.example.com:2053", "/t/abc", ""); code != 401 || body != "no_token" {
 		t.Errorf("no token under another host: %d %q, want 401 no_token", code, body)
 	}
 	// the page must be able to read the 401: a cross-origin fetch without these sees a network error and never renews
-	if rec := authRec(a, "api.l.1ms.dog:2053", "/t/abc", ""); rec.Header().Get("Access-Control-Allow-Origin") != "*" {
+	if rec := authRec(a, "api.example.com:2053", "/t/abc", ""); rec.Header().Get("Access-Control-Allow-Origin") != "*" {
 		t.Errorf("401 without CORS: the page could not tell it is a 401")
 	}
 }
@@ -83,7 +83,7 @@ func TestAuthRejectsBadTokens(t *testing.T) {
 		"malformed":    "v1.notanumber.n4.dns.deadbeef",
 	}
 	for name, tok := range cases {
-		if code, body := authCall(a, "api.l.1ms.dog:2053", "/t/abc", "Bearer "+tok); code != 401 || body != "bad_token" {
+		if code, body := authCall(a, "api.example.com:2053", "/t/abc", "Bearer "+tok); code != 401 || body != "bad_token" {
 			t.Errorf("%s: %d %q, want 401 bad_token", name, code, body)
 		}
 	}
@@ -101,7 +101,7 @@ func TestAuthAcceptsPageAndServiceTokens(t *testing.T) {
 	}
 	for name, scope := range scopes {
 		tok := mintToken(authTestSecret, scope, exp, "n5")
-		if code, body := authCall(a, "api.l.1ms.dog:2053", "/t/abc", "Bearer "+tok); code != 200 {
+		if code, body := authCall(a, "api.example.com:2053", "/t/abc", "Bearer "+tok); code != 200 {
 			t.Errorf("%s: %d %q, want 200", name, code, body)
 		}
 	}
@@ -109,7 +109,7 @@ func TestAuthAcceptsPageAndServiceTokens(t *testing.T) {
 
 func TestAuthLeavesTheMeasurementHostsAlone(t *testing.T) {
 	a := testAuth(authTestSecret)
-	for _, host := range []string{"abcd-s.l.1ms.dog:2053", "abcd.l.1ms.dog:2053", "abcd-s.v6.l.1ms.dog:2053"} {
+	for _, host := range []string{"abcd-s.example.com:2053", "abcd.example.com:2053", "abcd-s.v6.example.com:2053"} {
 		if code, body := authCall(a, host, "/", ""); code != 200 {
 			t.Errorf("%s: %d %q, want 200 (the random-name lookup is the measurement)", host, code, body)
 		}
@@ -122,7 +122,7 @@ func TestAuthLeavesTheMeasurementHostsAlone(t *testing.T) {
 func TestAuthLetsPreflightThrough(t *testing.T) {
 	a := testAuth(authTestSecret)
 	next := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) { w.WriteHeader(http.StatusNoContent) })
-	req := httptest.NewRequest("OPTIONS", "https://api.l.1ms.dog:2053/t/abc", nil)
+	req := httptest.NewRequest("OPTIONS", "https://api.example.com:2053/t/abc", nil)
 	rec := httptest.NewRecorder()
 	a.Wrap(next).ServeHTTP(rec, req)
 	if rec.Code != http.StatusNoContent {

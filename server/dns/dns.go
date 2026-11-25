@@ -15,7 +15,7 @@ import (
 //	<token>[-<tag>].v4.l.1ms.dog   the same, but v4.l.1ms.dog is delegated to ns4.l.1ms.dog, which has only an A record:
 //	                               a resolver can only get the answer by reaching us over IPv4
 //	<token>[-<tag>].v6.l.1ms.dog   likewise over IPv6 (ns6.l.1ms.dog, AAAA only)
-//	api.l.1ms.dog, whoami.l.1ms.dog   this server; TXT on whoami (and on any token name) says which resolver asked
+//	api, whoami                    this server; TXT on whoami (and on any token name) says which resolver asked
 //	_acme-challenge.l.1ms.dog      TXT for Let's Encrypt DNS-01 while a certificate is being issued
 //
 // The same process is ns-l, ns4 and ns6: for a v4/v6 name it tells by the address the query arrived on whether it is

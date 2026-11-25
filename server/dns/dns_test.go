@@ -14,7 +14,7 @@ var t0 = time.Date(2026, 11, 4, 0, 0, 0, 0, time.UTC)
 
 func newTestDNS() (*DNS, *Store) {
 	st := NewStore(2 * time.Minute)
-	return NewDNS("l.1ms.dog", "ns-l.1ms.dog", net.ParseIP("16.76.79.94"), net.ParseIP("2406:da14:3c2:6400:d2e5:c654:ae70:30c5"),
+	return NewDNS("example.com", "ns.example.com", net.ParseIP("16.76.79.94"), net.ParseIP("2406:da14:3c2:6400:d2e5:c654:ae70:30c5"),
 		st, NewRRL(50, 100), NewACMETXT()), st
 }
 
@@ -67,7 +67,7 @@ func TestParseLabel(t *testing.T) {
 func TestTokenAnswerAndRecord(t *testing.T) {
 	d, st := newTestDNS()
 	src := net.ParseIP("8.8.4.4")
-	m := d.answer(query("TestTok01-G.l.1ms.dog.", dns.TypeA, "203.0.113.77/24"), src, "udp", 4, t0)
+	m := d.answer(query("TestTok01-G.example.com.", dns.TypeA, "203.0.113.77/24"), src, "udp", 4, t0)
 	packs(t, m)
 	if !m.Authoritative || m.RecursionAvailable || len(m.Answer) != 1 || m.Answer[0].(*dns.A).A.String() != "16.76.79.94" || m.Answer[0].Header().Ttl != 0 {
 		t.Fatalf("answer: %v", m)
@@ -81,8 +81,8 @@ func TestTokenAnswerAndRecord(t *testing.T) {
 	if !echoed {
 		t.Errorf("ECS not echoed: %v", m)
 	}
-	d.answer(query("testtok01-g.l.1ms.dog.", dns.TypeA, "203.0.113.77/24"), src, "udp", 4, t0.Add(time.Second))
-	d.answer(query("testtok01.l.1ms.dog.", dns.TypeAAAA, ""), net.ParseIP("2001:db8::1"), "tcp", 6, t0.Add(2*time.Second))
+	d.answer(query("testtok01-g.example.com.", dns.TypeA, "203.0.113.77/24"), src, "udp", 4, t0.Add(time.Second))
+	d.answer(query("testtok01.example.com.", dns.TypeAAAA, ""), net.ParseIP("2001:db8::1"), "tcp", 6, t0.Add(2*time.Second))
 	hits, _ := st.Get("testtok01", t0.Add(3*time.Second))
 	if len(hits) != 2 {
 		t.Fatalf("hits: %+v", hits)
@@ -101,7 +101,7 @@ func TestTokenAnswerAndRecord(t *testing.T) {
 
 func TestRefusedOutsideZone(t *testing.T) {
 	d, _ := newTestDNS()
-	for _, n := range []string{"example.com.", "1ms.dog.", "xl.1ms.dog."} {
+	for _, n := range []string{"example.net.", "example.org.", "sub.example.net."} {
 		m := d.answer(query(n, dns.TypeA, ""), net.ParseIP("1.2.3.4"), "udp", 4, t0)
 		packs(t, m)
 		if m.Rcode != dns.RcodeRefused || m.Authoritative || len(m.Answer) != 0 {
@@ -113,9 +113,9 @@ func TestRefusedOutsideZone(t *testing.T) {
 func TestSingleFamilyChildren(t *testing.T) {
 	d, st := newTestDNS()
 	// over IPv4, a v6 name gets a referral to the IPv6-only server, and nothing is recorded
-	m := d.answer(query("abcdefgh.v6.l.1ms.dog.", dns.TypeA, ""), net.ParseIP("1.2.3.4"), "udp", 4, t0)
+	m := d.answer(query("abcdefgh.v6.example.com.", dns.TypeA, ""), net.ParseIP("1.2.3.4"), "udp", 4, t0)
 	packs(t, m)
-	if m.Authoritative || len(m.Answer) != 0 || len(m.Ns) != 1 || m.Ns[0].(*dns.NS).Ns != "ns6.l.1ms.dog." {
+	if m.Authoritative || len(m.Answer) != 0 || len(m.Ns) != 1 || m.Ns[0].(*dns.NS).Ns != "ns6.example.com." {
 		t.Fatalf("referral: %v", m)
 	}
 	if _, ok := m.Extra[0].(*dns.AAAA); !ok {
@@ -125,20 +125,20 @@ func TestSingleFamilyChildren(t *testing.T) {
 		t.Errorf("recorded a referral")
 	}
 	// over IPv6 it is answered and recorded; the v6 zone has no A records
-	m = d.answer(query("abcdefgh.v6.l.1ms.dog.", dns.TypeAAAA, ""), net.ParseIP("2001:db8::53"), "udp", 6, t0)
+	m = d.answer(query("abcdefgh.v6.example.com.", dns.TypeAAAA, ""), net.ParseIP("2001:db8::53"), "udp", 6, t0)
 	packs(t, m)
 	if !m.Authoritative || len(m.Answer) != 1 {
 		t.Fatalf("answer: %v", m)
 	}
-	m = d.answer(query("abcdefgh.v6.l.1ms.dog.", dns.TypeA, ""), net.ParseIP("2001:db8::53"), "udp", 6, t0)
-	if len(m.Answer) != 0 || len(m.Ns) != 1 || m.Ns[0].(*dns.SOA).Ns != "ns6.l.1ms.dog." {
+	m = d.answer(query("abcdefgh.v6.example.com.", dns.TypeA, ""), net.ParseIP("2001:db8::53"), "udp", 6, t0)
+	if len(m.Answer) != 0 || len(m.Ns) != 1 || m.Ns[0].(*dns.SOA).Ns != "ns6.example.com." {
 		t.Errorf("v6 zone A: %v", m)
 	}
 	if hits, _ := st.Get("abcdefgh", t0); len(hits) != 2 || hits[0].Zone != "v6" {
 		t.Errorf("hits: %+v", hits)
 	}
 	// ns4 has only an A record
-	m = d.answer(query("ns4.l.1ms.dog.", dns.TypeAAAA, ""), net.ParseIP("1.2.3.4"), "udp", 4, t0)
+	m = d.answer(query("ns4.example.com.", dns.TypeAAAA, ""), net.ParseIP("1.2.3.4"), "udp", 4, t0)
 	if len(m.Answer) != 0 || m.Rcode != dns.RcodeSuccess {
 		t.Errorf("ns4 AAAA: %v", m)
 	}
@@ -147,26 +147,26 @@ func TestSingleFamilyChildren(t *testing.T) {
 func TestNamesAndAcme(t *testing.T) {
 	d, _ := newTestDNS()
 	src := net.ParseIP("1.2.3.4")
-	if m := d.answer(query("nope.l.1ms.dog.", dns.TypeA, ""), src, "udp", 4, t0); m.Rcode != dns.RcodeNameError || !m.Authoritative {
+	if m := d.answer(query("nope.example.com.", dns.TypeA, ""), src, "udp", 4, t0); m.Rcode != dns.RcodeNameError || !m.Authoritative {
 		t.Errorf("nxdomain: %v", m)
 	}
-	if m := d.answer(query("l.1ms.dog.", dns.TypeNS, ""), src, "udp", 4, t0); len(m.Answer) != 1 || m.Answer[0].(*dns.NS).Ns != "ns-l.1ms.dog." {
+	if m := d.answer(query("example.com.", dns.TypeNS, ""), src, "udp", 4, t0); len(m.Answer) != 1 || m.Answer[0].(*dns.NS).Ns != "ns.example.com." {
 		t.Errorf("NS: %v", m)
 	}
-	if m := d.answer(query("api.l.1ms.dog.", dns.TypeAAAA, ""), src, "udp", 4, t0); len(m.Answer) != 1 {
+	if m := d.answer(query("api.example.com.", dns.TypeAAAA, ""), src, "udp", 4, t0); len(m.Answer) != 1 {
 		t.Errorf("api AAAA: %v", m)
 	}
-	m := d.answer(query("whoami.l.1ms.dog.", dns.TypeTXT, "198.51.100.9/24"), src, "udp", 4, t0)
+	m := d.answer(query("whoami.example.com.", dns.TypeTXT, "198.51.100.9/24"), src, "udp", 4, t0)
 	packs(t, m)
 	if txt := m.Answer[0].(*dns.TXT).Txt; len(txt) != 2 || txt[0] != "resolver=1.2.3.4" || txt[1] != "ecs=198.51.100.0/24" {
 		t.Errorf("whoami: %v", txt)
 	}
-	if m := d.answer(query("_acme-challenge.l.1ms.dog.", dns.TypeTXT, ""), src, "udp", 4, t0); m.Rcode != dns.RcodeNameError {
+	if m := d.answer(query("_acme-challenge.example.com.", dns.TypeTXT, ""), src, "udp", 4, t0); m.Rcode != dns.RcodeNameError {
 		t.Errorf("acme before: %v", m)
 	}
-	d.acme.Add("_acme-challenge.l.1ms.dog", "one")
-	d.acme.Add("_acme-challenge.l.1ms.dog", "two")
-	if m := d.answer(query("_ACME-challenge.l.1ms.dog.", dns.TypeTXT, ""), src, "udp", 4, t0); len(m.Answer) != 2 {
+	d.acme.Add("_acme-challenge.example.com", "one")
+	d.acme.Add("_acme-challenge.example.com", "two")
+	if m := d.answer(query("_ACME-challenge.example.com.", dns.TypeTXT, ""), src, "udp", 4, t0); len(m.Answer) != 2 {
 		t.Errorf("acme: %v", m)
 	}
 }
@@ -194,9 +194,9 @@ func TestRRL(t *testing.T) {
 
 func TestAPI(t *testing.T) {
 	d, st := newTestDNS()
-	api := &API{store: st, geo: &Geo{}, apex: "l.1ms.dog", settle: 0}
-	d.answer(query("apitok123-x.l.1ms.dog.", dns.TypeA, ""), net.ParseIP("1.2.3.4"), "udp", 4, time.Now())
-	for _, c := range []struct{ host, path string }{{"api.l.1ms.dog:2053", "/t/apitok123"}, {"APITOK123-y.l.1ms.dog:2053", "/"}} {
+	api := &API{store: st, geo: &Geo{}, apex: "example.com", settle: 0}
+	d.answer(query("apitok123-x.example.com.", dns.TypeA, ""), net.ParseIP("1.2.3.4"), "udp", 4, time.Now())
+	for _, c := range []struct{ host, path string }{{"api.example.com:2053", "/t/apitok123"}, {"APITOK123-y.example.com:2053", "/"}} {
 		w := httptest.NewRecorder()
 		api.ServeHTTP(w, httptest.NewRequest("GET", "https://"+c.host+c.path, nil))
 		var res Result
@@ -208,7 +208,7 @@ func TestAPI(t *testing.T) {
 		}
 	}
 	w := httptest.NewRecorder()
-	api.ServeHTTP(w, httptest.NewRequest("GET", "https://api.l.1ms.dog:2053/t/emptytok1?wait=0", nil))
+	api.ServeHTTP(w, httptest.NewRequest("GET", "https://api.example.com:2053/t/emptytok1?wait=0", nil))
 	if w.Code != 200 || w.Body.String() == "" {
 		t.Errorf("empty: %d %s", w.Code, w.Body)
 	}
@@ -218,7 +218,7 @@ func TestAPI(t *testing.T) {
 		t.Errorf("empty hits: %s", w.Body)
 	}
 	w = httptest.NewRecorder()
-	api.ServeHTTP(w, httptest.NewRequest("GET", "https://api.l.1ms.dog:2053/t/x", nil))
+	api.ServeHTTP(w, httptest.NewRequest("GET", "https://api.example.com:2053/t/x", nil))
 	if w.Code != 400 {
 		t.Errorf("bad token: %d", w.Code)
 	}
@@ -235,7 +235,7 @@ func TestServeOverSockets(t *testing.T) {
 	defer srv.Shutdown()
 	time.Sleep(50 * time.Millisecond)
 	c := new(dns.Client)
-	r, _, err := c.Exchange(query("socktok12.l.1ms.dog.", dns.TypeTXT, ""), pc.LocalAddr().String())
+	r, _, err := c.Exchange(query("socktok12.example.com.", dns.TypeTXT, ""), pc.LocalAddr().String())
 	if err != nil || len(r.Answer) != 1 {
 		t.Fatalf("%v %v", r, err)
 	}

@@ -1,8 +1,8 @@
 // The status page (/status/, /<lang>/status/): fills the table the build wrote (scripts/build.mjs statusMain) with what
 // the Tokyo watch on 1ms.dog's server finds (server/watch: every resolver over UDP, UDP over IPv6, DoT, DoH and DoQ
 // where it offers them, every 10 minutes): each protocol now, the last 24 hours an hour a cell, the share of probes
-// that answered over a day, a week and a month, and every outage of the last 24 hours. Only on 1ms.dog itself and
-// localhost (a copy hosted elsewhere doesn't ask our server).
+// that answered over a day, a week and a month, and every outage of the last 24 hours. Only when the shell injects the
+// results directory (a copy hosted elsewhere has no meta and doesn't ask our server).
 (function () {
   "use strict";
   const $ = s => document.querySelector(s), $$ = s => [...document.querySelectorAll(s)];
@@ -44,7 +44,19 @@
   /* ---------- the table ---------- */
   const meta = $("#stMeta");
   const fail = k => { meta.textContent = t(k); meta.classList.add("warn"); $("#stOut").innerHTML = ""; };
-  const BASE = /(^|\.)1ms\.dog$|^localhost$/.test(location.hostname) ? "https://data.1ms.dog:2083/dns/" : "";
+  // The results directory is the shell's (tool-contract §2): <meta name="ms-data" content="base=https://…">.
+  const endpoints = name => {
+    const el = document.querySelector(`meta[name="${name}"]`), out = {};
+    for (const part of ((el && el.getAttribute("content")) || "").split(";")) {
+      const at = part.indexOf("=");
+      if (at < 1) continue;
+      const k = part.slice(0, at).trim(), v = part.slice(at + 1).trim();
+      if (k && v) out[k] = v;
+    }
+    return out;
+  };
+  const DATA = (endpoints("ms-data").base || "").replace(/\/+$/, "");
+  const BASE = DATA ? DATA + "/dns/" : "";
   if (!BASE) { fail("sp_off"); return; }
   const PROTOS = [["udp", "UDP"], ["udp6", "IPv6"], ["dot", "DoT"], ["doh", "DoH"], ["doq", "DoQ"]];
   const PN = Object.fromEntries(PROTOS);

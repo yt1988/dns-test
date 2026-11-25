@@ -10,9 +10,9 @@ import (
 
 // API is the HTTPS results endpoint on :2053 (CORS open, nothing cached, nothing logged).
 //
-//	GET https://api.l.1ms.dog:2053/t/<token>[?wait=ms&settle=ms]   the token's hits
-//	GET https://<token>[-<tag>].l.1ms.dog:2053/                     the same, one request: the browser's own lookup of
-//	                                                                that name went through its system resolver on the way
+//	GET /t/<token>[?wait=ms&settle=ms]   the token's hits
+//	GET /                                the same, one request: the token is in the host name, and the browser's own
+//	                                     lookup of that name went through its system resolver on the way
 //
 // When nothing has arrived yet it waits up to wait ms (default 1500, max 5000) for the first query, then until settle ms
 // (default 600, max 3000) after the first query, so the queries a resolver sends after its first are in too: the A and

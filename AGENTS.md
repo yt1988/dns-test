@@ -26,7 +26,7 @@ npm run build      # 由 src/ 生成 public/（页面、资源、规则集、CSP
 npm run dev        # wrangler dev，http://localhost:8793
 ```
 
-本地页面没有 shell 注入的 `<meta name="ms-servers">`（#142）：靠它取地址的「你的 DNS」卡片和节点行会降级——卡片隐藏、不发请求。状态页仍读 `data.1ms.dog` 的线上结果。要在本地看卡片，从线上页面的 `<head>` 里抄一条 `ms-servers` meta 加到本地页面。
+本地页面没有 shell 注入的 `<meta name="ms-servers">`（#142）：靠它取地址的「你的 DNS」卡片和节点行会降级——卡片隐藏、不发请求。状态页从 shell 注入的 `<meta name="ms-data">` 取结果目录，本地没有就显示「这个页面副本不会读取状态数据」。要在本地看卡片，从线上页面的 `<head>` 里抄一条 `ms-servers` meta 加到本地页面。
 
 ## 测试：按改动范围选
 
@@ -41,6 +41,7 @@ npm run dev        # wrangler dev，http://localhost:8793
 ## 部署和发版
 
 - **网站**：推送 `main` 就是上线。Cloudflare Workers Builds 自动跑 `npm ci && npm test`，再 `npx wrangler deploy`。`public/` 是生成的文件，要和源码一起提交。自己部署时，Worker 不绑域名（`wrangler.toml`），在 Cloudflare 面板里把你的域名绑到它上面，构建时用 `SITE_URL=https://<your-domain> npm run build`。
+- **东京状态页的结果目录**：Worker 从变量 `DATA_URL` 取（代码里补 `/dns/summary.json`），页面上的状态页从 shell 注入的 `<meta name="ms-data">` 取同一个目录。控制台用 `wrangler secret put DATA_URL` 设，不要写进仓库：普通变量会被 Workers Builds 的部署清掉。没设时 `/tokyo.json` 返回 502，状态页显示「不可用」。
 - **服务器上的程序**：不随网站部署。`server/` 的改动合进 `main` 后，`server` 工作流会自动测试、静态编译，并发布 GitHub Release（tag 是 `server-<短提交号>`，标为 latest，附 `SHA256SUMS`）。装或者换程序时，下载 `https://github.com/yt1988/dns-test/releases/latest/download/<程序名>`（`1ms-dns`、`1ms-dns-watch`），用 `sha256sum -c SHA256SUMS` 校验，替换后重启服务，步骤见 docs/vps.md。
 - **命令行工具**：在 dns-test-cli 仓库发版（打 tag）。改 DNS 列表不需要发版：工具运行时会先读本站的 `/resolvers.json`，内置的那份每天自动同步。
 

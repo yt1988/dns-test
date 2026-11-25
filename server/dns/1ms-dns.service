@@ -1,11 +1,11 @@
-# /etc/systemd/system/1ms-dns.service: l.1ms.dog, authoritative DNS + results API (source: this directory).
+# /etc/systemd/system/1ms-dns.service: the zone's authoritative DNS + results API (source: this directory).
 # Ports, directory, user and service name as registered in 1ms-shell docs/processes.md ("专用服务器"): 53/udp+tcp and
 # 2053/tcp, /opt/1ms/dns/, user 1ms-dns, 1ms-dns.
 # Binds only the interface addresses (172.26.5.21 is where Lightsail's NAT delivers 16.76.79.94) and the public IPv6.
 # 127.0.0.1:2054 is a plain-HTTP copy of the API on loopback, for checks on the machine itself.
 # Query records stay in memory for 2 minutes; no access log; its own output is startup and errors only.
 [Unit]
-Description=l.1ms.dog: authoritative DNS and results API (dns-test)
+Description=Authoritative DNS and results API (dns-test)
 After=network-online.target
 Wants=network-online.target
 

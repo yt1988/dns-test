@@ -9,11 +9,11 @@
    - 这个名字解析到本服务器，2053 端口有 `*.l.1ms.dog` 的证书，返回的就是下面的 JSON，带 CORS。一次请求既让浏览器做了解析，又拿回了结果。
    - 不要连 443 端口，那是这台机器上别的服务。
    - `tag` 是 1–16 位 `[a-z0-9]`，和 token 之间用一个 `-` 连成同一级标签（不能写成多级，否则会被 QNAME 最小化拆开），用来区分同一个 token 下的不同查询。
-3. 也可以单独取：`GET https://api.l.1ms.dog:2053/t/<token>[?wait=毫秒&settle=毫秒]`
+3. 也可以单独取：`GET https://<your-domain>:2053/t/<token>[?wait=毫秒&settle=毫秒]`
    - 没有记录时，最多等 `wait`（默认 1500，上限 5000）。
    - 收到第一条后，再等 `settle`（默认 600，上限 3000）才返回。A 和 AAAA 两条查询都要收进来；有的解析器（中国联通）先发一条不带 ECS 的查询，约 250 ms 后才从别的地址发带 ECS 的。
 4. 经某家 DoH 查：向这家的 DoH 发 `<token>-<tag>.l.1ms.dog` 的查询（不用读它的应答），记录里会出现这家为这位访客服务的出口节点，以及它带没带 ECS。
-5. 能不能走 IPv4 或 IPv6：`<token>-<tag>.v6.l.1ms.dog` 委派给只有 AAAA 记录的 `ns6.l.1ms.dog`，解析器只有能走 IPv6 才拿得到答案，所以出现 `zone:"v6"` 的记录就说明它能走 IPv6；`v4.l.1ms.dog` 同理。v6 区只应答 AAAA，v4 区只应答 A。这两个区不在通配证书范围内，结果要用 `api.l.1ms.dog` 取。
+5. 能不能走 IPv4 或 IPv6：`<token>-<tag>.v6.l.1ms.dog` 委派给只有 AAAA 记录的 `ns6.l.1ms.dog`，解析器只有能走 IPv6 才拿得到答案，所以出现 `zone:"v6"` 的记录就说明它能走 IPv6；`v4.l.1ms.dog` 同理。v6 区只应答 AAAA，v4 区只应答 A。这两个区不在通配证书范围内，结果要用 `<your-domain>` 取。
 6. 命令行：`dig TXT whoami.l.1ms.dog` 返回 `"resolver=<IP>" "ecs=<网段>"`。
 
 ## 返回格式

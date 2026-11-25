@@ -10,7 +10,8 @@
 //                         reads the code and shows the result (src/share.mjs)
 //                         (a code it can't read: 404)
 //   /tokyo.json           every resolver as the 1ms.dog server in Tokyo sees it (server/watch, every 10 minutes): its
-//                         latest probe and uptime per protocol, fetched from data.1ms.dog and kept for 2 minutes
+//                         latest probe and uptime per protocol, fetched from the results directory (env.DATA_URL) and
+//                         kept for 2 minutes; 502 when the deployment names none
 //   anything else         a bare 404; 1ms-shell puts the shared 1ms.dog 404 page in front of it
 // The installer and the tool try these before GitHub, which is often slow or blocked in mainland China.
 // GitHub itself fails for a minute or two now and then (5xx, a rate limit, no answer): every ask below is tried
@@ -63,7 +64,7 @@ export default {
     const sp = sharePath(url.pathname, KNOWN);
     if (sp && STR[sp.slug] && (!sp.id || KNOWN.has(sp.id)) && env.ASSETS) return shared(req, env, url, sp);
 
-    if (url.pathname === "/tokyo.json") return tokyo(req, ctx);
+    if (url.pathname === "/tokyo.json") return tokyo(req, env, ctx);
 
     if (url.pathname === "/v") {
       const v = await latest(url, ctx);
@@ -134,8 +135,12 @@ async function shared(req, env, url, { slug, id, code }) {
   return new Response(req.method === "HEAD" ? null : out.body, { status: 200, headers: h });
 }
 
-// Tokyo's view (server/watch writes it on the VPS, data.1ms.dog publishes it): only what the page reads, kept 2 minutes
-const TOKYO = "https://data.1ms.dog:2083/dns/summary.json";
+// Tokyo's view (server/watch writes it on the VPS, the deployment publishes that directory at DATA_URL): only what the
+// page reads, kept 2 minutes. The URL is a Worker secret, not repository content (tool-contract §2).
+const summaryURL = env => {
+  const base = ((env && env.DATA_URL) || "").trim().replace(/\/+$/, "");
+  return base ? base + "/dns/summary.json" : "";
+};
 function trimTokyo(j) {
   const r = {};
   for (const [id, ps] of Object.entries((j && j.r) || {})) {
@@ -145,12 +150,14 @@ function trimTokyo(j) {
   }
   return { t: j && j.t, r };
 }
-async function tokyo(req, ctx) {
+async function tokyo(req, env, ctx) {
+  const upstream = summaryURL(env);
+  if (!upstream) return new Response("Tokyo's results directory is not configured\n", { status: 502, headers: { "cache-control": "no-store" } });
   const cache = caches.default, key = new Request(new URL("/tokyo.json", req.url).toString());
   let res = await cache.match(key);
   if (!res) {
     let up;
-    try { up = await fetch(TOKYO, { signal: AbortSignal.timeout(5000) }); } catch (e) { up = null; }
+    try { up = await fetch(upstream, { signal: AbortSignal.timeout(5000) }); } catch (e) { up = null; }
     if (!up || !up.ok) return new Response("Tokyo did not answer\n", { status: 502, headers: { "cache-control": "no-store" } });
     res = new Response(JSON.stringify(trimTokyo(await up.json())), {
       headers: { "content-type": "application/json; charset=utf-8", "cache-control": "public, max-age=120" } });

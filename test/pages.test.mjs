@@ -2,7 +2,7 @@
 // itself, the other languages as alternates, a link back to the test of them all, and the sitemap lists them all.
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { readFile } from "node:fs/promises";
+import { readFile, readdir } from "node:fs/promises";
 import { LANGS } from "../scripts/build.mjs";
 import { RESOLVERS } from "../src/resolvers.mjs";
 import { ABOUT, titleOf } from "../src/about.mjs";
@@ -80,7 +80,13 @@ test("the status page: every resolver with its protocols, its own script, linked
     assert.ok((await page(slug, null)).includes(link), slug + ": home links it");
     assert.ok((await page(slug, "google")).includes(link), slug + ": a resolver's page links it");
   }
-  assert.match(await readFile(new URL("../public/_headers", import.meta.url), "utf8"), /connect-src [^;]* https:\/\/data\.1ms\.dog:2083/);
+  // the results directory comes from the shell's <meta name="ms-data">: the status script names no endpoint itself
+  const assets = new URL("../public/assets/", import.meta.url);
+  const bundle = (await readdir(assets)).find(f => /^status\.[0-9a-f]+\.js$/.test(f));
+  assert.ok(bundle, "status: the page's script");
+  const js = await readFile(new URL(bundle, assets), "utf8");
+  assert.match(js, /ms-data/, "status: reads the shell's results directory");
+  assert.doesNotMatch(js, /\bhttps?:\/\//, "status: names no endpoint of its own");
 });
 
 test("a resolver's page doesn't send its help to a list it doesn't have; the home page keeps every general answer", async () => {

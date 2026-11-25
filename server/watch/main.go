@@ -2,7 +2,7 @@
 // 2, by 1ms-dns-watch.timer). Each resolver is probed over plain DNS (UDP, IPv4 and IPv6), DoT, DoH and DoQ where it
 // offers them, with a query for example.com.
 //
-// Output, published read-only at https://data.1ms.dog:2083/dns/ for the dns Worker to fetch:
+// Output, published read-only in the results directory the dns Worker reads (its DATA_URL):
 //
 //	latest.json        this run: {t, vantage, r: {id: {proto: {ms} | {err}}}}
 //	summary.json       for the page: {t, vantage, r: {id: {proto: {last, err, up24h, up7d, up30d, med24h, med7d, n24h}}}}
