@@ -20,7 +20,7 @@ export function maskIP(ip) {
 }
 
 // Everything the dialog gets. `last` is the result as the page showed it (src/app.js: snapshot), `targets` the measured
-// targets, `mine` the resolver this device uses (l.1ms.dog's answer), `nodes` which node of each resolver served the
+// targets, `mine` the resolver this device uses (the zone's answer), `nodes` which node of each resolver served the
 // visitor. Strings: t / tn / country are the page's own. null when there is no result yet.
 export function reportContext({ last, targets, resolvers, mine, nodes, focus, lang, path, viewing, t, tn, fmt, country }) {
   if (!last || !Array.isArray(last.rows) || !last.rows.length) return null;

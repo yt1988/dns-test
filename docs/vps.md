@@ -4,7 +4,7 @@
 
 | 程序 | 做什么 |
 |---|---|
-| `server/dns` | 一个子区（下文的 `<zone>`，1ms.dog 用的是 `l.1ms.dog`）的权威 DNS，加上 HTTPS 结果接口：看出访客实际用的解析器，以及它有没有转交 ECS（接口见 docs/l-api.md） |
+| `server/dns` | 一个子区（下文的 `<zone>`，1ms.dog 用的是 `<zone>`）的权威 DNS，加上 HTTPS 结果接口：看出访客实际用的解析器，以及它有没有转交 ECS（接口见 docs/l-api.md） |
 | `server/watch` | 一次探测：从这台机器用 UDP、IPv6、DoT、DoH、DoQ 测一遍列表里的全部 DNS，写出 JSON。由 systemd timer 每 10 分钟启动一次 |
 
 网页会读这两样东西：「你的设备实际在用的 DNS」卡片读结果接口（`src/app.js` 里的 `LZ`），状态页读探测结果（`src/status.js` 里的 `BASE`）。默认指向 1ms.dog 的服务，自己部署时把这两处改成你的地址；CSP 在 `scripts/build.mjs` 里。

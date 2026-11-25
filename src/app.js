@@ -349,7 +349,7 @@ import { authFetch } from "./auth.mjs";
     const cc = (ABOUT[win.id] || {}).hq || win.cc;
     return { type: "result", lang: D.lang, path: D.home + "r/" + encodeShare({ ...LAST, cc: "" }), grade: null, score: null,
       headline: t("emb_head", { name: win.name, ms: fmt(w) }), stats, findings,
-      // resolverCountry: where the device's own resolver is, as l.1ms.dog saw it (its country only, never its address)
+      // resolverCountry: where the device's own resolver is, as the zone saw it (its country only, never its address)
       facts: { winner: win.id, winnerMs: Math.round(w * 10) / 10, ...(cc && { winnerCountry: cc }), dnssec: !!win.dnssec,
         ...(MINE && MINE.first.cc && { resolverCountry: MINE.first.cc }) } };
   }
@@ -364,7 +364,8 @@ import { authFetch } from "./auth.mjs";
   const country = cc => { try { return regionName(cc, D.lang); } catch (e) { return cc; } };
 
   /* ---------- from the 1ms.dog server: the resolver this device really uses, each one's node, Tokyo's view ---------- */
-  // l.1ms.dog is 1ms.dog's own authoritative DNS (server/dns). A fresh name under it, looked up by the browser (through
+  // This is 1ms.dog's own authoritative DNS (server/dns), on a zone of the operator's. A fresh name under it, looked up
+  // by the browser (through
   // the device's resolver) or sent through a resolver's DoH, is a query that reaches it from that resolver; its API says
   // from which address, network and country, and whether it passed on the visitor's network (ECS). Shown on the
   // visitor's own page only: none of it goes into the share link or card. Tokyo's view is server/watch's summary.
@@ -429,7 +430,7 @@ import { authFetch } from "./auth.mjs";
   }
 
   // each resolver's node for this visitor: after the test (so these queries don't share its time), one query for a fresh
-  // name through each resolver that answered, then what l.1ms.dog saw of them
+  // name through each resolver that answered, then what the zone saw of them
   let NODES = {};
   function askNodes() {
     if (!LZ) return;

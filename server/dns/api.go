@@ -20,7 +20,7 @@ import (
 type API struct {
 	store  *Store
 	geo    *Geo
-	apex   string // "l.1ms.dog"
+	apex   string // the zone
 	settle time.Duration
 }
 

@@ -1,6 +1,6 @@
-// 1ms-dns: the authoritative DNS server for l.1ms.dog and its results API, on the 1ms.dog VPS.
+// 1ms-dns: the authoritative DNS server for a zone and its results API.
 //
-// A page makes the browser look up a fresh random name under l.1ms.dog; the query that reaches us comes from the
+// A page makes the browser look up a fresh random name under the zone; the query that reaches us comes from the
 // resolver the visitor really uses, so we can say which one it is (address, network, country) and whether it passed on
 // the visitor's subnet (ECS). Query records are kept in memory for 2 minutes and never written anywhere.
 //
@@ -37,14 +37,25 @@ func main() {
 	dnsAddrs := flag.String("dns", "127.0.0.1:5353", "addresses to answer DNS on, udp and tcp (comma-separated)")
 	apiAddrs := flag.String("api", "", "addresses for the HTTPS results API (comma-separated)")
 	apiHTTP := flag.String("api-http", "", "a plain-HTTP results API address, for checks on the machine itself (loopback)")
-	zone := flag.String("zone", "l.1ms.dog", "the zone")
-	ns := flag.String("ns", "ns-l.1ms.dog", "the zone's name server (as delegated in the parent)")
-	a := flag.String("a", "16.76.79.94", "this server's public IPv4 address")
-	aaaa := flag.String("aaaa", "2406:da14:3c2:6400:d2e5:c654:ae70:30c5", "this server's public IPv6 address")
+	zone := flag.String("zone", "", "the zone this server is authoritative for (required)")
+	ns := flag.String("ns", "", "the zone's name server, as delegated in the parent (required)")
+	a := flag.String("a", "", "this server's public IPv4 address (required)")
+	aaaa := flag.String("aaaa", "", "this server's public IPv6 address (required)")
 	state := flag.String("state", "/var/lib/1ms-dns", "state directory (certificate, geolocation databases)")
 	acmeDir := flag.String("acme", acme.LetsEncryptURL, "ACME directory URL")
 	flag.Parse()
 	log.SetFlags(0)
+	// No deployment is in this repository: the zone, its delegation and the addresses to answer with are the operator's.
+	for _, f := range []struct{ name, v string }{{"zone", *zone}, {"ns", *ns}, {"a", *a}, {"aaaa", *aaaa}} {
+		if f.v == "" {
+			log.Fatalf("-%s is required", f.name)
+		}
+	}
+	for _, f := range []struct{ name, v string }{{"a", *a}, {"aaaa", *aaaa}} {
+		if net.ParseIP(f.v) == nil {
+			log.Fatalf("-%s is not an IP address: %s", f.name, f.v)
+		}
+	}
 
 	ctx := context.Background()
 	store := NewStore(2 * time.Minute)

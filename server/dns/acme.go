@@ -24,7 +24,7 @@ import (
 	"golang.org/x/crypto/acme"
 )
 
-// CertMgr gets and renews the certificate for l.1ms.dog and *.l.1ms.dog from Let's Encrypt with DNS-01, answering the
+// CertMgr gets and renews the certificate for the zone and *.<zone> from Let's Encrypt with DNS-01, answering the
 // challenge from our own zone (ACMETXT), so it needs no port 80 and no other service.
 type CertMgr struct {
 	dir       string // state dir for this ACME directory

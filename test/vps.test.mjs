@@ -1,5 +1,6 @@
-// What the page takes from the 1ms.dog server (server/): the card for the device's own resolver, the CSP that lets it
-// ask l.1ms.dog, and /tokyo.json, the Worker's trimmed copy of server/watch's summary.
+// What the page takes from the 1ms.dog server (server/): the card for the device's own resolver, the CSP (which names
+// no host of ours: the shell adds them from its metas), and /tokyo.json, the Worker's trimmed copy of server/watch's
+// summary.
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
@@ -7,9 +8,10 @@ import worker from "../src/worker.js";
 
 const read = f => readFile(new URL("../public/" + f, import.meta.url), "utf8");
 
-test("every page has the device-resolver card; the CSP allows l.1ms.dog's API", async () => {
+test("every page has the device-resolver card; the built CSP names no host of ours", async () => {
   for (const f of ["index.html", "zh-cn/index.html", "ru/google/index.html"]) assert.match(await read(f), /<section class="mine card" id="mine">/, f);
-  assert.match(await read("_headers"), /connect-src [^;]* https:\/\/\*\.l\.1ms\.dog:2053/);
+  const headers = await read("_headers"), csp = /connect-src [^;]*/.exec(headers)[0];
+  assert.ok(!/1ms\.dog/.test(csp), "the shell injects the endpoints; the build must not name one: " + csp);
 });
 
 test("/tokyo.json: known resolvers only, last and uptime per protocol, cached; 502 when Tokyo doesn't answer", async () => {

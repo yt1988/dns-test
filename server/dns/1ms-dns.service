@@ -1,7 +1,7 @@
 # /etc/systemd/system/1ms-dns.service: the zone's authoritative DNS + results API (source: this directory).
-# Ports, directory, user and service name as registered in 1ms-shell docs/processes.md ("专用服务器"): 53/udp+tcp and
-# 2053/tcp, /opt/1ms/dns/, user 1ms-dns, 1ms-dns.
-# Binds only the interface addresses (172.26.5.21 is where Lightsail's NAT delivers 16.76.79.94) and the public IPv6.
+# This is a template: replace <zone>, <zone-ns>, <bind-v4>, <public-v4> and <public-v6> before installing. The bind
+# address is the machine's own; where the provider delivers the public address over NAT, it is the private one.
+# Ports, directory, user and service name: 53/udp+tcp and 2053/tcp, /opt/1ms/dns/, user 1ms-dns, 1ms-dns.
 # 127.0.0.1:2054 is a plain-HTTP copy of the API on loopback, for checks on the machine itself.
 # Query records stay in memory for 2 minutes; no access log; its own output is startup and errors only.
 [Unit]
@@ -10,7 +10,7 @@ After=network-online.target
 Wants=network-online.target
 
 [Service]
-ExecStart=/opt/1ms/dns/1ms-dns -dns 172.26.5.21:53,[2406:da14:3c2:6400:d2e5:c654:ae70:30c5]:53 -api 172.26.5.21:2053,[2406:da14:3c2:6400:d2e5:c654:ae70:30c5]:2053 -api-http 127.0.0.1:2054 -state /var/lib/1ms-dns
+ExecStart=/opt/1ms/dns/1ms-dns -dns <bind-v4>:53,[<public-v6>]:53 -api <bind-v4>:2053,[<public-v6>]:2053 -zone <zone> -ns <zone-ns> -a <public-v4> -aaaa <public-v6> -api-http 127.0.0.1:2054 -state /var/lib/1ms-dns
 User=1ms-dns
 Group=1ms-dns
 Restart=always

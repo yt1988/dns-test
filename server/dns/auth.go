@@ -8,7 +8,7 @@ package main
 // exactly as the token carries it and then asks whether "dns" is one of them; the service token's "*" is accepted too.
 //
 // Empty MS_AUTH_SECRET means no check: the self-hosting default and the rollout switch. Requests the page makes to
-// <token>[-<tag>].l.1ms.dog are the measurement itself (one browser fetch that also performs the DNS lookup), so they
+// <token>[-<tag>].<zone> are the measurement itself (one browser fetch that also performs the DNS lookup), so they
 // are never checked; only api.<apex> and the /t/ and /health routes are. The loopback self-check is exempt too.
 
 import (
@@ -82,7 +82,7 @@ func deny(w http.ResponseWriter, code string) {
 }
 
 // guarded: the API host, and the /t/ and /health routes under any other name, which are the same API. The random-name
-// lookups (path "/" on <token>.l.1ms.dog) and the loopback self-check are not.
+// lookups (path "/" on <token>.<zone>) and the loopback self-check are not.
 func (a *Auth) guarded(r *http.Request) bool {
 	h := hostOnly(r.Host)
 	if h == "127.0.0.1" || h == "localhost" || h == "[::1]" || h == "::1" {

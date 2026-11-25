@@ -6,14 +6,14 @@
 
 dns.1ms.dog（DNS 测试）：在浏览器里从访客自己的网络给 33 家公共 DNS 测速，DoH 实测，UDP、DoT、DoQ 按同一台服务器估算，再检查 DNSSEC 和是否劫持不存在的域名。每家 DNS 有一个子页。另外还有三样东西：
 
-- **你的设备实际在用的 DNS**：页面查一个 `l.1ms.dog` 下的随机域名，经 1ms.dog 自己的权威 DNS（`server/dns`，在东京的 VPS 上）看出是哪个解析器、有没有带出访客网段（ECS）。
+- **你的设备实际在用的 DNS**：页面查一个 `<zone>` 下的随机域名，经 1ms.dog 自己的权威 DNS（`server/dns`，在东京的 VPS 上）看出是哪个解析器、有没有带出访客网段（ECS）。
 - **东京状态页** `/status/`：VPS 上的定时任务（`server/watch`）每 10 分钟从东京探测全部 DNS 的 UDP、IPv6、DoT、DoH、DoQ。
 - **命令行工具** dnstest 在另一个仓库 [yt1988/dns-test-cli](https://github.com/yt1988/dns-test-cli)，它读本站的 `/resolvers.json`。
 
 先读 [README.md](README.md)（测法、文件、加一家 DNS 的步骤），再按需要读：
 
 - [docs/vps.md](docs/vps.md)：VPS 上的两个服务（1ms-dns、1ms-dns-watch），从零装上、验证、哪些数据丢了就回不来。
-- [docs/l-api.md](docs/l-api.md)：`l.1ms.dog` 结果接口的格式，给接入它的其他工具。
+- [docs/l-api.md](docs/l-api.md)：`<zone>` 结果接口的格式，给接入它的其他工具。
 - [docs/design.md](docs/design.md)：设计取舍和测过的结论（为什么 DoQ 是估算、LCP 落在哪里、哪些做法试过没用）。改东西之前先看。
 
 1ms.dog 全站的运营说明（账号、密钥、VPS 全局配置、各工具维护者）在私有仓库 1ms-shell，不在这里。

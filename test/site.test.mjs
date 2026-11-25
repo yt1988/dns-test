@@ -17,7 +17,7 @@ test("every language page keeps the shell contract", async () => {
     assert.match(h, /class="logo-light" src="\/assets\/logo-light.svg" width="90" height="36"/);
     assert.ok(!/\{\{[\w:]+\}\}/.test(h), lang + ": unfilled placeholder");
     // every row, the help (its answers are in the page for search engines) and the links to each resolver's page
-    // (95 000 since the privacy answer says what l.1ms.dog sees and keeps: it is in the page twice, help and JSON-LD)
+    // (95 000 since the privacy answer says what <zone> sees and keeps: it is in the page twice, help and JSON-LD)
     assert.ok(h.length < 95000, lang + ": page is " + h.length + " bytes");
     assert.equal((h.match(/<script>/g) || []).length, 1, lang + ": the only inline script is the pre-paint one");
     // the list of the other tools is the shell's: one marker for it, before the dialogs, and no list of our own

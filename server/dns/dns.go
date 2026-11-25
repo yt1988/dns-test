@@ -9,14 +9,14 @@ import (
 	"github.com/miekg/dns"
 )
 
-// DNS answers for the zone l.1ms.dog (and nothing else: no recursion, everything outside is REFUSED).
+// DNS answers for the configured zone (and nothing else: no recursion, everything outside is REFUSED).
 //
-//	<token>[-<tag>].l.1ms.dog      A + AAAA of this server; the query is recorded under the token
-//	<token>[-<tag>].v4.l.1ms.dog   the same, but v4.l.1ms.dog is delegated to ns4.l.1ms.dog, which has only an A record:
+//	<token>[-<tag>].<zone>      A + AAAA of this server; the query is recorded under the token
+//	<token>[-<tag>].v4.<zone>   the same, but v4.<zone> is delegated to a name server of its own (ns4), which has only an A record:
 //	                               a resolver can only get the answer by reaching us over IPv4
-//	<token>[-<tag>].v6.l.1ms.dog   likewise over IPv6 (ns6.l.1ms.dog, AAAA only)
+//	<token>[-<tag>].v6.<zone>   likewise over IPv6 (ns6, AAAA only)
 //	api, whoami                    this server; TXT on whoami (and on any token name) says which resolver asked
-//	_acme-challenge.l.1ms.dog      TXT for Let's Encrypt DNS-01 while a certificate is being issued
+//	_acme-challenge.<zone>      TXT for Let's Encrypt DNS-01 while a certificate is being issued
 //
 // The same process is ns-l, ns4 and ns6: for a v4/v6 name it tells by the address the query arrived on whether it is
 // acting as the child server (answer) or as the parent (referral to the child).

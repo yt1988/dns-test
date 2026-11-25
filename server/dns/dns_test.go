@@ -14,7 +14,7 @@ var t0 = time.Date(2026, 11, 4, 0, 0, 0, 0, time.UTC)
 
 func newTestDNS() (*DNS, *Store) {
 	st := NewStore(2 * time.Minute)
-	return NewDNS("example.com", "ns.example.com", net.ParseIP("16.76.79.94"), net.ParseIP("2406:da14:3c2:6400:d2e5:c654:ae70:30c5"),
+	return NewDNS("example.com", "ns.example.com", net.ParseIP("192.0.2.10"), net.ParseIP("2001:db8::10"),
 		st, NewRRL(50, 100), NewACMETXT()), st
 }
 
@@ -69,7 +69,7 @@ func TestTokenAnswerAndRecord(t *testing.T) {
 	src := net.ParseIP("8.8.4.4")
 	m := d.answer(query("TestTok01-G.example.com.", dns.TypeA, "203.0.113.77/24"), src, "udp", 4, t0)
 	packs(t, m)
-	if !m.Authoritative || m.RecursionAvailable || len(m.Answer) != 1 || m.Answer[0].(*dns.A).A.String() != "16.76.79.94" || m.Answer[0].Header().Ttl != 0 {
+	if !m.Authoritative || m.RecursionAvailable || len(m.Answer) != 1 || m.Answer[0].(*dns.A).A.String() != "192.0.2.10" || m.Answer[0].Header().Ttl != 0 {
 		t.Fatalf("answer: %v", m)
 	}
 	var echoed bool
