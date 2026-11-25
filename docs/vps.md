@@ -73,10 +73,12 @@ cd server && go test ./... && \
 dig +norec @<ns-host> abcdefgh12345678.<zone> A    # 有应答，带 aa 标志
 dig +norec @<ns-host> example.com A                # REFUSED：只做权威，不做递归
 dig TXT whoami.<zone>                              # "resolver=<你的解析器>"
-curl https://api.<zone>:2053/health                # ok
+curl -H "Authorization: Bearer $MS_AUTH_TOKEN" https://api.<zone>:2053/health    # ok
 ```
 
 在机器之外跑，IPv4 和 IPv6 各一次。
+
+**结果接口的令牌（可选）。** 设置 `MS_AUTH_SECRET`（环境变量，或 systemd 的 `LoadCredential=ms-auth-secret`）后，`https://api.<zone>:2053` 以及任何主机上的 `/t/`、`/health` 只接受 `Authorization: Bearer v1.<exp>.<nonce>.<scope>.<hmac>`：HMAC-SHA256 覆盖 `v1|exp|nonce|scope`，`hmac` 用 base64url 无 padding，`scope` 是逗号分隔的能力名，含 `dns`（长期服务令牌用 `*`）。不设置就不校验，这是自部署默认。`<token>.<zone>:2053` 的随机名请求（页面测解析器用的那种）和本机 `-api-http` 自检不受影响；签发令牌的一方要和这个格式一致。
 
 ## 数据
 

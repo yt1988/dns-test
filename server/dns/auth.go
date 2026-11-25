@@ -2,11 +2,10 @@ package main
 
 // Token check for the results API (tool-contract.md, "端点鉴权", 2026-11-25).
 //
-// The shell mints a short-lived token into every tool page: v1.<exp>.<nonce>.<hmac>, HMAC-SHA256 over
-// "v1|exp|nonce|scope", where scope is a comma-separated list of capabilities in the order the contract lists them
-// (probe,reach,ping,rtc,ipv6,seg,dns,data). A token does not carry its own scope, and the signer may mint it for the
-// page's whole set, so this service tries every list that contains "dns" (and the service token's "*") and accepts the
-// token if one matches. The HMAC may be hex or base64 (URL or standard, padded or not).
+// The shell mints a short-lived token into every tool page: v1.<exp>.<nonce>.<scope>.<hmac>, where scope is the
+// comma-separated list of capabilities the token was signed for (probe,reach,ping,rtc,ipv6,seg,dns,data) and hmac is
+// HMAC-SHA256 over "v1|exp|nonce|scope", base64url without padding. This service recomputes the HMAC with the scope
+// exactly as the token carries it and then asks whether "dns" is one of them; the service token's "*" is accepted too.
 //
 // Empty MS_AUTH_SECRET means no check: the self-hosting default and the rollout switch. Requests the page makes to
 // <token>[-<tag>].l.1ms.dog are the measurement itself (one browser fetch that also performs the DNS lookup), so they
@@ -17,7 +16,6 @@ import (
 	"crypto/sha256"
 	"crypto/subtle"
 	"encoding/base64"
-	"encoding/hex"
 	"net/http"
 	"os"
 	"path/filepath"
@@ -26,44 +24,14 @@ import (
 	"time"
 )
 
-// the capabilities in the contract's order; a page token may name any subset of them
-var capabilities = []string{"probe", "reach", "ping", "rtc", "ipv6", "seg", "dns", "data"}
-
 type Auth struct {
 	secret  string
 	apiHost string
-	scopes  []string
 	now     func() time.Time
 }
 
 func NewAuth(secret, apiHost string) *Auth {
-	a := &Auth{secret: secret, apiHost: strings.ToLower(apiHost), now: time.Now}
-	if secret != "" {
-		a.scopes = scopeCandidates()
-	}
-	return a
-}
-
-// scopeCandidates is every comma-separated list of capabilities that contains "dns", plus the service token's "*".
-func scopeCandidates() []string {
-	var out []string
-	for mask := 1; mask < 1<<len(capabilities); mask++ {
-		var parts []string
-		hasDNS := false
-		for i, c := range capabilities {
-			if mask&(1<<i) == 0 {
-				continue
-			}
-			parts = append(parts, c)
-			if c == "dns" {
-				hasDNS = true
-			}
-		}
-		if hasDNS {
-			out = append(out, strings.Join(parts, ","))
-		}
-	}
-	return append(out, "*")
+	return &Auth{secret: secret, apiHost: strings.ToLower(apiHost), now: time.Now}
 }
 
 // authSecret reads the key from MS_AUTH_SECRET or, under systemd, from LoadCredential=ms-auth-secret.
@@ -125,36 +93,30 @@ func (a *Auth) valid(tok string) bool {
 		return false
 	}
 	p := strings.Split(tok, ".")
-	if len(p) != 4 || p[0] != "v1" || p[2] == "" {
+	if len(p) != 5 || p[0] != "v1" || p[2] == "" || p[3] == "" {
 		return false
 	}
 	exp, err := strconv.ParseInt(p[1], 10, 64)
 	if err != nil || exp <= a.now().Unix() {
 		return false
 	}
-	sig, ok := decodeSig(p[3])
-	if !ok {
+	sig, err := base64.RawURLEncoding.DecodeString(p[4])
+	if err != nil || len(sig) != sha256.Size {
 		return false
 	}
-	msg := "v1|" + p[1] + "|" + p[2] + "|"
-	for _, scope := range a.scopes {
-		mac := hmac.New(sha256.New, []byte(a.secret))
-		mac.Write([]byte(msg + scope))
-		if subtle.ConstantTimeCompare(mac.Sum(nil), sig) == 1 {
+	mac := hmac.New(sha256.New, []byte(a.secret))
+	mac.Write([]byte("v1|" + p[1] + "|" + p[2] + "|" + p[3]))
+	if subtle.ConstantTimeCompare(mac.Sum(nil), sig) != 1 {
+		return false
+	}
+	return hasScope(p[3], "dns") || strings.TrimSpace(p[3]) == "*"
+}
+
+func hasScope(scope, want string) bool {
+	for _, s := range strings.Split(scope, ",") {
+		if strings.TrimSpace(s) == want {
 			return true
 		}
 	}
 	return false
-}
-
-func decodeSig(s string) ([]byte, bool) {
-	if b, err := hex.DecodeString(s); err == nil && len(b) == sha256.Size {
-		return b, true
-	}
-	for _, enc := range []*base64.Encoding{base64.RawURLEncoding, base64.URLEncoding, base64.RawStdEncoding, base64.StdEncoding} {
-		if b, err := enc.DecodeString(s); err == nil && len(b) == sha256.Size {
-			return b, true
-		}
-	}
-	return nil, false
 }

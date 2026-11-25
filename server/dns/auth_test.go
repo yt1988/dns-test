@@ -3,6 +3,7 @@ package main
 import (
 	"crypto/hmac"
 	"crypto/sha256"
+	"encoding/base64"
 	"fmt"
 	"net/http"
 	"net/http/httptest"
@@ -18,7 +19,7 @@ var authNow = time.Unix(1_700_000_000, 0)
 func mintToken(secret, scope string, exp int64, nonce string) string {
 	mac := hmac.New(sha256.New, []byte(secret))
 	fmt.Fprintf(mac, "v1|%d|%s|%s", exp, nonce, scope)
-	return fmt.Sprintf("v1.%d.%s.%x", exp, nonce, mac.Sum(nil))
+	return fmt.Sprintf("v1.%d.%s.%s.%s", exp, nonce, scope, base64.RawURLEncoding.EncodeToString(mac.Sum(nil)))
 }
 
 func authCall(auth *Auth, host, path, header string) (int, string) {
@@ -64,11 +65,13 @@ func TestAuthNeedsATokenOnTheAPI(t *testing.T) {
 func TestAuthRejectsBadTokens(t *testing.T) {
 	a := testAuth(authTestSecret)
 	exp := authNow.Add(time.Minute).Unix()
+	good := mintToken(authTestSecret, "dns", exp, "n4")
 	cases := map[string]string{
 		"expired":      mintToken(authTestSecret, "dns", authNow.Unix()-1, "n1"),
-		"other scope":  mintToken(authTestSecret, "probe", exp, "n2"),
+		"other scope":  mintToken(authTestSecret, "probe,data", exp, "n2"),
 		"wrong secret": mintToken("other", "dns", exp, "n3"),
-		"malformed":    "v1.notanumber.n4.deadbeef",
+		"four parts":   strings.Join(strings.Split(good, ".")[:4], "."),
+		"malformed":    "v1.notanumber.n4.dns.deadbeef",
 	}
 	for name, tok := range cases {
 		if code, body := authCall(a, "api.l.1ms.dog:2053", "/t/abc", "Bearer "+tok); code != 401 || body != "bad_token" {
@@ -80,10 +83,15 @@ func TestAuthRejectsBadTokens(t *testing.T) {
 func TestAuthAcceptsPageAndServiceTokens(t *testing.T) {
 	a := testAuth(authTestSecret)
 	exp := authNow.Add(time.Minute).Unix()
-	page := mintToken(authTestSecret, "dns", exp, "n1")
-	full := mintToken(authTestSecret, strings.Join(capabilities, ","), exp, "n2")
-	svc := mintToken(authTestSecret, "*", exp, "n3")
-	for name, tok := range map[string]string{"page dns": page, "whole page set": full, "service *": svc} {
+	scopes := map[string]string{
+		"page dns":              "dns",
+		"one of several":        "probe,dns,data",
+		"whole page set":        "probe,reach,ping,rtc,ipv6,seg,dns,data",
+		"service token":         "*",
+		"whitespace around dns": "probe, dns",
+	}
+	for name, scope := range scopes {
+		tok := mintToken(authTestSecret, scope, exp, "n5")
 		if code, body := authCall(a, "api.l.1ms.dog:2053", "/t/abc", "Bearer "+tok); code != 200 {
 			t.Errorf("%s: %d %q, want 200", name, code, body)
 		}
