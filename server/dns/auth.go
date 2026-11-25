@@ -59,15 +59,26 @@ func (a *Auth) Wrap(next http.Handler) http.Handler {
 		}
 		tok, ok := strings.CutPrefix(r.Header.Get("Authorization"), "Bearer ")
 		if !ok || strings.TrimSpace(tok) == "" {
-			http.Error(w, "no_token", http.StatusUnauthorized)
+			deny(w, "no_token")
 			return
 		}
 		if !a.valid(strings.TrimSpace(tok)) {
-			http.Error(w, "bad_token", http.StatusUnauthorized)
+			deny(w, "bad_token")
 			return
 		}
 		next.ServeHTTP(w, r)
 	})
+}
+
+// deny answers 401 with the same CORS headers as the API: without them a cross-origin fetch sees a network error, not
+// a 401, and the page could not tell that its token needs renewing.
+func deny(w http.ResponseWriter, code string) {
+	h := w.Header()
+	h.Set("Access-Control-Allow-Origin", "*")
+	h.Set("Timing-Allow-Origin", "*")
+	h.Set("Cache-Control", "no-store")
+	h.Set("X-Content-Type-Options", "nosniff")
+	http.Error(w, code, http.StatusUnauthorized)
 }
 
 // guarded: the API host, and the /t/ and /health routes under any other name, which are the same API. The random-name

@@ -10,6 +10,7 @@ import { ABOUT } from "./about.mjs";
 import { regionName } from "./region.mjs";
 import { dohURL } from "./dns.mjs";
 import { reportContext } from "./report.mjs";
+import { authFetch } from "./auth.mjs";
 
 (function () {
   "use strict";
@@ -387,6 +388,9 @@ import { reportContext } from "./report.mjs";
   const tok = () => [...crypto.getRandomValues(new Uint8Array(18))].map(b => "abcdefghijklmnopqrstuvwxyz0123456789"[b % 36]).join("");
   const getJSON = (u, ms) => fetch(u, { cache: "no-store", credentials: "omit", referrerPolicy: "no-referrer", signal: AbortSignal.timeout(ms) })
     .then(r => r.ok ? r.json() : Promise.reject(r));
+  // the results API alone takes the shell's short-lived token (src/auth.mjs); the random-name lookups above are DNS
+  const getAPI = (u, ms) => authFetch(u, { cache: "no-store", credentials: "omit", referrerPolicy: "no-referrer", signal: AbortSignal.timeout(ms) })
+    .then(r => r.ok ? r.json() : Promise.reject(r));
   // one resolver's queries: the first one is the one whose answer was used, so it decides about ECS (1ms-shell cdn's
   // finding: China Unicom asks first without ECS, then from other addresses with it)
   function seen(hits) {
@@ -433,7 +437,7 @@ import { reportContext } from "./report.mjs";
     NODES = {};
     const sent = ask.map(r => fetch(dohURL(r.doh, `${k}-r${RESOLVERS.indexOf(r)}.${LZ}`), { mode: r.cors ? "cors" : "no-cors", cache: "no-store",
       credentials: "omit", referrerPolicy: "no-referrer", signal: AbortSignal.timeout(5000) }).catch(() => {}));
-    Promise.all(sent).then(() => getJSON(`${DNS_BASE}/t/${k}?wait=1000`, 8000)).then(j => {
+    Promise.all(sent).then(() => getAPI(`${DNS_BASE}/t/${k}?wait=1000`, 8000)).then(j => {
       for (const r of ask) NODES[r.id] = seen(j.hits.filter(h => h.tag === "r" + RESOLVERS.indexOf(r)));
       renderNodes();
     }, () => {});

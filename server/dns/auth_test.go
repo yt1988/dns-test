@@ -23,6 +23,11 @@ func mintToken(secret, scope string, exp int64, nonce string) string {
 }
 
 func authCall(auth *Auth, host, path, header string) (int, string) {
+	rec := authRec(auth, host, path, header)
+	return rec.Code, strings.TrimSpace(rec.Body.String())
+}
+
+func authRec(auth *Auth, host, path, header string) *httptest.ResponseRecorder {
 	next := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) { w.Write([]byte("ok")) })
 	req := httptest.NewRequest("GET", "https://"+host+path, nil)
 	if header != "" {
@@ -30,7 +35,7 @@ func authCall(auth *Auth, host, path, header string) (int, string) {
 	}
 	rec := httptest.NewRecorder()
 	auth.Wrap(next).ServeHTTP(rec, req)
-	return rec.Code, strings.TrimSpace(rec.Body.String())
+	return rec
 }
 
 func testAuth(secret string) *Auth {
@@ -59,6 +64,10 @@ func TestAuthNeedsATokenOnTheAPI(t *testing.T) {
 	// the same API under another name: /t/ is still the API, so a random hostname cannot be used to skip the check
 	if code, body := authCall(a, "abcd-s.l.1ms.dog:2053", "/t/abc", ""); code != 401 || body != "no_token" {
 		t.Errorf("no token under another host: %d %q, want 401 no_token", code, body)
+	}
+	// the page must be able to read the 401: a cross-origin fetch without these sees a network error and never renews
+	if rec := authRec(a, "api.l.1ms.dog:2053", "/t/abc", ""); rec.Header().Get("Access-Control-Allow-Origin") != "*" {
+		t.Errorf("401 without CORS: the page could not tell it is a 401")
 	}
 }
 
