@@ -26,7 +26,7 @@ npm run build      # 由 src/ 生成 public/（页面、资源、规则集、CSP
 npm run dev        # wrangler dev，http://localhost:8793
 ```
 
-本地页面在 `localhost` 上也会读 `l.1ms.dog` 和 `data.1ms.dog`（线上的服务），所以「你的 DNS」卡片和状态页在本地也有数据。
+本地页面没有 shell 注入的 `<meta name="ms-servers">`（#142）：靠它取地址的「你的 DNS」卡片和节点行会降级——卡片隐藏、不发请求。状态页仍读 `data.1ms.dog` 的线上结果。要在本地看卡片，从线上页面的 `<head>` 里抄一条 `ms-servers` meta 加到本地页面。
 
 ## 测试：按改动范围选
 

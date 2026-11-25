@@ -367,7 +367,23 @@ import { reportContext } from "./report.mjs";
   // the device's resolver) or sent through a resolver's DoH, is a query that reaches it from that resolver; its API says
   // from which address, network and country, and whether it passed on the visitor's network (ECS). Shown on the
   // visitor's own page only: none of it goes into the share link or card. Tokyo's view is server/watch's summary.
-  const LZ = "l.1ms.dog";
+  // The deploy's own server is not repository content (#142, tool-contract §2): the shell writes
+  // <meta name="ms-servers" content="…;dns=https://<results API>:2053"> into the page. The random names live on that
+  // host's zone (api.x → x), as ipqs reads it. No meta (self-hosted, local): hide the card and ask nothing.
+  const endpoints = name => {
+    const el = document.querySelector(`meta[name="${name}"]`), out = {};
+    for (const part of ((el && el.getAttribute("content")) || "").split(";")) {
+      const at = part.indexOf("=");
+      if (at < 1) continue;
+      const k = part.slice(0, at).trim(), v = part.slice(at + 1).trim();
+      if (k && v) out[k] = v;
+    }
+    return out;
+  };
+  const DNS_BASE = (endpoints("ms-servers").dns || "").replace(/\/+$/, "");
+  const DNS_URL = (() => { try { return DNS_BASE ? new URL(DNS_BASE) : null; } catch (e) { return null; } })();
+  const LZ = DNS_URL ? DNS_URL.hostname.replace(/^api\./, "") : "";
+  const DNS_PORT = DNS_URL ? DNS_URL.port || "2053" : "";
   const tok = () => [...crypto.getRandomValues(new Uint8Array(18))].map(b => "abcdefghijklmnopqrstuvwxyz0123456789"[b % 36]).join("");
   const getJSON = (u, ms) => fetch(u, { cache: "no-store", credentials: "omit", referrerPolicy: "no-referrer", signal: AbortSignal.timeout(ms) })
     .then(r => r.ok ? r.json() : Promise.reject(r));
@@ -397,10 +413,11 @@ import { reportContext } from "./report.mjs";
     $("#mineE").textContent = lines.join(" ");
   }
   function askMine() {
+    if (!LZ) { $("#mine").hidden = true; return; }
     MINE = undefined; mineTimeout = false; renderMine();
     $("#mineC").innerHTML = t("mine_credit", { db: '<a href="https://db-ip.com" target="_blank" rel="noopener">DB-IP</a>' });
     // the name's own address is this API: one request both makes the lookup and reads what it saw
-    return getJSON(`https://${tok()}-s.${LZ}:2053/`, 4000).then(j => { MINE = seen(j.hits); }, e => {
+    return getJSON(`https://${tok()}-s.${LZ}:${DNS_PORT}/`, 4000).then(j => { MINE = seen(j.hits); }, e => {
       MINE = null;
       // the fetch ran out of time (AbortSignal.timeout) rather than being refused or reset: say so, not "blocked"
       mineTimeout = !!e && (e.name === "TimeoutError" || e.name === "AbortError");
@@ -411,11 +428,12 @@ import { reportContext } from "./report.mjs";
   // name through each resolver that answered, then what l.1ms.dog saw of them
   let NODES = {};
   function askNodes() {
+    if (!LZ) return;
     const k = tok(), ask = LIST.filter(r => { const x = tgt(r.id, "doh"); return x && x.up; });
     NODES = {};
     const sent = ask.map(r => fetch(dohURL(r.doh, `${k}-r${RESOLVERS.indexOf(r)}.${LZ}`), { mode: r.cors ? "cors" : "no-cors", cache: "no-store",
       credentials: "omit", referrerPolicy: "no-referrer", signal: AbortSignal.timeout(5000) }).catch(() => {}));
-    Promise.all(sent).then(() => getJSON(`https://api.${LZ}:2053/t/${k}?wait=1000`, 8000)).then(j => {
+    Promise.all(sent).then(() => getJSON(`${DNS_BASE}/t/${k}?wait=1000`, 8000)).then(j => {
       for (const r of ask) NODES[r.id] = seen(j.hits.filter(h => h.tag === "r" + RESOLVERS.indexOf(r)));
       renderNodes();
     }, () => {});
