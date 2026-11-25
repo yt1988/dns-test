@@ -41,6 +41,9 @@ func (a *API) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
 	case http.MethodOptions:
 		h.Set("Access-Control-Allow-Methods", "GET")
+		// the page sends the shell's short-lived token; a preflight cannot carry it, so it has to be allowed here
+		h.Set("Access-Control-Allow-Headers", "Authorization")
+		h.Set("Access-Control-Max-Age", "600")
 		w.WriteHeader(http.StatusNoContent)
 		return
 	case http.MethodGet, http.MethodHead:

@@ -68,21 +68,28 @@ func main() {
 	geo := NewGeo(*state)
 	go geo.Run(ctx)
 	api := &API{store: store, geo: geo, apex: strings.TrimSuffix(strings.ToLower(*zone), "."), settle: 600 * time.Millisecond}
+	secret := authSecret()
+	auth := NewAuth(secret, "api."+api.apex)
+	handler := auth.Wrap(api)
 	quiet := log.New(io.Discard, "", 0) // TLS handshake errors name the client; never log them
 	if addrs := split(*apiAddrs); len(addrs) > 0 {
 		cm := NewCertMgr(*state, *acmeDir, []string{api.apex, "*." + api.apex}, txt)
 		go cm.Run(ctx)
 		for _, addr := range addrs {
-			srv := &http.Server{Addr: addr, Handler: api, ErrorLog: quiet,
+			srv := &http.Server{Addr: addr, Handler: handler, ErrorLog: quiet,
 				TLSConfig:         &tls.Config{GetCertificate: cm.GetCertificate, MinVersion: tls.VersionTLS12},
 				ReadHeaderTimeout: 5 * time.Second, IdleTimeout: 60 * time.Second}
 			go func() { log.Fatalf("api %s: %v", addr, srv.ListenAndServeTLS("", "")) }()
 		}
 	}
 	if *apiHTTP != "" {
-		srv := &http.Server{Addr: *apiHTTP, Handler: api, ErrorLog: quiet, ReadHeaderTimeout: 5 * time.Second}
+		srv := &http.Server{Addr: *apiHTTP, Handler: handler, ErrorLog: quiet, ReadHeaderTimeout: 5 * time.Second}
 		go func() { log.Fatalf("api-http: %v", srv.ListenAndServe()) }()
 	}
-	log.Printf("1ms-dns: zone %s, dns %s, api %s", *zone, *dnsAddrs, *apiAddrs)
+	authState := "off"
+	if secret != "" {
+		authState = "on"
+	}
+	log.Printf("1ms-dns: zone %s, dns %s, api %s, auth %s", *zone, *dnsAddrs, *apiAddrs, authState)
 	select {}
 }
