@@ -254,7 +254,7 @@ html.embed .hero { padding-top: 14px; gap: 10px; }
   .cli-gh { min-width: 32px; justify-content: center; }
 }
 
-/* the resolver this device really uses (l.1ms.dog), and on a resolver's page its node and Tokyo's view */
+/* the resolver this device really uses (the zone from the shell's meta), and on a resolver's page its node and Tokyo's view */
 .mine { padding: 14px 22px; display: flex; flex-direction: column; gap: 6px; }
 .mine-r { font-size: 14px; line-height: 1.6; overflow-wrap: anywhere; }
 .mine-r b { font-weight: 650; }

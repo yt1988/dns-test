@@ -22,6 +22,22 @@ async function htmlFiles(dir) {
   return out;
 }
 
+// The same rule for the source itself: code comments are read by anyone browsing the repository, and the zone the
+// device-resolver lookup answers under is the operator's, not the project's (#142 item 7).
+test("the source names no internal measurement host, comments included", async () => {
+  const internal = /(?:^|[^a-z0-9-])(?:l\.1ms\.dog|data\.1ms\.dog)(?:[^a-z0-9-]|$)/i;
+  const files = [];
+  for (const d of ["src/", "src/i18n/", "scripts/"]) {
+    for (const e of await readdir(new URL(d, root), { withFileTypes: true })) {
+      if (e.isFile() && /\.(mjs|js|css|html)$/.test(e.name)) files.push(d + e.name);
+    }
+  }
+  for (const f of files) {
+    const s = await read(f);
+    assert.doesNotMatch(s, internal, f + ": names an internal host; the zone comes from the shell's meta");
+  }
+});
+
 test("visitor copy reaches no 1ms.dog host but the tool's own", async () => {
   const files = ["src/page.html", "README.md", "README.zh-CN.md", "public/llms.txt"];
   for (const f of await readdir(new URL("src/i18n/", root))) if (f.endsWith(".mjs")) files.push("src/i18n/" + f);
