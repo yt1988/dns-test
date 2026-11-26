@@ -139,16 +139,24 @@ import { authFetch } from "./auth.mjs";
   $$("[data-cli]").forEach(b => { b.onclick = () => openDlg("cli"); });
 
   /* ---------- tooltips (data-why) ---------- */
-  let tipEl;
+  // The bubble is in the HTML (div.tip.pre, holding its text) so its first paint is the page's first frame, shrunk to
+  // nothing. The browser records a text at its first paint and never again, so that first paint at zero size keeps it
+  // out of the largest paint; a bubble created on hover is that paint, at full size, and can become the page's LCP
+  // (#146 一.5; measured in Chromium — WebKit may still count it, and the note says so).
+  const tipEl = document.getElementById("tip");
+  const hideTip = () => { tipEl.classList.remove("on"); tipEl.setAttribute("aria-hidden", "true"); };
+  addEventListener("scroll", hideTip, { passive: true });
   function showTip(el) {
-    if (!tipEl) { tipEl = document.body.appendChild(Object.assign(document.createElement("div"), { className: "tip" })); addEventListener("scroll", () => tipEl.classList.remove("on"), { passive: true }); }
     tipEl.textContent = el.dataset.why;
+    tipEl.classList.remove("pre");
+    tipEl.removeAttribute("aria-hidden");
     const b = el.getBoundingClientRect(), w = tipEl.offsetWidth;
     tipEl.style.left = Math.max(8, Math.min(innerWidth - w - 8, b.left + b.width / 2 - w / 2)) + "px";
     tipEl.style.top = b.bottom + 6 + "px"; tipEl.classList.add("on");
   }
-  document.addEventListener("mouseover", e => { const el = e.target.closest && e.target.closest("[data-why]"); if (el) showTip(el); else if (tipEl) tipEl.classList.remove("on"); });
+  document.addEventListener("mouseover", e => { const el = e.target.closest && e.target.closest("[data-why]"); if (el) showTip(el); else hideTip(); });
   document.addEventListener("focusin", e => { const el = e.target.closest && e.target.closest("[data-why]"); if (el) showTip(el); });
+  document.addEventListener("focusout", hideTip);
 
   /* ---------- rows: click to see what to enter ---------- */
   const ROW = Object.fromEntries($$(".tr[data-r]").map(r => [r.dataset.r, r]));
@@ -167,7 +175,7 @@ import { authFetch } from "./auth.mjs";
     const c = e.target.closest && e.target.closest("code");
     if (!c || c.closest("[data-copy]") || !navigator.clipboard) return;
     e.stopPropagation();
-    navigator.clipboard.writeText(c.textContent).then(() => { c.classList.add("copied"); c.dataset.why = t("copied"); showTip(c); setTimeout(() => { c.classList.remove("copied"); delete c.dataset.why; tipEl && tipEl.classList.remove("on"); }, 1200); }, () => {});
+    navigator.clipboard.writeText(c.textContent).then(() => { c.classList.add("copied"); c.dataset.why = t("copied"); showTip(c); setTimeout(() => { c.classList.remove("copied"); delete c.dataset.why; hideTip(); }, 1200); }, () => {});
   }, true);
 
   /* ---------- numbers ---------- */

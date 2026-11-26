@@ -116,7 +116,11 @@ a.val:hover { color: var(--ink); }
 .td a { color: var(--ink); text-decoration: none; white-space: nowrap; }
 .td a:hover { text-decoration: underline; }
 .tip { position: fixed; z-index: 50; white-space: pre-line; max-width: min(340px, calc(100vw - 16px)); background: var(--fg); color: var(--bg); font: 500 12.5px/1.45 var(--f-ui); padding: 6px 10px; border-radius: 7px; pointer-events: none; opacity: 0; transition: opacity .12s; }
-.tip.on { opacity: 1; }
+.tip.on { opacity: 1; animation: tip-in .12s; }
+@keyframes tip-in { from { opacity: 0; } }
+/* until first shown: painted with the page's first frame at the origin, shrunk to nothing, so the browser has
+   recorded its text before a visitor ever hovers (#146 一.5; measured in Chromium, not all engines) */
+.tip.pre { left: 0; top: 0; opacity: 1; transform: scale(0); }
 
 /* the command-line tool: UDP, DoT and DoQ measured for real on a server */
 /* the command line: what it is on the left, the command on the right (copy beside it, more and the source under it) */
