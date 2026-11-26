@@ -508,7 +508,9 @@ import { authFetch } from "./auth.mjs";
   $("#shareBtn").onclick = async () => {
     if (!LAST) return;
     const S = LAST, rows = S.rows.filter(r => r.doh != null), w = rows[0];
-    const { share } = await import("/assets/share/share.js?v=11");
+    const mod = await import("/assets/share/share.js?v=11").catch(() => null);
+    if (!mod) { window.msShareDown && window.msShareDown(); return; }
+    const { share } = mod;
     share({
       lang: D.lang, name: t("app_name"), file: "dns-test",
       // the country only when the visitor ticks it; never the address, city or network
