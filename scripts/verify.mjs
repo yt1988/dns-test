@@ -192,7 +192,12 @@ const rows = await Promise.all(list.map(async r => {
       out.ecs = e.txt.some(t => t.startsWith("edns0-client-subnet"));
       out.egress = e.txt.find(t => !t.startsWith("edns0")) || "";
       out.nx = nx.rcode === RCODE.NXDOMAIN;
-      if (!out.nx) out.notes.push(`random name: rcode ${nx.rcode}, ${nx.addrs.join(" ")}`);
+      // NOERROR with no address is NODATA: the resolver did not forge an address (which is what the page flags as a
+      // rewrite), but it did not say NXDOMAIN either. dnsforge answers that way from Tokyo and NXDOMAIN from the US
+      // runner; it is shown as a skip until the next real data says which way it should be.
+      const noData = nx.rcode === RCODE.NOERROR && !nx.addrs.length;
+      if (!out.nx && noData) out.skips.push(`random name: NODATA (NOERROR, no address) — not rewritten, but not NXDOMAIN either`);
+      else if (!out.nx) out.notes.push(`random name: rcode ${nx.rcode}, ${nx.addrs.join(" ")}`);
       if (SKIP_DNSSEC.has(r.id)) out.skips.push(`dnssec not asserted (list: ${r.dnssec}, measured here: ${out.dnssec}): ${SKIP_DNSSEC.get(r.id)}`);
       else if (r.dnssec !== undefined && r.dnssec !== out.dnssec) out.notes.push(`dnssec is ${out.dnssec} (list: ${r.dnssec})`);
     } catch (e) {
