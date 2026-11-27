@@ -1,6 +1,9 @@
 #!/usr/bin/env node
-// Checks every resolver the way the page uses it, over HTTP/2 like a browser, and checks what the list says about it:
-//   - doh and ip answer a GET ?dns= query with 200 and a DNS message (a redirect, an error page or a timeout fails)
+// Checks every resolver the way the page uses it, over HTTP/2 (or HTTP/1.1 where the server offers no h2 in ALPN, as a
+// browser falls back), and checks what the list says about it:
+//   - doh and ip answer a GET ?dns= query with 200 and a DNS message (a redirect, an error page or a timeout fails).
+//     Every address the host resolves to is tried in parallel, as a browser does: one dead address does not fail a
+//     resolver that answers on another, it is printed as a note.
 //   - Access-Control-Allow-Origin is there exactly when the list says cors / ipCors (the page reads answers only then)
 //   - dnssec: dnssec-failed.org (broken signature) gets SERVFAIL and cloudflare.com (signed) gets the AD bit.
 //     A resolver whose filter answers that name itself, or whose behavior differs by node, goes in SKIP_DNSSEC:
@@ -12,6 +15,9 @@
 // Run from more than one continent before changing the list (a VPS, or the weekly GitHub Action).
 // Usage: node scripts/verify.mjs [id …]
 import http2 from "node:http2";
+import https from "node:https";
+import net from "node:net";
+import { lookup } from "node:dns/promises";
 import { RESOLVERS, NXZONE, CHECKS } from "../src/resolvers.mjs";
 import { dohURL, parse, randLabel, mixCase, RCODE } from "../src/dns.mjs";
 
@@ -22,25 +28,50 @@ const SKIP_DNSSEC = new Map([["cleanbrowsing", "its filter answers the test name
 
 const pick = process.argv.slice(2);
 const list = pick.length ? RESOLVERS.filter(r => pick.includes(r.id)) : RESOLVERS;
-const sessions = new Map();
+const sessions = new Map();   // "origin|address" → HTTP/2 session
+const addrs = new Map();      // hostname → every address it resolves to (A and AAAA)
+const h1Only = new Set();     // origins whose server offers no h2 ALPN; a browser falls back to HTTP/1.1 there too
 
-function session(origin) {
-  let s = sessions.get(origin);
-  if (!s || s.closed || s.destroyed) {
-    s = http2.connect(origin);
-    s.on("error", () => {});
-    sessions.set(origin, s);
+// Every address a host resolves to, not just the first: doh.pub has two, and on some networks one is unreachable
+// while the other answers in milliseconds. A browser tries both, so this does too.
+async function addresses(host) {
+  if (net.isIP(host)) return [{ address: host, family: net.isIPv6(host) ? 6 : 4 }];
+  if (!addrs.has(host)) {
+    try { addrs.set(host, await lookup(host, { all: true })); } catch { addrs.set(host, []); }
   }
-  return s;
+  return addrs.get(host);
 }
 
-// one GET: status, headers, body, ms
-function get(url) {
-  const u = new URL(url);
+// The first answer wins; an address that fails is reported as a note, not as the resolver's failure.
+function first(attempts) {
+  return new Promise((resolve, reject) => {
+    let left = attempts.length;
+    const failed = [];
+    for (const [a, go] of attempts) {
+      go().then(r => resolve({ ...r, failed: failed.slice() }), e => {
+        failed.push({ address: a.address, error: String(e.message).split("\n")[0] });
+        if (--left === 0) reject(Object.assign(new Error(failed.map(f => f.address + ": " + f.error).join("; ")), { failed }));
+      });
+    }
+  });
+}
+
+// net.connect asks for one address, or for all of them when its Happy Eyeballs path is on (Node 22, GitHub's runner):
+// answer both shapes, or it reports "Invalid IP address: undefined".
+const pin = a => (h, o, cb) => o && o.all ? cb(null, [a]) : cb(null, a.address, a.family);
+
+function h2(url, a) {
+  const u = new URL(url), key = u.origin + "|" + a.address;
+  let s = sessions.get(key);
+  if (!s || s.closed || s.destroyed) {
+    s = http2.connect(u.origin, { lookup: pin(a) });
+    s.on("error", () => {});
+    sessions.set(key, s);
+  }
   return new Promise((resolve, reject) => {
     const t0 = performance.now();
-    const req = session(u.origin).request({ ":method": "GET", ":path": u.pathname + u.search, accept: "application/dns-message", origin: "https://dns.1ms.dog" });
-    const timer = setTimeout(() => { req.close(); reject(new Error("timeout")); }, 6000);
+    const req = s.request({ ":method": "GET", ":path": u.pathname + u.search, accept: "application/dns-message", origin: "https://dns.1ms.dog" });
+    const timer = setTimeout(() => { req.close(); s.destroy(); reject(new Error("timeout")); }, 6000);
     let head = {};
     const chunks = [];
     req.on("response", h => { head = h; });
@@ -49,11 +80,46 @@ function get(url) {
       clearTimeout(timer);
       // a server can close the connection without answering (GOAWAY, RST_STREAM): say so instead of "HTTP undefined"
       if (!head[":status"]) return reject(new Error("no HTTP response"));
-      resolve({ status: head[":status"], head, body: Buffer.concat(chunks), ms: performance.now() - t0 });
+      resolve({ status: head[":status"], head, body: Buffer.concat(chunks), ms: performance.now() - t0, proto: "h2", address: a.address });
     });
     req.on("error", e => { clearTimeout(timer); reject(e); });
     req.end();
   });
+}
+
+// HTTP/1.1: some DoH servers (Njalla among them) offer no h2 in ALPN and refuse a handshake that insists on it. A
+// browser then speaks HTTP/1.1 to the same URL, so this counts as the same endpoint, with a note in the output.
+function h1(url, a) {
+  return new Promise((resolve, reject) => {
+    const u = new URL(url);
+    const t0 = performance.now();
+    const req = https.request(u, { method: "GET", lookup: pin(a),
+      headers: { accept: "application/dns-message", origin: "https://dns.1ms.dog" } }, res => {
+      const chunks = [];
+      res.on("data", c => chunks.push(c));
+      res.on("end", () => { clearTimeout(timer); resolve({ status: res.statusCode, head: res.headers, body: Buffer.concat(chunks), ms: performance.now() - t0, proto: "h1", address: a.address }); });
+      res.on("error", e => { clearTimeout(timer); reject(e); });
+    });
+    const timer = setTimeout(() => { req.destroy(); reject(new Error("timeout")); }, 6000);
+    req.on("error", e => { clearTimeout(timer); reject(e); });
+    req.end();
+  });
+}
+
+// one GET: status, headers, body, ms, from the first of the host's addresses that answers
+async function get(url) {
+  const u = new URL(url);
+  const all = await addresses(u.hostname);
+  if (!all.length) throw new Error("no address for " + u.hostname);
+  if (!h1Only.has(u.origin)) {
+    try {
+      return await first(all.map(a => [a, () => h2(url, a)]));
+    } catch (e) {
+      if (!/no application protocol|ALPN/i.test(e.message)) throw e;
+      h1Only.add(u.origin);
+    }
+  }
+  return await first(all.map(a => [a, () => h1(url, a)]));
 }
 
 // A DNS answer is what these checks read, whatever the HTTP status says. RFC 8484 asks for 200, but DNS.SB sends
@@ -71,7 +137,7 @@ async function ask(endpoint, name, type, anyStatus = false) {
   const p = parse(r.body);
   if (!p) throw new Error("HTTP " + (r.status ?? "?") + ", not a DNS answer");
   if (r.status !== 200 && !anyStatus) throw new Error("HTTP " + r.status);
-  return { ...p, ms: r.ms, head: r.head, status: r.status };
+  return { ...p, ms: r.ms, head: r.head, status: r.status, proto: r.proto, address: r.address, failed: r.failed };
 }
 
 const f = v => v == null ? "?" : v ? "yes" : "no";
@@ -83,6 +149,8 @@ const rows = await Promise.all(list.map(async r => {
     try {
       const a = await ask(url, mixCase("example.com"), "A");
       if (a.rcode !== RCODE.NOERROR || !a.addrs.length) out.notes.push(`${k}: rcode ${a.rcode}, ${a.addrs.length} addresses`);
+      if (a.proto === "h1") out.skips.push(`${k}: HTTP/1.1 only (the server offers no h2 in ALPN); a browser falls back the same way`);
+      if (a.failed && a.failed.length) out.skips.push(`${k}: ${a.failed.map(x => x.address + " " + x.error).join(", ")}; ${a.address} answered`);
       const acao = a.head["access-control-allow-origin"];
       const want = k === "doh" ? !!r.cors : !!r.ipCors;
       if (!!acao !== want) out.notes.push(`${k}: cors is ${!!acao} (list: ${want})`);

@@ -1,17 +1,64 @@
 # Every Monday (and by hand): check every resolver from GitHub's US data centers, a second continent besides the
 # maintainer's own checks. A failure means an address stopped answering, CORS changed, or DNSSEC/NXDOMAIN behavior
-# changed: the list in src/resolvers.mjs needs a look.
+# changed: the list in src/resolvers.mjs needs a look. A scheduled failure runs once more before it opens an issue.
 name: verify
 on:
   schedule:
     - cron: "17 4 * * 1"
   workflow_dispatch:
+    inputs:
+      retry:
+        description: "set by the scheduled run when it failed once and retried itself"
+        required: false
+        default: ""
+permissions:
+  contents: read
+  issues: write
+  actions: write
 jobs:
   verify:
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@v5
       - uses: actions/setup-node@v5
         with:
           node-version: 22
-      - run: node scripts/verify.mjs
+      - id: verify
+        run: |
+          set +e
+          node scripts/verify.mjs 2>&1 | tee out.txt
+          echo "code=${PIPESTATUS[0]}" >> "$GITHUB_OUTPUT"
+      # A weekly run that went red for one bad minute used to cost a week of silence: run it once more first (#147 三.2).
+      # The retry is a fresh workflow_dispatch with retry=1, which this step never triggers again.
+      - name: Retry a scheduled failure once
+        id: retry
+        if: failure() && github.event_name == 'schedule'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: gh workflow run verify.yml --repo "$GITHUB_REPOSITORY" -f retry=1
+      # One open issue per workflow, appended to on each failure and closed when a run passes.
+      - name: File or close the failure issue
+        if: always() && !(failure() && github.event_name == 'schedule' && steps.retry.outcome == 'success')
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          CODE: ${{ steps.verify.outputs.code }}
+          TRIGGER: ${{ github.event.inputs.retry == '1' && '定时失败后自动重跑' || (github.event_name == 'schedule' && '定时' || '手动') }}
+        run: |
+          title="每周解析器检查失败"
+          num=$(gh issue list --repo "$GITHUB_REPOSITORY" --state open --search "$title in:title" --limit 20 \
+            --json number,title --jq "[.[] | select(.title == \"$title\")][0].number // empty")
+          if [ "$CODE" = "0" ]; then
+            if [ -n "$num" ]; then
+              gh issue close "$num" --repo "$GITHUB_REPOSITORY" --comment "本周的 verify 通过，关闭。"
+            fi
+            exit 0
+          fi
+          body=$(printf '`node scripts/verify.mjs` 失败（%s UTC+8，%s运行）。\n\n```\n%s\n```\n' \
+            "$(TZ=Asia/Shanghai date '+%F %H:%M')" "$TRIGGER" "$(tail -c 3000 out.txt)")
+          if [ -z "$num" ]; then
+            gh issue create --repo "$GITHUB_REPOSITORY" --title "$title" --body "$body"
+          else
+            gh issue comment "$num" --repo "$GITHUB_REPOSITORY" --body "$body"
+          fi
+          exit 1
