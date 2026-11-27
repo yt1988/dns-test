@@ -42,6 +42,24 @@ async function addresses(host) {
   return addrs.get(host);
 }
 
+// Whether this network can open a TCP connection to the address at all. An unreachable IPv6 address on an IPv4-only
+// runner (GitHub's) made http2.connect emit the ENETUNREACH as an unhandled socket error and kill the run, so the
+// address is filtered out before a session is built. Cached: one probe per address per run.
+const reach = new Map();
+function canReach(a) {
+  const key = a.address + "|" + a.family;
+  if (!reach.has(key)) {
+    reach.set(key, new Promise(resolve => {
+      const s = net.connect({ host: a.address, port: 443, family: a.family });
+      const done = ok => { s.destroy(); resolve(ok); };
+      s.setTimeout(2500, () => done(false));
+      s.on("connect", () => done(true));
+      s.on("error", () => done(false));
+    }));
+  }
+  return reach.get(key);
+}
+
 // The first answer wins; an address that fails is reported as a note, not as the resolver's failure.
 function first(attempts) {
   return new Promise((resolve, reject) => {
@@ -108,20 +126,23 @@ function h1(url, a) {
   });
 }
 
-// one GET: status, headers, body, ms, from the first of the host's addresses that answers
+// one GET: status, headers, body, ms, from the first of the host's reachable addresses that answers
 async function get(url) {
   const u = new URL(url);
   const all = await addresses(u.hostname);
   if (!all.length) throw new Error("no address for " + u.hostname);
+  const flags = await Promise.all(all.map(canReach));
+  const usable = all.filter((a, i) => flags[i]);
+  if (!usable.length) throw new Error("no reachable address for " + u.hostname);
   if (!h1Only.has(u.origin)) {
     try {
-      return await first(all.map(a => [a, () => h2(url, a)]));
+      return await first(usable.map(a => [a, () => h2(url, a)]));
     } catch (e) {
       if (!/no application protocol|ALPN/i.test(e.message)) throw e;
       h1Only.add(u.origin);
     }
   }
-  return await first(all.map(a => [a, () => h1(url, a)]));
+  return await first(usable.map(a => [a, () => h1(url, a)]));
 }
 
 // A DNS answer is what these checks read, whatever the HTTP status says. RFC 8484 asks for 200, but DNS.SB sends
