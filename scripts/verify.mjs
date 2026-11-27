@@ -57,14 +57,16 @@ function first(attempts) {
 }
 
 // net.connect asks for one address, or for all of them when its Happy Eyeballs path is on (Node 22, GitHub's runner):
-// answer both shapes, or it reports "Invalid IP address: undefined".
+// answer both shapes, or it reports "Invalid IP address: undefined". autoSelectFamily is off because each connection
+// is pinned to one address here; on the runner its multi-address path emitted ENETUNREACH on the IPv6 attempt as an
+// unhandled socket error, which killed the run.
 const pin = a => (h, o, cb) => o && o.all ? cb(null, [a]) : cb(null, a.address, a.family);
 
 function h2(url, a) {
   const u = new URL(url), key = u.origin + "|" + a.address;
   let s = sessions.get(key);
   if (!s || s.closed || s.destroyed) {
-    s = http2.connect(u.origin, { lookup: pin(a) });
+    s = http2.connect(u.origin, { lookup: pin(a), autoSelectFamily: false });
     s.on("error", () => {});
     sessions.set(key, s);
   }
@@ -93,7 +95,7 @@ function h1(url, a) {
   return new Promise((resolve, reject) => {
     const u = new URL(url);
     const t0 = performance.now();
-    const req = https.request(u, { method: "GET", lookup: pin(a),
+    const req = https.request(u, { method: "GET", lookup: pin(a), autoSelectFamily: false,
       headers: { accept: "application/dns-message", origin: "https://dns.1ms.dog" } }, res => {
       const chunks = [];
       res.on("data", c => chunks.push(c));
