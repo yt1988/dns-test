@@ -28,7 +28,9 @@ jobs:
         run: |
           set +e
           node scripts/verify.mjs 2>&1 | tee out.txt
-          echo "code=${PIPESTATUS[0]}" >> "$GITHUB_OUTPUT"
+          code=${PIPESTATUS[0]}
+          echo "code=$code" >> "$GITHUB_OUTPUT"
+          exit "$code"
       # A weekly run that went red for one bad minute used to cost a week of silence: run it once more first (#147 三.2).
       # The retry is a fresh workflow_dispatch with retry=1, which this step never triggers again.
       - name: Retry a scheduled failure once
